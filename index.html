@@ -7,12 +7,22 @@
 </head>
 	<style>
 		:root {
-			background: linear-gradient(135deg, #bdddbe 0%, #b2978c 100%), url('bg3.jfif');
+			background:
+				linear-gradient(135deg, #bdddbe 0%, #b2978c 100%),
+				url('bg3.jfif');
 			background-size: auto, cover;
 			background-position: center top, center top;
 			background-repeat: repeat, no-repeat;
-			background-attachment: fixed;
+			background-attachment: fixed, fixed;
 			background-blend-mode: overlay;
+			color: var(--text);
+			min-height: 100vh;
+			background-repeat: repeat, no-repeat;
+			background-attachment: fixed, fixed;
+			background-blend-mode: overlay;
+			/* Prevent iOS/Android scroll override */
+			overscroll-behavior: none;
+			touch-action: none;
 			color: var(--text);
 			min-height: 100vh;
 		}
@@ -238,6 +248,9 @@
 			section { padding: 20px 6px; }
 			#team .team-list { flex-direction: column; align-items: center; }
 			.team-member { width: 95%; }
+			#landing a.landing-animate.button {
+				display: none !important;
+			}
 		}
 		html { scroll-behavior: smooth; }
 		.landing-logo-wrap {
@@ -256,6 +269,7 @@
 			</div>
 			<h1 class="landing-animate headline">DEKA WORWOR ME NUSELE <br>NORVISI YE NYA LENA</h1>
 			<p class="landing-animate text"></p>
+			<a href="#donate" class="landing-animate button"><button class="cta-btn">Donate Now</button></a>
 		</section>
 		<section id="about">
 			<h2>About Us</h2>
@@ -356,18 +370,15 @@ function forceLandingOnLoad() {
 				requestAnimationFrame(animateScroll);
 			}
 		}, 2100); // Animation duration + buffer
-				<div class="media-slider" id="mediaSlider">
-					<img src="p1.jpg" alt="Flyer 1">
-					<img src="p2.jpg" alt="Flyer 2">
-					<img src="p3.jpg" alt="Flyer 3">
-					<img src="p4.jpg" alt="Flyer 4">
-					<img src="p5.jpg" alt="Flyer 5">
-					<img src="p6.jpg" alt="Flyer 6">
-					<img src="p7.jpg" alt="Flyer 7">
-					<img src="p8.jpg" alt="Flyer 8">
-				</div>
-				<button class="media-slider-arrow right" aria-label="Next">&#8594;</button>
-			</div>
+		landingAnimated = true;
+	}, 10);
+}
+window.addEventListener('DOMContentLoaded', forceLandingOnLoad);
+
+// Prevent forced scroll/animation when clicking nav links
+document.addEventListener('DOMContentLoaded', function() {
+	document.querySelectorAll('.nav-links a').forEach(function(link) {
+		link.addEventListener('click', function() {
 			landingAnimated = true;
 		});
 	});
