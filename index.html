@@ -128,16 +128,35 @@
 			gap: 18px;
 			justify-content: center;
 			margin-top: 18px;
+    		/* Ensure 3 images per row on desktop */
+    		max-width: 1050px;
+    		margin-left: auto;
+    		margin-right: auto;
 		}
 		.media-gallery img {
-			width: 320px;
-			max-width: 95vw;
+			flex: 1 1 30%;
+			max-width: 320px;
+			min-width: 0;
+			width: 30vw;
 			height: auto;
 			border-radius: 10px;
 			box-shadow: 0 2px 8px rgba(141,110,99,0.13);
 			background: #fff;
 			object-fit: cover;
 			transition: transform 0.2s;
+			margin-bottom: 18px;
+		}
+		@media (max-width: 900px) {
+			.media-gallery img {
+				max-width: 48vw;
+				width: 48vw;
+			}
+		}
+		@media (max-width: 600px) {
+			.media-gallery img {
+				max-width: 95vw;
+				width: 95vw;
+			}
 		}
 		.media-gallery img:hover {
 			transform: scale(1.04) rotate(-1deg);
