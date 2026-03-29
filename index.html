@@ -16,16 +16,15 @@
 			background-attachment: fixed, fixed;
 			background-blend-mode: overlay;
 			color: var(--text);
-			min-height: 100vh;
-			background-repeat: repeat, no-repeat;
-			background-attachment: fixed, fixed;
-			background-blend-mode: overlay;
-			/* Prevent iOS/Android scroll override */
-			overscroll-behavior: none;
-			touch-action: none;
-			color: var(--text);
-			min-height: 100vh;
 		}
+	body, html {
+		min-height: 100vh;
+		height: auto;
+		width: 100vw;
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+	}
 		.top-footer {
 			background: rgba(255, 255, 255, 0.35);
 			color: var(--primary);
