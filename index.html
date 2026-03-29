@@ -7,19 +7,16 @@
 </head>
 	<style>
 		:root {
-			--primary: #388e3c; /* Green */
-			--secondary: #f5eee6; /* Light brown background */
-			--accent: #8d6e63; /* Brown accent */
-			--text: #222;
-		}
-		* { box-sizing: border-box; margin: 0; padding: 0; }
-		body {
-			font-family: 'Segoe UI', Arial, sans-serif;
 			background:
 				linear-gradient(135deg, #bdddbe 0%, #b2978c 100%),
 				url('bg3.jfif');
 			background-size: auto, cover;
 			background-position: center top, center top;
+			background-repeat: repeat, no-repeat;
+			background-attachment: fixed, fixed;
+			background-blend-mode: overlay;
+			color: var(--text);
+			min-height: 100vh;
 			background-repeat: repeat, no-repeat;
 			background-attachment: fixed, fixed;
 			background-blend-mode: overlay;
