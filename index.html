@@ -848,20 +848,78 @@ button{-webkit-tap-highlight-color:transparent}
 
 <script>
 /* ══════════════════════════════════════════════
+   PRELOADER — run FIRST before anything can crash
+══════════════════════════════════════════════ */
+(function(){
+  var text = 'The Joint.';
+  var logo = document.getElementById('pre-logo');
+  if (!logo) return;
+  var words = text.split(' ');
+  var idx = 0;
+  words.forEach(function(word, wi) {
+    if (wi > 0) {
+      var sp = document.createElement('span');
+      sp.className = 'pl-sp';
+      logo.appendChild(sp);
+    }
+    word.split('').forEach(function(ch) {
+      var wrap = document.createElement('span');
+      wrap.className = 'pl-wrap';
+      var inner = document.createElement('span');
+      inner.className = 'pl';
+      inner.style.setProperty('--i', idx);
+      inner.textContent = ch;
+      wrap.appendChild(inner);
+      logo.appendChild(wrap);
+      idx++;
+    });
+  });
+  // Always dismiss after 2.6s regardless of what happens below
+  var DURATION = 2600;
+  setTimeout(function() {
+    var el = document.getElementById('preloader');
+    if (el) el.classList.add('pre-out');
+  }, DURATION);
+  // Safety net: force-remove preloader after 5s no matter what
+  setTimeout(function() {
+    var el = document.getElementById('preloader');
+    if (el) { el.style.display = 'none'; }
+  }, 5000);
+})();
+
+/* ══════════════════════════════════════════════
    FIREBASE INIT
 ══════════════════════════════════════════════ */
-const firebaseConfig = {
-  apiKey: "AIzaSyByKW4UH1VJmO0AF-dNGC-z2l9gKMKOV-g",
-  authDomain: "the-joint-4bd02.firebaseapp.com",
-  projectId: "the-joint-4bd02",
-  storageBucket: "the-joint-4bd02.firebasestorage.app",
-  messagingSenderId: "152979115501",
-  appId: "1:152979115501:web:b6d05560c003ba54126be4"
-};
-firebase.initializeApp(firebaseConfig);
-var auth = firebase.auth();
-var db   = firebase.firestore();
-var fns  = firebase.functions();
+var auth, db, fns;
+var _firebaseReady = false;
+try {
+  if (typeof firebase === 'undefined') throw new Error('Firebase SDK not loaded');
+  const firebaseConfig = {
+    apiKey: "AIzaSyByKW4UH1VJmO0AF-dNGC-z2l9gKMKOV-g",
+    authDomain: "the-joint-4bd02.firebaseapp.com",
+    projectId: "the-joint-4bd02",
+    storageBucket: "the-joint-4bd02.firebasestorage.app",
+    messagingSenderId: "152979115501",
+    appId: "1:152979115501:web:b6d05560c003ba54126be4"
+  };
+  firebase.initializeApp(firebaseConfig);
+  auth = firebase.auth();
+  db   = firebase.firestore();
+  fns  = firebase.functions();
+  _firebaseReady = true;
+} catch(e) {
+  console.warn('Firebase failed to initialize (offline or SDK blocked):', e);
+  // Provide safe stubs so the rest of the app does not crash
+  auth = {
+    onAuthStateChanged: function(cb){ cb(null); return function(){}; },
+    createUserWithEmailAndPassword: function(){ return Promise.reject(new Error('Offline')); },
+    signInWithEmailAndPassword: function(){ return Promise.reject(new Error('Offline')); },
+    signOut: function(){ return Promise.resolve(); }
+  };
+  var _noop = function(){ return { get: function(){ return Promise.resolve({ empty: true, docs: [] }); }, set: function(){ return Promise.resolve(); }, where: function(){ return this; }, orderBy: function(){ return this; } }; };
+  db = { collection: function(){ return { doc: function(){ return { get: function(){ return Promise.resolve({ exists: false, data: function(){ return {}; } }); }, set: function(){ return Promise.resolve(); } }; }, get: function(){ return Promise.resolve({ empty: true, docs: [] }); }, orderBy: function(){ return this; }, where: function(){ return this; }, batch: function(){ return { set: function(){}, commit: function(){ return Promise.resolve(); } }; } }; }, batch: function(){ return { set: function(){}, commit: function(){ return Promise.resolve(); } }; } };
+  fns = { httpsCallable: function(){ return function(){ return Promise.reject(new Error('Offline')); }; } };
+}
 
 /* ══════════════════════════════════════════════
    MENU SEED DATA (used to populate Firestore on first run)
@@ -957,10 +1015,18 @@ function normalizeCart() {
    FIREBASE — MENU (load from Firestore, seed if empty)
 ══════════════════════════════════════════════ */
 async function loadMenu() {
+  if (!_firebaseReady) {
+    MENU = MENU_SEED.slice();
+    renderGrid();
+    showToast('Offline — showing cached menu');
+    return;
+  }
   try {
-    var snap = await db.collection('menu').orderBy('id').get();
+    var snap = await Promise.race([
+      db.collection('menu').orderBy('id').get(),
+      new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, 8000); })
+    ]);
     if (snap.empty) {
-      // First run: seed menu into Firestore
       var batch = db.batch();
       MENU_SEED.forEach(function(item) {
         batch.set(db.collection('menu').doc(item.id), item);
@@ -973,7 +1039,6 @@ async function loadMenu() {
     }
   } catch(e) {
     console.error('Firestore menu error:', e);
-    // Graceful fallback to seed data if offline
     MENU = MENU_SEED.slice();
     showToast('Offline — showing cached menu');
   }
@@ -1762,37 +1827,7 @@ function bindDelegatedEvents() {
   });
 }
 
-/* ══════════════════════════════════════════════
-   PRELOADER
-══════════════════════════════════════════════ */
-(function(){
-  var text = 'The Joint.';
-  var logo = document.getElementById('pre-logo');
-  var words = text.split(' ');
-  var idx = 0;
-  words.forEach(function(word, wi) {
-    if (wi > 0) {
-      var sp = document.createElement('span');
-      sp.className = 'pl-sp';
-      logo.appendChild(sp);
-    }
-    word.split('').forEach(function(ch) {
-      var wrap = document.createElement('span');
-      wrap.className = 'pl-wrap';
-      var inner = document.createElement('span');
-      inner.className = 'pl';
-      inner.style.setProperty('--i', idx);
-      inner.textContent = ch;
-      wrap.appendChild(inner);
-      logo.appendChild(wrap);
-      idx++;
-    });
-  });
-  var DURATION = 2600;
-  setTimeout(function() {
-    document.getElementById('preloader').classList.add('pre-out');
-  }, DURATION);
-})();
+/* Preloader IIFE has been moved to the top of this script block */
 
 /* ══════════════════════════════════════════════
    INIT
