@@ -886,8 +886,9 @@ button{-webkit-tap-highlight-color:transparent}
 })();
 </script>
 
-<!-- All app code runs after defer scripts (Firebase) have loaded -->
-<script defer>
+<!-- All app code wrapped in DOMContentLoaded, which fires AFTER all defer scripts execute -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
 /* ══════════════════════════════════════════════
    FIREBASE INIT
 ══════════════════════════════════════════════ */
@@ -1834,7 +1835,7 @@ function bindDelegatedEvents() {
    INIT
 ══════════════════════════════════════════════ */
 bindDelegatedEvents();
-loadMenu();   // fetch menu from Firestore
+loadMenu();
 normalizeCart();
 saveCart();
 updateBadge();
@@ -1842,6 +1843,8 @@ renderOrderHistory();
 renderAddresses();
 renderCards();
 updateCheckoutDeliveryUI();
+
+}); // end DOMContentLoaded
 </script>
 </body>
 </html>
