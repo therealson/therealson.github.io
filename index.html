@@ -318,6 +318,10 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background
 .co-row-ttl{font-weight:600;font-size:.88rem;color:var(--text)}
 .co-row-sub{font-size:.72rem;color:var(--muted)}
 .co-arr{color:var(--muted)}
+.co-contact{padding:.8rem 1rem 1rem}
+.co-contact-note{font-size:.72rem;color:var(--muted);margin-bottom:.55rem}
+.co-phone-actions{display:flex;gap:.55rem;align-items:center}
+.co-phone-actions .red-btn{padding:.72rem}
 .co-sum{background:var(--white);margin:1rem;border-radius:var(--r);padding:1rem}
 .co-sum-ttl{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.78rem;
   color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.7rem}
@@ -333,6 +337,7 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background
   border-radius:100px;font-family:'Montserrat',sans-serif;font-weight:700;
   font-size:.97rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .co-pay-btn:active{background:var(--red-dk)}
+.co-pay-btn:disabled{opacity:.55;cursor:not-allowed;background:var(--muted)}
 
 /* SUCCESS */
 #s-success{background:var(--white);align-items:center;justify-content:center;
@@ -772,14 +777,17 @@ button{-webkit-tap-highlight-color:transparent}
       </div>
       <div class="co-sect" style="margin-top:.75rem" id="co-contact-sect">
         <div class="co-lbl">Contact</div>
-        <div id="co-phone-display" class="co-row" style="cursor:pointer" onclick="document.getElementById('co-phone-display').style.display='none';document.getElementById('co-phone-edit').style.display='block';document.getElementById('co-phone-input').focus();">
+        <div class="co-row">
           <div class="co-row-l"><span class="co-row-ico">📞</span>
-            <div><div class="co-row-ttl">Mobile Number</div><div class="co-row-sub" id="co-phone-sub">Tap to add mobile number</div></div>
-          </div><span class="co-arr">›</span>
+            <div><div class="co-row-ttl">Mobile Number (Required)</div><div class="co-row-sub" id="co-phone-sub">Enter delivery contact number</div></div>
+          </div>
         </div>
-        <div id="co-phone-edit" style="display:none;padding:.75rem 1rem;gap:.55rem;flex-direction:column">
-          <input class="inp" id="co-phone-input" type="tel" placeholder="e.g. 0244 123 456" inputmode="tel" style="font-size:.95rem">
-          <button class="red-btn" style="padding:.7rem" data-action="save-phone">Save Number</button>
+        <div class="co-contact">
+          <p class="co-contact-note">Please enter a reachable phone number before placing your order.</p>
+          <div class="co-phone-actions">
+            <input class="inp" id="co-phone-input" type="tel" placeholder="e.g. 0244 123 456" inputmode="tel" style="font-size:.95rem">
+            <button class="red-btn" data-action="save-phone">Save Number</button>
+          </div>
         </div>
       </div>
       <div class="co-sect" style="margin-top:.75rem">
@@ -1787,23 +1795,34 @@ async function removeCard(index) {
 function updateCheckoutContactUI() {
   var sub = document.getElementById('co-phone-sub');
   var input = document.getElementById('co-phone-input');
-  var display = document.getElementById('co-phone-display');
-  var edit = document.getElementById('co-phone-edit');
   if (!sub) return;
   if (phone) {
-    sub.textContent = phone;
-    if (display) display.style.display = 'flex';
-    if (edit) edit.style.display = 'none';
+    sub.textContent = 'Saved: ' + phone;
+    if (input) input.value = phone;
   } else {
-    sub.textContent = 'Tap to add mobile number';
+    sub.textContent = 'Enter delivery contact number';
     if (input) input.value = '';
   }
+  updatePayButtonState();
+}
+
+function isValidPhone(v) {
+  var digits = String(v || '').replace(/\D/g, '');
+  return digits.length >= 9;
+}
+
+function updatePayButtonState() {
+  var payBtn = document.querySelector('#s-checkout .co-pay-btn');
+  if (!payBtn) return;
+  var hasValidPhone = isValidPhone(phone);
+  payBtn.disabled = !hasValidPhone;
+  payBtn.textContent = hasValidPhone ? 'Pay Now' : 'Add phone number to continue';
 }
 
 async function savePhone() {
   if (!curUser) return;
   var val = (document.getElementById('co-phone-input').value || '').trim();
-  if (!val) { showToast('Please enter a mobile number'); return; }
+  if (!isValidPhone(val)) { showToast('Please enter a valid mobile number'); return; }
   phone = val;
   await saveAccountData();
   updateCheckoutContactUI();
