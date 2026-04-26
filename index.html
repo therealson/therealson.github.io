@@ -1108,7 +1108,7 @@ async function loadMenu() {
   if (!_firebaseReady) return;
   try {
     var snap = await Promise.race([
-      db.collection('menu').orderBy('id').get(),
+      db.collection('menu').get(),
       new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, 8000); })
     ]);
     if (snap.empty) {
@@ -1120,7 +1120,18 @@ async function loadMenu() {
       batch.commit().catch(function(e){ console.warn('Seed write failed:', e); });
     } else {
       // Live data available — update grid silently
-      MENU = snap.docs.map(function(d) { return d.data(); });
+      MENU = snap.docs.map(function(d) {
+        var data = d.data() || {};
+        if (data.id == null || data.id === '') data.id = d.id;
+        return data;
+      }).sort(function(a, b) {
+        var aid = String(a && a.id != null ? a.id : '');
+        var bid = String(b && b.id != null ? b.id : '');
+        var an = Number(aid);
+        var bn = Number(bid);
+        if (!isNaN(an) && !isNaN(bn)) return an - bn;
+        return aid.localeCompare(bid);
+      });
       renderGrid();
     }
   } catch(e) {
