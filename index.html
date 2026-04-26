@@ -1020,6 +1020,21 @@ function esc(v) {
     .replace(/'/g, '&#39;');
 }
 
+/* WebView compatibility (MIT App Inventor can run older Android WebView engines) */
+if (!Element.prototype.matches) {
+  Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+}
+if (!Element.prototype.closest) {
+  Element.prototype.closest = function(selector) {
+    var node = this;
+    while (node && node.nodeType === 1) {
+      if (node.matches && node.matches(selector)) return node;
+      node = node.parentElement || node.parentNode;
+    }
+    return null;
+  };
+}
+
 function extrasKey(extras) {
   if (!extras || !extras.length) return '';
   return extras.map(function(ex) {
@@ -1029,6 +1044,10 @@ function extrasKey(extras) {
 
 function cartItemKey(item) {
   return item.cartKey || (String(item.id) + '::' + extrasKey(item.extras || []));
+}
+
+function sameId(a, b) {
+  return String(a) === String(b);
 }
 
 function lineUnitPrice(item) {
@@ -1406,7 +1425,7 @@ function renderGrid() {
   var html = '';
   for (var i = 0; i < items.length; i++) {
     var item = items[i];
-    var on = favs.some(function(f){ return f.id === item.id; });
+    var on = favs.some(function(f){ return sameId(f.id, item.id); });
     var safeId = esc(item.id);
     var safeName = esc(item.name);
     var safeImg = esc(item.img);
@@ -1432,7 +1451,7 @@ function renderGrid() {
 ══════════════════════════════════════════════ */
 function openProduct(id) {
   curItem = null;
-  for (var i = 0; i < MENU.length; i++) { if (MENU[i].id === id) { curItem = MENU[i]; break; } }
+  for (var i = 0; i < MENU.length; i++) { if (sameId(MENU[i].id, id)) { curItem = MENU[i]; break; } }
   if (!curItem) return;
   prodQty = 1; selEx = [];
   document.getElementById('prod-img').src   = curItem.img;
@@ -1480,7 +1499,7 @@ function addCurToCart() {
 function toggleProdFav() {
   if (!curItem) return;
   toggleFav(curItem.id);
-  var on = favs.some(function(f){ return f.id === curItem.id; });
+  var on = favs.some(function(f){ return sameId(f.id, curItem.id); });
   document.getElementById('prod-fav').classList.toggle('on', on);
 }
 
@@ -1500,7 +1519,7 @@ function addToCart(item, qty) {
 
 function quickAdd(id) {
   var item = null;
-  for (var i = 0; i < MENU.length; i++) { if (MENU[i].id === id) { item = MENU[i]; break; } }
+  for (var i = 0; i < MENU.length; i++) { if (sameId(MENU[i].id, id)) { item = MENU[i]; break; } }
   if (item) { addToCart(item); showToast('Added to cart ✓'); }
 }
 
@@ -1589,17 +1608,17 @@ function renderCart() {
 ══════════════════════════════════════════════ */
 function toggleFav(id) {
   var item = null;
-  for (var i = 0; i < MENU.length; i++) { if (MENU[i].id === id) { item = MENU[i]; break; } }
+  for (var i = 0; i < MENU.length; i++) { if (sameId(MENU[i].id, id)) { item = MENU[i]; break; } }
   if (!item) return;
   var idx = -1;
-  for (var j = 0; j < favs.length; j++) { if (favs[j].id === id) { idx = j; break; } }
+  for (var j = 0; j < favs.length; j++) { if (sameId(favs[j].id, id)) { idx = j; break; } }
   if (idx >= 0) { favs.splice(idx, 1); showToast('Removed from saved'); }
   else          { favs.push(item);     showToast('Saved ♥'); }
   _store.set('the_joint_favs', JSON.stringify(favs));
   syncFavsToFirestore(); // ← sync to Firestore
   var btn = document.getElementById('fb-' + id);
   if (btn) {
-    var on = favs.some(function(f){ return f.id === id; });
+    var on = favs.some(function(f){ return sameId(f.id, id); });
     btn.classList.toggle('on', on);
   }
 }
@@ -1851,7 +1870,12 @@ function showToast(msg) {
 function bindDelegatedEvents() {
   var app = document.getElementById('app');
   app.addEventListener('click', function(e) {
-    var t = e.target.closest('[data-action]');
+    var target = e.target;
+    if (!target) return;
+    var t = target.closest ? target.closest('[data-action]') : null;
+    if (!t && target.parentElement && target.parentElement.closest) {
+      t = target.parentElement.closest('[data-action]');
+    }
     if (!t || !app.contains(t)) return;
     var action = t.getAttribute('data-action');
 
