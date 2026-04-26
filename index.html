@@ -318,10 +318,18 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background
 .co-row-ttl{font-weight:600;font-size:.88rem;color:var(--text)}
 .co-row-sub{font-size:.72rem;color:var(--muted)}
 .co-arr{color:var(--muted)}
+.co-hero{margin:1rem 1rem .25rem;background:linear-gradient(135deg,#3a0a0f,#1c1c1e);border-radius:var(--r);padding:1rem;color:#fff}
+.co-hero-kicker{font-size:.68rem;letter-spacing:.7px;text-transform:uppercase;opacity:.78}
+.co-hero-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:1rem;margin:.3rem 0 .2rem}
+.co-hero-sub{font-size:.78rem;opacity:.85}
+.co-grid{display:grid;grid-template-columns:1fr;gap:.75rem;padding:0 1rem}
+.co-panel{background:var(--white);border-radius:var(--r);overflow:hidden}
+.co-panel .co-lbl{padding-top:.85rem}
 .co-contact{padding:.8rem 1rem 1rem}
-.co-contact-note{font-size:.72rem;color:var(--muted);margin-bottom:.55rem}
+.co-contact-note{font-size:.72rem;color:var(--muted);margin-bottom:.55rem;line-height:1.45}
 .co-phone-actions{display:flex;gap:.55rem;align-items:center}
-.co-phone-actions .red-btn{padding:.72rem}
+.co-phone-actions .inp{flex:1}
+.co-phone-actions .red-btn{width:auto;padding:.72rem 1rem;white-space:nowrap}
 .co-sum{background:var(--white);margin:1rem;border-radius:var(--r);padding:1rem}
 .co-sum-ttl{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.78rem;
   color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.7rem}
@@ -338,6 +346,10 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background
   font-size:.97rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .co-pay-btn:active{background:var(--red-dk)}
 .co-pay-btn:disabled{opacity:.55;cursor:not-allowed;background:var(--muted)}
+@media (max-width:360px){
+  .co-phone-actions{flex-direction:column;align-items:stretch}
+  .co-phone-actions .red-btn{width:100%}
+}
 
 /* SUCCESS */
 #s-success{background:var(--white);align-items:center;justify-content:center;
@@ -682,7 +694,7 @@ button{-webkit-tap-highlight-color:transparent}
   <!-- MY ADDRESSES -->
   <div id="s-addresses" class="scr">
     <div class="hdr">
-      <button class="hbtn" aria-label="Back to profile" data-action="goto" data-go="profile"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button class="hbtn" aria-label="Back" data-action="back-context" data-screen="addresses"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
       <span class="hdr-title">My Addresses</span>
       <div style="width:38px"></div>
     </div>
@@ -705,7 +717,7 @@ button{-webkit-tap-highlight-color:transparent}
   <!-- MY CARDS -->
   <div id="s-cards" class="scr">
     <div class="hdr">
-      <button class="hbtn" aria-label="Back to profile" data-action="goto" data-go="profile"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button class="hbtn" aria-label="Back" data-action="back-context" data-screen="cards"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
       <span class="hdr-title">My Cards</span>
       <div style="width:38px"></div>
     </div>
@@ -762,40 +774,49 @@ button{-webkit-tap-highlight-color:transparent}
       <div style="width:38px"></div>
     </div>
     <div class="scroll" style="padding-bottom:1rem">
-      <div class="co-sect">
-        <div class="co-lbl">Delivery</div>
-        <div class="co-row" data-action="goto" data-go="addresses">
-          <div class="co-row-l"><span class="co-row-ico">📍</span>
-            <div><div class="co-row-ttl">Delivery Address</div><div class="co-row-sub" id="co-addr-sub">Select your saved address</div></div>
-          </div><span class="co-arr">›</span>
-        </div>
-        <div class="co-row" data-action="grab-location">
-          <div class="co-row-l"><span class="co-row-ico">🧭</span>
-            <div><div class="co-row-ttl">Current Location</div><div class="co-row-sub" id="co-loc-sub">Tap to capture your location</div></div>
-          </div><span class="co-arr">›</span>
-        </div>
+      <div class="co-hero">
+        <div class="co-hero-kicker">Final Step</div>
+        <div class="co-hero-title">Review your delivery details</div>
+        <div class="co-hero-sub">Confirm address, contact and payment before placing order.</div>
       </div>
-      <div class="co-sect" style="margin-top:.75rem" id="co-contact-sect">
-        <div class="co-lbl">Contact</div>
-        <div class="co-row">
-          <div class="co-row-l"><span class="co-row-ico">📞</span>
-            <div><div class="co-row-ttl">Mobile Number (Required)</div><div class="co-row-sub" id="co-phone-sub">Enter delivery contact number</div></div>
+      <div class="co-grid">
+        <div class="co-panel">
+          <div class="co-lbl">Delivery</div>
+          <div class="co-row" data-action="goto" data-go="addresses">
+            <div class="co-row-l"><span class="co-row-ico">📍</span>
+              <div><div class="co-row-ttl">Delivery Address</div><div class="co-row-sub" id="co-addr-sub">Select your saved address</div></div>
+            </div><span class="co-arr">›</span>
+          </div>
+          <div class="co-row" data-action="grab-location">
+            <div class="co-row-l"><span class="co-row-ico">🧭</span>
+              <div><div class="co-row-ttl">Current Location</div><div class="co-row-sub" id="co-loc-sub">Tap to capture your location</div></div>
+            </div><span class="co-arr">›</span>
           </div>
         </div>
-        <div class="co-contact">
-          <p class="co-contact-note">Please enter a reachable phone number before placing your order.</p>
-          <div class="co-phone-actions">
-            <input class="inp" id="co-phone-input" type="tel" placeholder="e.g. 0244 123 456" inputmode="tel" style="font-size:.95rem">
-            <button class="red-btn" data-action="save-phone">Save Number</button>
+
+        <div class="co-panel" id="co-contact-sect">
+          <div class="co-lbl">Contact</div>
+          <div class="co-row">
+            <div class="co-row-l"><span class="co-row-ico">📞</span>
+              <div><div class="co-row-ttl">Mobile Number (Required)</div><div class="co-row-sub" id="co-phone-sub">Enter delivery contact number</div></div>
+            </div>
+          </div>
+          <div class="co-contact">
+            <p class="co-contact-note">Please enter a reachable phone number before placing your order.</p>
+            <div class="co-phone-actions">
+              <input class="inp" id="co-phone-input" type="tel" placeholder="e.g. 0244 123 456" inputmode="tel" style="font-size:.95rem">
+              <button class="red-btn" data-action="save-phone">Save Number</button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="co-sect" style="margin-top:.75rem">
-        <div class="co-lbl">Payment</div>
-        <div class="co-row" data-action="goto" data-go="cards">
-          <div class="co-row-l"><span class="co-row-ico">💵</span>
-            <div><div class="co-row-ttl">Cash on delivery</div><div class="co-row-sub">Cash or card</div></div>
-          </div><span class="co-arr">›</span>
+
+        <div class="co-panel">
+          <div class="co-lbl">Payment</div>
+          <div class="co-row" data-action="goto" data-go="cards">
+            <div class="co-row-l"><span class="co-row-ico">💵</span>
+              <div><div class="co-row-ttl">Cash on delivery</div><div class="co-row-sub">Cash or card</div></div>
+            </div><span class="co-arr">›</span>
+          </div>
         </div>
       </div>
       <div class="co-sum">
@@ -1018,6 +1039,8 @@ var cards = [];
 var selectedAddressIdx = 0;
 var checkoutLocation = null;
 var phone = '';
+var currentScreen = 'home';
+var backTargets = { addresses: 'profile', cards: 'profile', 'order-history': 'profile' };
 
 function esc(v) {
   return String(v == null ? '' : v)
@@ -1317,12 +1340,10 @@ async function placeOrder() {
       return;
     }
   }
-  if (!phone) {
-    showToast('Please add a mobile number for delivery contact');
-    var display = document.getElementById('co-phone-display');
-    var edit = document.getElementById('co-phone-edit');
-    if (display) display.style.display = 'none';
-    if (edit) { edit.style.display = 'flex'; document.getElementById('co-phone-input').focus(); }
+  if (!isValidPhone(phone)) {
+    showToast('Please add a valid mobile number for delivery contact');
+    var phoneInput = document.getElementById('co-phone-input');
+    if (phoneInput) phoneInput.focus();
     return;
   }
   var selectedAddress = addresses[selectedAddressIdx];
@@ -1397,10 +1418,14 @@ function goTo(id, navBtn) {
     openModal('login');
     return;
   }
+  if (id === 'addresses' || id === 'cards' || id === 'order-history') {
+    backTargets[id] = currentScreen || 'profile';
+  }
   var screens = document.querySelectorAll('.scr');
   for (var i = 0; i < screens.length; i++) screens[i].style.display = 'none';
   var target = document.getElementById('s-' + id);
   if (!target) return;
+  currentScreen = id;
   target.style.display = 'flex';
   if (id === 'home')      renderGrid();
   if (id === 'cart')      renderCart();
@@ -1819,6 +1844,12 @@ function updatePayButtonState() {
   payBtn.textContent = hasValidPhone ? 'Pay Now' : 'Add phone number to continue';
 }
 
+function goBackFrom(screenId) {
+  var destination = backTargets[screenId] || 'profile';
+  if (!document.getElementById('s-' + destination)) destination = 'profile';
+  goTo(destination);
+}
+
 async function savePhone() {
   if (!curUser) return;
   var val = (document.getElementById('co-phone-input').value || '').trim();
@@ -1944,6 +1975,7 @@ function bindDelegatedEvents() {
     if (action === 'remove-card') { removeCard(Number(t.getAttribute('data-index'))); return; }
     if (action === 'grab-location') { grabLocation(false); return; }
     if (action === 'save-phone') { savePhone(); return; }
+    if (action === 'back-context') { goBackFrom(t.getAttribute('data-screen') || 'profile'); return; }
   });
 }
 
