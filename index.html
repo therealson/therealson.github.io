@@ -554,10 +554,10 @@ button{-webkit-tap-highlight-color:transparent}
       </div>
       <div class="cats">
         <button class="cat on" data-action="filter-cat" data-cat="all">All</button>
-        <button class="cat" data-action="filter-cat" data-cat="burgers">Burgers</button>
-        <button class="cat" data-action="filter-cat" data-cat="pizza">Pizza</button>
-        <button class="cat" data-action="filter-cat" data-cat="hotdog">Hot Dog</button>
-        <button class="cat" data-action="filter-cat" data-cat="sushi">Sushi</button>
+        <button class="cat" data-action="filter-cat" data-cat="burgers">jollof</button>
+        <button class="cat" data-action="filter-cat" data-cat="pizza">Fried Rice</button>
+        <button class="cat" data-action="filter-cat" data-cat="hotdog">Pizza</button>
+        <button class="cat" data-action="filter-cat" data-cat="sushi">Extras</button>
       </div>
       <div class="stitle">Food</div>
       <div class="grid" id="grid">
@@ -768,6 +768,18 @@ button{-webkit-tap-highlight-color:transparent}
           <div class="co-row-l"><span class="co-row-ico">🧭</span>
             <div><div class="co-row-ttl">Current Location</div><div class="co-row-sub" id="co-loc-sub">Tap to capture your location</div></div>
           </div><span class="co-arr">›</span>
+        </div>
+      </div>
+      <div class="co-sect" style="margin-top:.75rem" id="co-contact-sect">
+        <div class="co-lbl">Contact</div>
+        <div id="co-phone-display" class="co-row" style="cursor:pointer" onclick="document.getElementById('co-phone-display').style.display='none';document.getElementById('co-phone-edit').style.display='block';document.getElementById('co-phone-input').focus();">
+          <div class="co-row-l"><span class="co-row-ico">📞</span>
+            <div><div class="co-row-ttl">Mobile Number</div><div class="co-row-sub" id="co-phone-sub">Tap to add mobile number</div></div>
+          </div><span class="co-arr">›</span>
+        </div>
+        <div id="co-phone-edit" style="display:none;padding:.75rem 1rem;gap:.55rem;flex-direction:column">
+          <input class="inp" id="co-phone-input" type="tel" placeholder="e.g. 0244 123 456" inputmode="tel" style="font-size:.95rem">
+          <button class="red-btn" style="padding:.7rem" data-action="save-phone">Save Number</button>
         </div>
       </div>
       <div class="co-sect" style="margin-top:.75rem">
@@ -997,6 +1009,7 @@ var addresses = [];
 var cards = [];
 var selectedAddressIdx = 0;
 var checkoutLocation = null;
+var phone = '';
 
 function esc(v) {
   return String(v == null ? '' : v)
@@ -1097,6 +1110,7 @@ async function loadAccountData() {
     var data = userDoc.exists ? (userDoc.data() || {}) : {};
     addresses = Array.isArray(data.addresses) ? data.addresses : [];
     cards = Array.isArray(data.cards) ? data.cards : [];
+    phone = data.phone || '';
   } catch(e) {
     addresses = [];
     cards = [];
@@ -1125,6 +1139,7 @@ async function saveAccountData() {
     await db.collection('users').doc(curUser.uid).set({
       addresses: addresses,
       cards: cards,
+      phone: phone,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
   } catch(e) {
@@ -1196,6 +1211,7 @@ function doSignOut() {
     orderHistory = [];
     addresses = [];
     cards = [];
+    phone = '';
     selectedAddressIdx = 0;
     checkoutLocation = null;
     _store.del('the_joint_cart');
@@ -1230,6 +1246,7 @@ auth.onAuthStateChanged(async function(user) {
     orderHistory = [];
     addresses = [];
     cards = [];
+    phone = '';
     selectedAddressIdx = 0;
     checkoutLocation = null;
     updateProfileUI(null);
@@ -1273,6 +1290,14 @@ async function placeOrder() {
       return;
     }
   }
+  if (!phone) {
+    showToast('Please add a mobile number for delivery contact');
+    var display = document.getElementById('co-phone-display');
+    var edit = document.getElementById('co-phone-edit');
+    if (display) display.style.display = 'none';
+    if (edit) { edit.style.display = 'flex'; document.getElementById('co-phone-input').focus(); }
+    return;
+  }
   var selectedAddress = addresses[selectedAddressIdx];
 
   var checkoutPayload = {
@@ -1290,6 +1315,7 @@ async function placeOrder() {
       };
     }),
     paymentMethod: 'cash_on_delivery',
+    contactPhone: phone,
     deliveryAddress: {
       line: selectedAddress.line || '',
       city: selectedAddress.city || '',
@@ -1739,7 +1765,33 @@ async function removeCard(index) {
   renderCards();
 }
 
-function updateCheckoutDeliveryUI() {
+function updateCheckoutContactUI() {
+  var sub = document.getElementById('co-phone-sub');
+  var input = document.getElementById('co-phone-input');
+  var display = document.getElementById('co-phone-display');
+  var edit = document.getElementById('co-phone-edit');
+  if (!sub) return;
+  if (phone) {
+    sub.textContent = phone;
+    if (display) display.style.display = 'flex';
+    if (edit) edit.style.display = 'none';
+  } else {
+    sub.textContent = 'Tap to add mobile number';
+    if (input) input.value = '';
+  }
+}
+
+async function savePhone() {
+  if (!curUser) return;
+  var val = (document.getElementById('co-phone-input').value || '').trim();
+  if (!val) { showToast('Please enter a mobile number'); return; }
+  phone = val;
+  await saveAccountData();
+  updateCheckoutContactUI();
+  showToast('Mobile number saved ✓');
+}
+
+
   var addrEl = document.getElementById('co-addr-sub');
   var locEl = document.getElementById('co-loc-sub');
   if (addrEl) {
@@ -1755,6 +1807,7 @@ function updateCheckoutDeliveryUI() {
     if (!checkoutLocation) locEl.textContent = 'Tap to capture your location';
     else locEl.textContent = 'Captured: ' + Number(checkoutLocation.lat).toFixed(5) + ', ' + Number(checkoutLocation.lng).toFixed(5);
   }
+  updateCheckoutContactUI();
 }
 
 function grabLocation(silent) {
@@ -1846,6 +1899,7 @@ function bindDelegatedEvents() {
     if (action === 'add-card') { addCard(); return; }
     if (action === 'remove-card') { removeCard(Number(t.getAttribute('data-index'))); return; }
     if (action === 'grab-location') { grabLocation(false); return; }
+    if (action === 'save-phone') { savePhone(); return; }
   });
 }
 
