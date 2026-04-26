@@ -7,11 +7,7 @@
 <title>The Joint — Cafe</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;0,700;0,800;0,900;1,900&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- ══ FIREBASE SDK (compat v10) — defer so they don't block page rendering ══ -->
-<script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-functions-compat.js"></script>
+
 
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -886,9 +882,13 @@ button{-webkit-tap-highlight-color:transparent}
 })();
 </script>
 
-<!-- All app code wrapped in DOMContentLoaded, which fires AFTER all defer scripts execute -->
+<!-- Firebase loaded here — HTML already rendered above, no render blocking -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-functions-compat.js"></script>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
 /* ══════════════════════════════════════════════
    FIREBASE INIT
 ══════════════════════════════════════════════ */
@@ -1844,7 +1844,7 @@ renderAddresses();
 renderCards();
 updateCheckoutDeliveryUI();
 
-}); // end DOMContentLoaded
+/* end app init */
 </script>
 </body>
 </html>
