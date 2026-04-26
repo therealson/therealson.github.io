@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="description" content="The Joint food delivery app for burgers, pizza, sushi, and hot dogs in Accra.">
 <title>The Joint — Cafe</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;0,700;0,800;0,900;1,900&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -964,9 +964,29 @@ var MENU_SEED = [
 /* ══════════════════════════════════════════════
    STATE
 ══════════════════════════════════════════════ */
+/* Safe localStorage wrapper — MIT App Inventor WebView can block it */
+var _store = (function() {
+  var mem = {};
+  try {
+    localStorage.setItem('__test__', '1');
+    localStorage.removeItem('__test__');
+    return {
+      get: function(k, def) { try { return localStorage.getItem(k); } catch(e) { return mem[k] !== undefined ? mem[k] : (def||null); } },
+      set: function(k, v)   { try { localStorage.setItem(k, v); } catch(e) { mem[k] = v; } },
+      del: function(k)      { try { localStorage.removeItem(k); } catch(e) { delete mem[k]; } }
+    };
+  } catch(e) {
+    return {
+      get: function(k, def) { return mem[k] !== undefined ? mem[k] : (def||null); },
+      set: function(k, v)   { mem[k] = v; },
+      del: function(k)      { delete mem[k]; }
+    };
+  }
+})();
+
 var MENU    = [];
-var cart    = JSON.parse(localStorage.getItem('the_joint_cart')||'[]');
-var favs    = JSON.parse(localStorage.getItem('the_joint_favs')||'[]');
+var cart    = JSON.parse(_store.get('the_joint_cart') || '[]');
+var favs    = JSON.parse(_store.get('the_joint_favs') || '[]');
 var curUser = null;
 var curCat  = 'all';
 var curItem = null;
@@ -1017,34 +1037,33 @@ function normalizeCart() {
    FIREBASE — MENU (load from Firestore, seed if empty)
 ══════════════════════════════════════════════ */
 async function loadMenu() {
-  if (!_firebaseReady) {
-    MENU = MENU_SEED.slice();
-    renderGrid();
-    showToast('Offline — showing cached menu');
-    return;
-  }
+  // Always show seed data instantly so the UI never blocks
+  MENU = MENU_SEED.slice();
+  renderGrid();
+
+  // Then silently try Firestore in the background
+  if (!_firebaseReady) return;
   try {
     var snap = await Promise.race([
       db.collection('menu').orderBy('id').get(),
       new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, 8000); })
     ]);
     if (snap.empty) {
+      // First run — seed Firestore without blocking UI
       var batch = db.batch();
       MENU_SEED.forEach(function(item) {
         batch.set(db.collection('menu').doc(item.id), item);
       });
-      await batch.commit();
-      MENU = MENU_SEED.slice();
-      showToast('Menu loaded & saved to Firestore ✓');
+      batch.commit().catch(function(e){ console.warn('Seed write failed:', e); });
     } else {
+      // Live data available — update grid silently
       MENU = snap.docs.map(function(d) { return d.data(); });
+      renderGrid();
     }
   } catch(e) {
-    console.error('Firestore menu error:', e);
-    MENU = MENU_SEED.slice();
-    showToast('Offline — showing cached menu');
+    // Already showing seed data — nothing to do
+    console.warn('Firestore menu fetch failed, using seed data:', e);
   }
-  renderGrid();
 }
 
 /* ══════════════════════════════════════════════
@@ -1066,7 +1085,7 @@ async function loadFavsFromFirestore() {
     var doc = await db.collection('users').doc(curUser.uid).get();
     if (doc.exists && doc.data().favorites) {
       favs = doc.data().favorites;
-      localStorage.setItem('the_joint_favs', JSON.stringify(favs));
+      _store.set('the_joint_favs', JSON.stringify(favs));
     }
   } catch(e) { console.error('Load favs failed:', e); }
 }
@@ -1179,8 +1198,8 @@ function doSignOut() {
     cards = [];
     selectedAddressIdx = 0;
     checkoutLocation = null;
-    localStorage.removeItem('the_joint_cart');
-    localStorage.removeItem('the_joint_favs');
+    _store.del('the_joint_cart');
+    _store.del('the_joint_favs');
     saveCart();
     updateBadge();
     renderCart();
@@ -1330,6 +1349,7 @@ function goTo(id, navBtn) {
   var target = document.getElementById('s-' + id);
   if (!target) return;
   target.style.display = 'flex';
+  if (id === 'home')      renderGrid();
   if (id === 'cart')      renderCart();
   if (id === 'favorites') renderFavs();
   if (id === 'checkout') {
@@ -1477,7 +1497,7 @@ function clearCart() {
   cart = []; saveCart(); updateBadge(); renderCart();
 }
 
-function saveCart() { localStorage.setItem('the_joint_cart', JSON.stringify(cart)); }
+function saveCart() { _store.set('the_joint_cart', JSON.stringify(cart)); }
 
 function cartTotal() {
   var s = 0;
@@ -1549,7 +1569,7 @@ function toggleFav(id) {
   for (var j = 0; j < favs.length; j++) { if (favs[j].id === id) { idx = j; break; } }
   if (idx >= 0) { favs.splice(idx, 1); showToast('Removed from saved'); }
   else          { favs.push(item);     showToast('Saved ♥'); }
-  localStorage.setItem('the_joint_favs', JSON.stringify(favs));
+  _store.set('the_joint_favs', JSON.stringify(favs));
   syncFavsToFirestore(); // ← sync to Firestore
   var btn = document.getElementById('fb-' + id);
   if (btn) {
