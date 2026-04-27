@@ -569,12 +569,8 @@ button{-webkit-tap-highlight-color:transparent}
           <div class="promo-sub">on all burgers today!</div>
         </div>
       </div>
-      <div class="cats">
+      <div class="cats" id="cats">
         <button class="cat on" data-action="filter-cat" data-cat="all">All</button>
-        <button class="cat" data-action="filter-cat" data-cat="burgers">jollof</button>
-        <button class="cat" data-action="filter-cat" data-cat="pizza">Fried Rice</button>
-        <button class="cat" data-action="filter-cat" data-cat="hotdog">Pizza</button>
-        <button class="cat" data-action="filter-cat" data-cat="sushi">Extras</button>
       </div>
       <div class="stitle">Food</div>
       <div class="grid" id="grid">
@@ -964,43 +960,7 @@ try {
   fns = { httpsCallable: function(){ return function(){ return Promise.reject(new Error('Offline')); }; } };
 }
 
-/* ══════════════════════════════════════════════
-   MENU SEED DATA (used to populate Firestore on first run)
-══════════════════════════════════════════════ */
-var MENU_SEED = [
-  {id:'1',name:"California Rolls",wt:'295g',price:255,cat:'sushi',
-   img:'https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=500&q=80',
-   ingr:'Crab, avocado, cucumber, tobiko caviar, sushi rice, nori',
-   extras:[{n:'Soy Sauce',p:5},{n:'Wasabi',p:10},{n:'Ginger',p:8}]},
-  {id:'2',name:'Pork Burger',wt:'250g',price:100,cat:'burgers',
-   img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80',
-   ingr:'Pork, cucumber, tomato, lettuce, spices, ketchup, onion, bacon, bun',
-   extras:[{n:'Cheese Sauce',p:15},{n:'Double Bacon',p:20},{n:'Jalapeño',p:10}]},
-  {id:'3',name:'Salmon Maki',wt:'141g',price:185,cat:'sushi',
-   img:'https://images.unsplash.com/photo-1617196034234-c6e6f037a25a?w=500&q=80',
-   ingr:'Salmon, sushi rice, nori, avocado, sesame seeds',
-   extras:[{n:'Hot Sauce',p:5}]},
-  {id:'4',name:'Tom Yum Pizza',wt:'300g',price:250,cat:'pizza',
-   img:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80',
-   ingr:'Tom Yum sauce, tiger shrimp, shiitake mushrooms, onion, mozzarella',
-   extras:[{n:'Spicy Seasoning',p:5},{n:'Extra Mozzarella',p:25}]},
-  {id:'5',name:'Classic Hot Dog',wt:'200g',price:75,cat:'hotdog',
-   img:'https://images.unsplash.com/photo-1612392062631-94c5f8fe4a7c?w=500&q=80',
-   ingr:'Beef sausage, soft bun, ketchup, mustard, fried onion',
-   extras:[{n:'Melted Cheese',p:10},{n:'Crispy Bacon',p:15}]},
-  {id:'6',name:'Margherita Pizza',wt:'350g',price:180,cat:'pizza',
-   img:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&q=80',
-   ingr:'Tomato sauce, fior di latte mozzarella, basil, olive oil',
-   extras:[{n:'Double Mozzarella',p:25},{n:'Arugula',p:15}]},
-  {id:'7',name:'Cheeseburger',wt:'220g',price:85,cat:'burgers',
-   img:'https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&q=80',
-   ingr:'Beef, cheddar, ketchup, mustard, onion, pickles, bun',
-   extras:[{n:'Double Patty',p:30},{n:'Fried Onion',p:10}]},
-  {id:'8',name:'Cheese Hot Dog',wt:'220g',price:90,cat:'hotdog',
-   img:'https://images.unsplash.com/photo-1582196016295-f8c8bd4b3a99?w=500&q=80',
-   ingr:'Premium sausage, melted cheddar, crispy bun, bacon sauce',
-   extras:[{n:'Jalapeño Peppers',p:10},{n:'Onion Rings',p:15}]}
-];
+
 
 /* ══════════════════════════════════════════════
    STATE
@@ -1026,6 +986,7 @@ var _store = (function() {
 })();
 
 var MENU    = [];
+var CATS    = []; /* loaded from Firestore categories collection */
 var cart    = JSON.parse(_store.get('the_joint_cart') || '[]');
 var favs    = JSON.parse(_store.get('the_joint_favs') || '[]');
 var curUser = null;
@@ -1081,6 +1042,60 @@ function sameId(a, b) {
   return String(a) === String(b);
 }
 
+function normalizeCat(cat) {
+  return String(cat == null ? '' : cat).trim().toLowerCase().replace(/\s+/g, '-');
+}
+
+function prettyCat(cat) {
+  var text = String(cat || '').replace(/[-_]+/g, ' ');
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function normalizeMenuItems(items) {
+  return (items || []).map(function(raw) {
+    var item = Object.assign({}, raw || {});
+    var rawCat = item.cat != null ? item.cat : item.category;
+    item.cat = normalizeCat(rawCat || 'uncategorized');
+    return item;
+  });
+}
+
+function renderCats() {
+  var el = document.getElementById('cats');
+  if (!el) return;
+
+  var tabList; // array of {slug, name}
+
+  if (CATS.length > 0) {
+    // Use Firestore categories — correct names and admin-defined order
+    tabList = CATS.map(function(c) {
+      return { slug: normalizeCat(c.slug || c.docId || ''), name: c.name || prettyCat(c.slug) };
+    }).filter(function(c) { return c.slug && c.slug !== 'all'; });
+  } else {
+    // Fallback: derive slugs from menu items
+    var seen = {};
+    tabList = [];
+    for (var i = 0; i < MENU.length; i++) {
+      var s = normalizeCat(MENU[i].cat);
+      if (!s || s === 'all' || seen[s]) continue;
+      seen[s] = true;
+      tabList.push({ slug: s, name: prettyCat(s) });
+    }
+    tabList.sort(function(a, b) { return a.slug.localeCompare(b.slug); });
+  }
+
+  var slugSet = {};
+  tabList.forEach(function(c) { slugSet[c.slug] = true; });
+  if (curCat !== 'all' && !slugSet[curCat]) curCat = 'all';
+
+  var html = '<button class="cat' + (curCat === 'all' ? ' on' : '') + '" data-action="filter-cat" data-cat="all">All</button>';
+  for (var j = 0; j < tabList.length; j++) {
+    var c = tabList[j];
+    html += '<button class="cat' + (curCat === c.slug ? ' on' : '') + '" data-action="filter-cat" data-cat="' + esc(c.slug) + '">' + esc(c.name) + '</button>';
+  }
+  el.innerHTML = html;
+}
+
 function lineUnitPrice(item) {
   var base = Number(item.price) || 0;
   var add = 0;
@@ -1097,34 +1112,26 @@ function normalizeCart() {
 }
 
 /* ══════════════════════════════════════════════
-   FIREBASE — MENU (load from Firestore, seed if empty)
+   FIREBASE — MENU (load from Firestore only)
 ══════════════════════════════════════════════ */
 async function loadMenu() {
-  // Always show seed data instantly so the UI never blocks
-  MENU = MENU_SEED.slice();
+  // Start empty — only show what the admin has created
+  MENU = [];
+  renderCats();
   renderGrid();
 
-  // Then silently try Firestore in the background
   if (!_firebaseReady) return;
   try {
     var snap = await Promise.race([
       db.collection('menu').get(),
       new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, 8000); })
     ]);
-    if (snap.empty) {
-      // First run — seed Firestore without blocking UI
-      var batch = db.batch();
-      MENU_SEED.forEach(function(item) {
-        batch.set(db.collection('menu').doc(item.id), item);
-      });
-      batch.commit().catch(function(e){ console.warn('Seed write failed:', e); });
-    } else {
-      // Live data available — update grid silently
-      MENU = snap.docs.map(function(d) {
+    if (!snap.empty) {
+      MENU = normalizeMenuItems(snap.docs.map(function(d) {
         var data = d.data() || {};
         if (data.id == null || data.id === '') data.id = d.id;
         return data;
-      }).sort(function(a, b) {
+      })).sort(function(a, b) {
         var aid = String(a && a.id != null ? a.id : '');
         var bid = String(b && b.id != null ? b.id : '');
         var an = Number(aid);
@@ -1132,11 +1139,37 @@ async function loadMenu() {
         if (!isNaN(an) && !isNaN(bn)) return an - bn;
         return aid.localeCompare(bid);
       });
+      renderCats();
+      renderGrid();
+    }
+    // If snap.empty — menu is genuinely empty, grid already shows empty state
+  } catch(e) {
+    console.warn('Firestore menu fetch failed:', e);
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   FIREBASE — CATEGORIES (sync from Firestore)
+══════════════════════════════════════════════ */
+async function loadCategories() {
+  if (!_firebaseReady) return;
+  try {
+    var snap = await Promise.race([
+      db.collection("categories").orderBy("order").get(),
+      new Promise(function(_, rej){ setTimeout(function(){ rej(new Error("timeout")); }, 8000); })
+    ]);
+    if (!snap.empty) {
+      CATS = snap.docs.map(function(d) {
+        var data = d.data() || {};
+        if (!data.slug) data.slug = d.id;
+        return data;
+      });
+      renderCats();
       renderGrid();
     }
   } catch(e) {
-    // Already showing seed data — nothing to do
-    console.warn('Firestore menu fetch failed, using seed data:', e);
+    console.warn("Firestore categories fetch failed, deriving from menu:", e);
   }
 }
 
@@ -1997,6 +2030,7 @@ function bindDelegatedEvents() {
 ══════════════════════════════════════════════ */
 bindDelegatedEvents();
 loadMenu();
+loadCategories();
 normalizeCart();
 saveCart();
 updateBadge();
