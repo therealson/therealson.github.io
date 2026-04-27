@@ -412,6 +412,27 @@ button{-webkit-tap-highlight-color:transparent}
   opacity:0;
   pointer-events:none;
 }
+/* ── Support Modal ── */
+.sup-tabs{display:flex;gap:.5rem;margin-bottom:1.25rem}
+.sup-tab{flex:1;padding:.55rem .4rem;border-radius:10px;border:1.5px solid var(--border);background:none;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent}
+.sup-tab.on{background:var(--red);color:#fff;border-color:var(--red)}
+.sup-pane{display:none}.sup-pane.on{display:block}
+.sup-option{display:flex;align-items:center;gap:.85rem;padding:.9rem 1rem;border-radius:14px;border:1.5px solid var(--border);margin-bottom:.65rem;cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.sup-option:active{background:var(--bg)}
+.sup-opt-ico{width:40px;height:40px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.sup-opt-ttl{font-weight:700;font-size:.9rem;color:var(--text)}
+.sup-opt-sub{font-size:.75rem;color:var(--muted);margin-top:2px}
+.sup-stars{display:flex;gap:.4rem;justify-content:center;margin:1rem 0}
+.sup-star{font-size:1.8rem;cursor:pointer;transition:transform .12s;-webkit-tap-highlight-color:transparent}
+.sup-star:active{transform:scale(1.25)}
+.sup-label{font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.5rem}
+.sup-textarea{width:100%;border-radius:12px;border:1.5px solid var(--border);padding:.75rem;font-size:.9rem;font-family:inherit;resize:none;background:var(--bg);color:var(--text);box-sizing:border-box}
+.sup-textarea:focus{outline:none;border-color:var(--red)}
+.sup-sent{text-align:center;padding:1.5rem 0}
+.sup-sent-ico{font-size:2.5rem;margin-bottom:.75rem}
+.sup-sent-ttl{font-weight:800;font-size:1.05rem;margin-bottom:.3rem}
+.sup-sent-sub{font-size:.83rem;color:var(--muted)}
+
 /* Grain overlay */
 #preloader::before{
   content:'';position:absolute;inset:-50%;
@@ -552,8 +573,8 @@ button{-webkit-tap-highlight-color:transparent}
   <!-- HOME -->
   <div id="s-home" class="scr show">
     <div class="hdr">
-      <button class="hbtn" aria-label="Open menu" data-action="toast" data-toast="Menu coming soon 🚧">
-        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <button class="hbtn" aria-label="Customer Support" data-action="open-modal" data-modal="support">
+        <svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
       </button>
       <span class="hdr-logo">The Joint.</span>
       <button class="hbtn" aria-label="Open cart" data-action="goto" data-go="cart">
@@ -833,6 +854,85 @@ button{-webkit-tap-highlight-color:transparent}
   </div>
 
   <!-- MODAL: REGISTER -->
+  <!-- CUSTOMER SUPPORT MODAL -->
+  <div class="modal-ov" id="modal-support" data-action="close-modal" data-modal="support">
+    <div class="modal" data-action="modal-stop" style="max-height:85vh;overflow-y:auto">
+      <div class="modal-handle"></div>
+      <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-style:italic;color:var(--red);font-size:1.1rem;text-align:center;margin-bottom:1rem">Support</div>
+
+      <!-- Tabs -->
+      <div class="sup-tabs">
+        <button class="sup-tab on" data-action="sup-tab" data-tab="contact">Contact Us</button>
+        <button class="sup-tab" data-action="sup-tab" data-tab="review">Review</button>
+        <button class="sup-tab" data-action="sup-tab" data-tab="complaint">Complaint</button>
+      </div>
+
+      <!-- CONTACT PANE -->
+      <div class="sup-pane on" id="sup-pane-contact">
+        <div class="sup-option" data-action="sup-whatsapp">
+          <div class="sup-opt-ico">💬</div>
+          <div>
+            <div class="sup-opt-ttl">WhatsApp Us</div>
+            <div class="sup-opt-sub">Chat with us directly on WhatsApp</div>
+          </div>
+        </div>
+        <div class="sup-option" data-action="sup-call">
+          <div class="sup-opt-ico">📞</div>
+          <div>
+            <div class="sup-opt-ttl">Call Us</div>
+            <div class="sup-opt-sub">Speak to a support agent now</div>
+          </div>
+        </div>
+        <div class="sup-option" data-action="sup-email">
+          <div class="sup-opt-ico">📧</div>
+          <div>
+            <div class="sup-opt-ttl">Email Us</div>
+            <div class="sup-opt-sub">We'll respond within 24 hours</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVIEW PANE -->
+      <div class="sup-pane" id="sup-pane-review">
+        <div id="sup-review-form">
+          <div class="sup-label" style="text-align:center">How was your experience?</div>
+          <div class="sup-stars" id="sup-stars">
+            <span class="sup-star" data-action="sup-star" data-val="1">☆</span>
+            <span class="sup-star" data-action="sup-star" data-val="2">☆</span>
+            <span class="sup-star" data-action="sup-star" data-val="3">☆</span>
+            <span class="sup-star" data-action="sup-star" data-val="4">☆</span>
+            <span class="sup-star" data-action="sup-star" data-val="5">☆</span>
+          </div>
+          <div class="sup-label">Tell us more (optional)</div>
+          <textarea class="sup-textarea" id="sup-review-text" rows="3" placeholder="What did you love? What can we improve?"></textarea>
+          <button class="modal-btn" style="margin-top:1rem" data-action="sup-submit-review">Submit Review</button>
+        </div>
+        <div id="sup-review-sent" class="sup-sent" style="display:none">
+          <div class="sup-sent-ico">⭐</div>
+          <div class="sup-sent-ttl">Thank you!</div>
+          <div class="sup-sent-sub">Your review means a lot to us.</div>
+        </div>
+      </div>
+
+      <!-- COMPLAINT PANE -->
+      <div class="sup-pane" id="sup-pane-complaint">
+        <div id="sup-complaint-form">
+          <div class="sup-label">Subject</div>
+          <input class="inp" id="sup-complaint-subject" type="text" placeholder="e.g. Wrong order delivered" style="margin-bottom:.85rem">
+          <div class="sup-label">Describe your issue</div>
+          <textarea class="sup-textarea" id="sup-complaint-text" rows="4" placeholder="Please give us as much detail as possible so we can resolve this quickly."></textarea>
+          <button class="modal-btn" style="margin-top:1rem" data-action="sup-submit-complaint">File Complaint</button>
+        </div>
+        <div id="sup-complaint-sent" class="sup-sent" style="display:none">
+          <div class="sup-sent-ico">✅</div>
+          <div class="sup-sent-ttl">Complaint Filed</div>
+          <div class="sup-sent-sub">We'll look into this and get back to you within 24 hours.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <div class="modal-ov" id="modal-register" data-action="close-modal" data-modal="register">
     <div class="modal" data-action="modal-stop">
       <div class="modal-handle"></div>
@@ -1939,6 +2039,40 @@ function bindDelegatedEvents() {
     if (action === 'filter-cat') { filterCat(t.getAttribute('data-cat') || 'all', t); return; }
     if (action === 'clear-cart') { clearCart(); return; }
     if (action === 'open-modal') { openModal(t.getAttribute('data-modal')); return; }
+
+    // ── Support modal actions ──
+    if (action === 'sup-tab') {
+      var tab = t.getAttribute('data-tab');
+      document.querySelectorAll('.sup-tab').forEach(function(b){ b.classList.remove('on'); });
+      document.querySelectorAll('.sup-pane').forEach(function(p){ p.classList.remove('on'); });
+      t.classList.add('on');
+      var pane = document.getElementById('sup-pane-' + tab);
+      if (pane) pane.classList.add('on');
+      return;
+    }
+    if (action === 'sup-star') {
+      var val = parseInt(t.getAttribute('data-val'));
+      supStarRating = val;
+      document.querySelectorAll('.sup-star').forEach(function(s, i){
+        s.textContent = i < val ? '★' : '☆';
+        s.style.color = i < val ? '#f5a623' : '';
+      });
+      return;
+    }
+    if (action === 'sup-whatsapp') {
+      window.open('https://wa.me/233XXXXXXXXX?text=Hi%20The%20Joint%2C%20I%20need%20support', '_blank');
+      return;
+    }
+    if (action === 'sup-call') {
+      window.location.href = 'tel:+233XXXXXXXXX';
+      return;
+    }
+    if (action === 'sup-email') {
+      window.location.href = 'mailto:support@thejoint.com';
+      return;
+    }
+    if (action === 'sup-submit-review') { submitReview(); return; }
+    if (action === 'sup-submit-complaint') { submitComplaint(); return; }
     if (action === 'close-modal') { closeModal(t.getAttribute('data-modal')); return; }
     if (action === 'switch-auth') {
       closeModal(t.getAttribute('data-close'));
@@ -1978,6 +2112,82 @@ function bindDelegatedEvents() {
 /* ══════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════
+   CUSTOMER SUPPORT
+══════════════════════════════════════════════ */
+var supStarRating = 0;
+
+async function submitReview() {
+  if (supStarRating === 0) { showToast('Please select a star rating'); return; }
+  var text = (document.getElementById('sup-review-text').value || '').trim();
+  var btn = document.querySelector('[data-action="sup-submit-review"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
+  try {
+    if (_firebaseReady) {
+      await db.collection('reviews').add({
+        rating: supStarRating,
+        message: text,
+        uid: curUser ? curUser.uid : null,
+        email: curUser ? (curUser.email || null) : null,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+    document.getElementById('sup-review-form').style.display = 'none';
+    document.getElementById('sup-review-sent').style.display = 'block';
+    // reset for next time
+    supStarRating = 0;
+    document.querySelectorAll('.sup-star').forEach(function(s){ s.textContent = '☆'; s.style.color = ''; });
+    document.getElementById('sup-review-text').value = '';
+  } catch(e) {
+    showToast('Failed to submit. Please try again.');
+    console.error('Review submit failed:', e);
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit Review'; }
+  }
+}
+
+async function submitComplaint() {
+  var subject = (document.getElementById('sup-complaint-subject').value || '').trim();
+  var text = (document.getElementById('sup-complaint-text').value || '').trim();
+  if (!subject) { showToast('Please enter a subject'); return; }
+  if (!text) { showToast('Please describe your issue'); return; }
+  var btn = document.querySelector('[data-action="sup-submit-complaint"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
+  try {
+    if (_firebaseReady) {
+      await db.collection('complaints').add({
+        subject: subject,
+        message: text,
+        uid: curUser ? curUser.uid : null,
+        email: curUser ? (curUser.email || null) : null,
+        status: 'open',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+    document.getElementById('sup-complaint-form').style.display = 'none';
+    document.getElementById('sup-complaint-sent').style.display = 'block';
+    document.getElementById('sup-complaint-subject').value = '';
+    document.getElementById('sup-complaint-text').value = '';
+  } catch(e) {
+    showToast('Failed to submit. Please try again.');
+    console.error('Complaint submit failed:', e);
+    if (btn) { btn.disabled = false; btn.textContent = 'File Complaint'; }
+  }
+}
+
+// Reset support modal state when reopened
+var _origOpenModal = openModal;
+openModal = function(t) {
+  if (t === 'support') {
+    document.querySelectorAll('.sup-tab').forEach(function(b, i){ b.classList.toggle('on', i===0); });
+    document.querySelectorAll('.sup-pane').forEach(function(p, i){ p.classList.toggle('on', i===0); });
+    document.getElementById('sup-review-form').style.display = '';
+    document.getElementById('sup-review-sent').style.display = 'none';
+    document.getElementById('sup-complaint-form').style.display = '';
+    document.getElementById('sup-complaint-sent').style.display = 'none';
+  }
+  _origOpenModal(t);
+};
+
 bindDelegatedEvents();
 loadMenu();
 loadCategories();
