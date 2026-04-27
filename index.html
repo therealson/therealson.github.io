@@ -91,16 +91,23 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background
   background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:50%;
   display:none;align-items:center;justify-content:center}
 
-/* PROMO */
-.promo{margin:1rem;border-radius:var(--r);overflow:hidden;height:140px;
-  position:relative;background:linear-gradient(135deg,#1a0205,#3a0a0f);
-  display:flex;align-items:center}
+/* PROMO SLIDER */
+.promo-slider{margin:1rem;border-radius:var(--r);overflow:hidden;height:140px;position:relative}
+.promo-track{display:flex;height:100%;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform}
+.promo{flex:0 0 100%;height:140px;position:relative;
+  background:linear-gradient(135deg,#1a0205,#3a0a0f);
+  display:flex;align-items:center;overflow:hidden}
 .promo img{position:absolute;right:0;top:0;height:100%;width:58%;object-fit:cover;opacity:.6}
 .promo-body{position:relative;z-index:2;padding:1rem 1.25rem}
 .promo-tag{background:var(--yellow);color:#fff;font-family:'Montserrat',sans-serif;
   font-weight:900;font-size:2.25rem;line-height:1;padding:.1rem .45rem;
   border-radius:6px;display:inline-block;margin-bottom:.35rem}
 .promo-sub{color:#fff;font-size:.75rem;font-weight:600;max-width:120px;line-height:1.4}
+.promo-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+  display:flex;gap:5px;z-index:10}
+.promo-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);
+  transition:background .3s,width .3s;cursor:pointer}
+.promo-dot.on{background:#fff;width:18px;border-radius:3px}
 
 /* TABS */
 .cats{display:flex;gap:.45rem;padding:0 1rem .75rem;overflow-x:auto;scrollbar-width:none}
@@ -583,12 +590,34 @@ button{-webkit-tap-highlight-color:transparent}
       </button>
     </div>
     <div class="scroll">
-      <div class="promo">
-        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80" alt="">
-        <div class="promo-body">
-          <div class="promo-tag">50%</div>
-          <div class="promo-sub">on all burgers today!</div>
+      <div class="promo-slider" id="promo-slider">
+        <div class="promo-track" id="promo-track">
+          <!-- Slide 1 -->
+          <div class="promo">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80" alt="">
+            <div class="promo-body">
+              <div class="promo-tag">50%</div>
+              <div class="promo-sub">on all burgers today!</div>
+            </div>
+          </div>
+          <!-- Slide 2 -->
+          <div class="promo" style="background:linear-gradient(135deg,#0a1a0a,#1a3a1a)">
+            <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&q=80" alt="">
+            <div class="promo-body">
+              <div class="promo-tag" style="background:var(--red)">FREE</div>
+              <div class="promo-sub">drink with every pizza order!</div>
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div class="promo" style="background:linear-gradient(135deg,#0a0a1a,#1a1a3a)">
+            <img src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80" alt="">
+            <div class="promo-body">
+              <div class="promo-tag" style="background:var(--green);font-size:1.5rem">NEW</div>
+              <div class="promo-sub">sushi menu just dropped!</div>
+            </div>
+          </div>
         </div>
+        <div class="promo-dots" id="promo-dots"></div>
       </div>
       <div class="cats" id="cats">
         <button class="cat on" data-action="filter-cat" data-cat="all">All</button>
@@ -2187,6 +2216,60 @@ openModal = function(t) {
   }
   _origOpenModal(t);
 };
+
+/* ══════════════════════════════════════════════
+   PROMO SLIDER
+══════════════════════════════════════════════ */
+(function() {
+  var track = document.getElementById('promo-track');
+  var dotsEl = document.getElementById('promo-dots');
+  if (!track) return;
+  var slides = track.querySelectorAll('.promo');
+  var total = slides.length;
+  var cur = 0;
+  var timer;
+
+  // Build dots
+  for (var i = 0; i < total; i++) {
+    var d = document.createElement('div');
+    d.className = 'promo-dot' + (i === 0 ? ' on' : '');
+    d.setAttribute('data-i', i);
+    dotsEl.appendChild(d);
+  }
+
+  function goTo(n) {
+    cur = (n + total) % total;
+    track.style.transform = 'translateX(-' + (cur * 100) + '%)';
+    dotsEl.querySelectorAll('.promo-dot').forEach(function(d, idx) {
+      d.classList.toggle('on', idx === cur);
+    });
+  }
+
+  function next() { goTo(cur + 1); }
+
+  function startAuto() { timer = setInterval(next, 3500); }
+  function stopAuto()  { clearInterval(timer); }
+
+  startAuto();
+
+  // Dot click
+  dotsEl.addEventListener('click', function(e) {
+    var d = e.target.closest('.promo-dot');
+    if (!d) return;
+    stopAuto(); goTo(parseInt(d.getAttribute('data-i'))); startAuto();
+  });
+
+  // Touch swipe
+  var startX = 0;
+  track.parentElement.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX; stopAuto();
+  }, {passive:true});
+  track.parentElement.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) goTo(dx < 0 ? cur + 1 : cur - 1);
+    startAuto();
+  }, {passive:true});
+})();
 
 bindDelegatedEvents();
 loadMenu();
