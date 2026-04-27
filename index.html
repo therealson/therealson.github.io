@@ -592,30 +592,7 @@ button{-webkit-tap-highlight-color:transparent}
     <div class="scroll">
       <div class="promo-slider" id="promo-slider">
         <div class="promo-track" id="promo-track">
-          <!-- Slide 1 -->
-          <div class="promo">
-            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80" alt="">
-            <div class="promo-body">
-              <div class="promo-tag">50%</div>
-              <div class="promo-sub">on all burgers today!</div>
-            </div>
-          </div>
-          <!-- Slide 2 -->
-          <div class="promo" style="background:linear-gradient(135deg,#0a1a0a,#1a3a1a)">
-            <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&q=80" alt="">
-            <div class="promo-body">
-              <div class="promo-tag" style="background:var(--red)">FREE</div>
-              <div class="promo-sub">drink with every pizza order!</div>
-            </div>
-          </div>
-          <!-- Slide 3 -->
-          <div class="promo" style="background:linear-gradient(135deg,#0a0a1a,#1a1a3a)">
-            <img src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80" alt="">
-            <div class="promo-body">
-              <div class="promo-tag" style="background:var(--green);font-size:1.5rem">NEW</div>
-              <div class="promo-sub">sushi menu just dropped!</div>
-            </div>
-          </div>
+          <!-- slides loaded from Firestore -->
         </div>
         <div class="promo-dots" id="promo-dots"></div>
       </div>
@@ -2218,57 +2195,103 @@ openModal = function(t) {
 };
 
 /* ══════════════════════════════════════════════
-   PROMO SLIDER
+   PROMO SLIDER — loaded from Firestore
 ══════════════════════════════════════════════ */
 (function() {
-  var track = document.getElementById('promo-track');
-  var dotsEl = document.getElementById('promo-dots');
-  if (!track) return;
-  var slides = track.querySelectorAll('.promo');
-  var total = slides.length;
-  var cur = 0;
-  var timer;
+  var COLORS = [
+    {bg:'linear-gradient(135deg,#1a0205,#3a0a0f)', tag:'#C5172A'},
+    {bg:'linear-gradient(135deg,#0a1a0a,#1a3a1a)', tag:'#22C55E'},
+    {bg:'linear-gradient(135deg,#0a0a1a,#1a1a3a)', tag:'#3B82F6'},
+    {bg:'linear-gradient(135deg,#1a1500,#3a2e00)', tag:'#F59E0B'},
+    {bg:'linear-gradient(135deg,#120a1a,#2a1a3a)', tag:'#A855F7'},
+  ];
 
-  // Build dots
-  for (var i = 0; i < total; i++) {
-    var d = document.createElement('div');
-    d.className = 'promo-dot' + (i === 0 ? ' on' : '');
-    d.setAttribute('data-i', i);
-    dotsEl.appendChild(d);
+  var track  = document.getElementById('promo-track');
+  var dotsEl = document.getElementById('promo-dots');
+  var cur = 0, total = 0, timer;
+
+  function buildSlider(promos) {
+    track.innerHTML = '';
+    dotsEl.innerHTML = '';
+    if (!promos.length) {
+      // fallback default slide
+      promos = [{tag:'50%', subtitle:'on all burgers today!',
+        imageUrl:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80',
+        colorIdx:0}];
+    }
+    total = promos.length;
+    cur = 0;
+
+    promos.forEach(function(p, i) {
+      var col = COLORS[p.colorIdx != null ? p.colorIdx : 0];
+      var slide = document.createElement('div');
+      slide.className = 'promo';
+      slide.style.background = col.bg;
+      slide.innerHTML =
+        (p.imageUrl ? '<img src="'+p.imageUrl+'" alt="">' : '') +
+        '<div class="promo-body">' +
+          '<div class="promo-tag" style="background:'+col.tag+'">'+
+            (p.tag||'')+'</div>'+
+          '<div class="promo-sub">'+(p.subtitle||'')+'</div>'+
+        '</div>';
+      track.appendChild(slide);
+
+      var dot = document.createElement('div');
+      dot.className = 'promo-dot' + (i===0?' on':'');
+      dot.setAttribute('data-i', i);
+      dotsEl.appendChild(dot);
+    });
+
+    goTo(0);
+    stopAuto(); startAuto();
   }
 
   function goTo(n) {
     cur = (n + total) % total;
-    track.style.transform = 'translateX(-' + (cur * 100) + '%)';
-    dotsEl.querySelectorAll('.promo-dot').forEach(function(d, idx) {
-      d.classList.toggle('on', idx === cur);
+    track.style.transform = 'translateX(-'+(cur*100)+'%)';
+    dotsEl.querySelectorAll('.promo-dot').forEach(function(d,i){
+      d.classList.toggle('on', i===cur);
     });
   }
-
-  function next() { goTo(cur + 1); }
-
-  function startAuto() { timer = setInterval(next, 3500); }
+  function next() { goTo(cur+1); }
+  function startAuto() { if(total>1) timer = setInterval(next, 3500); }
   function stopAuto()  { clearInterval(timer); }
 
-  startAuto();
-
-  // Dot click
-  dotsEl.addEventListener('click', function(e) {
+  dotsEl.addEventListener('click', function(e){
     var d = e.target.closest('.promo-dot');
-    if (!d) return;
+    if(!d) return;
     stopAuto(); goTo(parseInt(d.getAttribute('data-i'))); startAuto();
   });
 
-  // Touch swipe
   var startX = 0;
-  track.parentElement.addEventListener('touchstart', function(e) {
+  track.parentElement.addEventListener('touchstart', function(e){
     startX = e.touches[0].clientX; stopAuto();
-  }, {passive:true});
-  track.parentElement.addEventListener('touchend', function(e) {
+  },{passive:true});
+  track.parentElement.addEventListener('touchend', function(e){
     var dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) > 40) goTo(dx < 0 ? cur + 1 : cur - 1);
+    if(Math.abs(dx)>40) goTo(dx<0?cur+1:cur-1);
     startAuto();
-  }, {passive:true});
+  },{passive:true});
+
+  // Load from Firestore once ready
+  function loadPromos() {
+    if(typeof db === 'undefined') { setTimeout(loadPromos, 300); return; }
+    db.collection('promos').orderBy('order').onSnapshot(function(snap){
+      var promos = snap.docs
+        .map(function(d){ return d.data(); })
+        .filter(function(p){ return p.active !== false; });
+      buildSlider(promos);
+    }, function(){
+      // fallback one-time get
+      db.collection('promos').get().then(function(snap){
+        var promos = snap.docs
+          .map(function(d){ return d.data(); })
+          .filter(function(p){ return p.active !== false; });
+        buildSlider(promos);
+      }).catch(function(){ buildSlider([]); });
+    });
+  }
+  loadPromos();
 })();
 
 bindDelegatedEvents();
