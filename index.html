@@ -783,11 +783,7 @@ button{-webkit-tap-highlight-color:transparent}
               <div><div class="co-row-ttl">Delivery Address</div><div class="co-row-sub" id="co-addr-sub">Select your saved address</div></div>
             </div><span class="co-arr">›</span>
           </div>
-          <div class="co-row" data-action="grab-location">
-            <div class="co-row-l"><span class="co-row-ico">🧭</span>
-              <div><div class="co-row-ttl">Current Location</div><div class="co-row-sub" id="co-loc-sub">Tap to capture your location</div></div>
-            </div><span class="co-arr">›</span>
-          </div>
+
         </div>
 
         <div class="co-panel" id="co-contact-sect">
@@ -998,7 +994,6 @@ var orderHistory = [];
 var addresses = [];
 var cards = [];
 var selectedAddressIdx = 0;
-var checkoutLocation = null;
 var phone = '';
 var currentScreen = 'home';
 var backTargets = { addresses: 'profile', cards: 'profile', 'order-history': 'profile' };
@@ -1307,7 +1302,6 @@ function doSignOut() {
     cards = [];
     phone = '';
     selectedAddressIdx = 0;
-    checkoutLocation = null;
     _store.del('the_joint_cart');
     _store.del('the_joint_favs');
     saveCart();
@@ -1342,7 +1336,6 @@ auth.onAuthStateChanged(async function(user) {
     cards = [];
     phone = '';
     selectedAddressIdx = 0;
-    checkoutLocation = null;
     updateProfileUI(null);
     renderOrderHistory();
     renderAddresses();
@@ -1377,13 +1370,6 @@ async function placeOrder() {
     return;
   }
   if (selectedAddressIdx >= addresses.length) selectedAddressIdx = 0;
-  if (!checkoutLocation) {
-    var locOk = await grabLocation(true);
-    if (!locOk) {
-      showToast('Please allow location access before placing order');
-      return;
-    }
-  }
   if (!isValidPhone(phone)) {
     showToast('Please add a valid mobile number for delivery contact');
     var phoneInput = document.getElementById('co-phone-input');
@@ -1412,13 +1398,7 @@ async function placeOrder() {
       line: selectedAddress.line || '',
       city: selectedAddress.city || '',
       note: selectedAddress.note || ''
-    },
-    deliveryLocation: checkoutLocation ? {
-      lat: checkoutLocation.lat,
-      lng: checkoutLocation.lng,
-      accuracy: checkoutLocation.accuracy || null,
-      capturedAt: checkoutLocation.capturedAt || Date.now()
-    } : null
+    }
   };
 
   try {
@@ -1907,7 +1887,6 @@ async function savePhone() {
 
 function updateCheckoutDeliveryUI() {
   var addrEl = document.getElementById('co-addr-sub');
-  var locEl = document.getElementById('co-loc-sub');
   if (addrEl) {
     if (!curUser) addrEl.textContent = 'Sign in to select address';
     else if (!addresses.length) addrEl.textContent = 'No address saved yet';
@@ -1917,39 +1896,11 @@ function updateCheckoutDeliveryUI() {
       addrEl.textContent = (a.line || '') + (a.city ? (', ' + a.city) : '');
     }
   }
-  if (locEl) {
-    if (!checkoutLocation) locEl.textContent = 'Tap to capture your location';
-    else locEl.textContent = 'Captured: ' + Number(checkoutLocation.lat).toFixed(5) + ', ' + Number(checkoutLocation.lng).toFixed(5);
-  }
+
   updateCheckoutContactUI();
 }
 
-function grabLocation(silent) {
-  if (!curUser) {
-    if (!silent) showToast('Sign in first');
-    return Promise.resolve(false);
-  }
-  if (!navigator.geolocation) {
-    if (!silent) showToast('Geolocation is not supported on this device');
-    return Promise.resolve(false);
-  }
-  return new Promise(function(resolve) {
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      checkoutLocation = {
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-        accuracy: pos.coords.accuracy || null,
-        capturedAt: Date.now()
-      };
-      updateCheckoutDeliveryUI();
-      if (!silent) showToast('Location captured');
-      resolve(true);
-    }, function() {
-      if (!silent) showToast('Location access denied');
-      resolve(false);
-    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
-  });
-}
+
 
 /* ══════════════════════════════════════════════
    TOAST
@@ -2017,7 +1968,6 @@ function bindDelegatedEvents() {
     if (action === 'select-address') { selectAddress(Number(t.getAttribute('data-index'))); return; }
     if (action === 'add-card') { addCard(); return; }
     if (action === 'remove-card') { removeCard(Number(t.getAttribute('data-index'))); return; }
-    if (action === 'grab-location') { grabLocation(false); return; }
     if (action === 'save-phone') { savePhone(); return; }
     if (action === 'back-context') { goBackFrom(t.getAttribute('data-screen') || 'profile'); return; }
   });
