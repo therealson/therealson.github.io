@@ -368,6 +368,41 @@ option{background:var(--card2);color:var(--text)}
 .stars{color:var(--yellow);font-size:.95rem;letter-spacing:1px;font-family:'DM Mono',monospace}
 .chip.open{background:rgba(245,158,11,.12);color:var(--yellow);border:1px solid rgba(245,158,11,.25)}
 .chip.resolved{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+
+/* ── SETTINGS ── */
+.settings-section{max-width:560px}
+.settings-card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:1.75rem;
+}
+.settings-card-hdr{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.75rem;
+  padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.settings-card-icon{
+  width:40px;height:40px;border-radius:10px;background:var(--red-glow);
+  border:1px solid rgba(197,23,42,.25);display:flex;align-items:center;
+  justify-content:center;color:var(--red);flex-shrink:0;margin-top:.15rem
+}
+.settings-card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;
+  letter-spacing:-.2px;margin-bottom:.3rem}
+.settings-card-sub{font-size:.8rem;color:var(--muted);line-height:1.6}
+.settings-form{display:flex;flex-direction:column;gap:0}
+.field-input{
+  width:100%;padding:.7rem .9rem .7rem 2.85rem;background:var(--surface);
+  border:1px solid var(--border);border-radius:10px;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:.87rem;outline:none;transition:border-color .2s;
+}
+.field-input:focus{border-color:var(--red)}
+.pw-wrap{position:relative}
+.pw-wrap .pw-toggle{
+  position:absolute;right:.75rem;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:var(--muted);
+  padding:.25rem;transition:color .15s;display:flex;align-items:center;
+}
+.pw-wrap .pw-toggle:hover{color:var(--text)}
+.eye-icon{width:16px;height:16px}
+.settings-msg{padding:.65rem .9rem;border-radius:9px;font-size:.82rem;font-weight:500;margin-bottom:.75rem}
+.settings-msg.error{background:rgba(197,23,42,.1);border:1px solid rgba(197,23,42,.25);color:#ff7b7b}
+.settings-msg.success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:var(--green)}
 </style>
 </head>
 <body>
@@ -417,6 +452,11 @@ option{background:var(--card2);color:var(--text)}
       <button class="sb-item" data-page="menu">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2h18v6H3z"/><path d="M3 10h18v6H3z"/><path d="M3 18h18v4H3z"/></svg>
         Menu Items
+      </button>
+      <div class="sb-section">Account</div>
+      <button class="sb-item" data-page="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
       </button>
     </div>
     <div class="sb-footer">
@@ -616,6 +656,64 @@ option{background:var(--card2);color:var(--text)}
         <div id="promos-grid" style="display:flex;flex-direction:column;gap:.85rem"></div>
       </div>
 
+      <!-- SETTINGS PAGE -->
+      <div class="page" id="page-settings">
+        <div class="settings-section">
+          <div class="settings-card">
+            <div class="settings-card-hdr">
+              <div class="settings-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <div>
+                <div class="settings-card-title">Change Password</div>
+                <div class="settings-card-sub">Update your admin account password. You'll need to enter your current password to confirm.</div>
+              </div>
+            </div>
+            <div class="settings-form">
+              <div class="field">
+                <label>Current Password</label>
+                <div class="pw-wrap">
+                  <input type="password" id="cp-current" class="field-input" placeholder="Enter your current password" autocomplete="current-password">
+                  <button class="pw-toggle" type="button" onclick="togglePw('cp-current',this)" tabindex="-1">
+                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="field">
+                <label>New Password</label>
+                <div class="pw-wrap">
+                  <input type="password" id="cp-new" class="field-input" placeholder="At least 8 characters" autocomplete="new-password">
+                  <button class="pw-toggle" type="button" onclick="togglePw('cp-new',this)" tabindex="-1">
+                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <div id="cp-strength-bar" style="display:none;margin-top:.5rem">
+                  <div style="height:3px;border-radius:4px;background:var(--border);overflow:hidden">
+                    <div id="cp-strength-fill" style="height:100%;width:0;border-radius:4px;transition:width .3s,background .3s"></div>
+                  </div>
+                  <div id="cp-strength-label" style="font-size:.7rem;color:var(--muted);margin-top:.3rem"></div>
+                </div>
+              </div>
+              <div class="field">
+                <label>Confirm New Password</label>
+                <div class="pw-wrap">
+                  <input type="password" id="cp-confirm" class="field-input" placeholder="Repeat new password" autocomplete="new-password">
+                  <button class="pw-toggle" type="button" onclick="togglePw('cp-confirm',this)" tabindex="-1">
+                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div id="cp-error" class="settings-msg error" style="display:none"></div>
+              <div id="cp-success" class="settings-msg success" style="display:none"></div>
+              <button class="sec-btn" id="cp-btn" onclick="changeAdminPassword()" style="margin-top:.25rem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Update Password
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /app -->
@@ -778,7 +876,8 @@ const PAGE_TITLES = {
   orders:    ['Orders', 'Manage & update'],
   menu:      ['Menu Items', 'Add, edit, remove'],
   feedback:  ['Reviews & Complaints', 'Customer feedback'],
-  promos:    ['Promo Slides', 'Manage banner ads']
+  promos:    ['Promo Slides', 'Manage banner ads'],
+  settings:  ['Settings', 'Account & security']
 };
 
 function goPage(id) {
@@ -1818,6 +1917,110 @@ showLoginScreen = function() {
 };
 
 
+
+/* ═══════════════════════════════════
+   SETTINGS — CHANGE PASSWORD
+═══════════════════════════════════ */
+function togglePw(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  const isText = inp.type === 'text';
+  inp.type = isText ? 'password' : 'text';
+  btn.innerHTML = isText
+    ? `<svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`
+    : `<svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+}
+
+document.addEventListener('input', e => {
+  if (e.target.id === 'cp-new') updateStrength(e.target.value);
+});
+
+function updateStrength(pw) {
+  const bar = document.getElementById('cp-strength-bar');
+  const fill = document.getElementById('cp-strength-fill');
+  const lbl = document.getElementById('cp-strength-label');
+  if (!pw) { bar.style.display = 'none'; return; }
+  bar.style.display = 'block';
+  let score = 0;
+  if (pw.length >= 8)  score++;
+  if (pw.length >= 12) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const levels = [
+    { pct:'20%', color:'var(--red)',    text:'Very weak' },
+    { pct:'40%', color:'var(--orange)', text:'Weak' },
+    { pct:'60%', color:'var(--yellow)', text:'Fair' },
+    { pct:'80%', color:'var(--blue)',   text:'Strong' },
+    { pct:'100%',color:'var(--green)',  text:'Very strong' },
+  ];
+  const lvl = levels[Math.min(score, 4)];
+  fill.style.width = lvl.pct;
+  fill.style.background = lvl.color;
+  lbl.textContent = lvl.text;
+  lbl.style.color = lvl.color;
+}
+
+function cpShowError(msg) {
+  const el = document.getElementById('cp-error');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('cp-success').style.display = 'none';
+}
+function cpShowSuccess(msg) {
+  const el = document.getElementById('cp-success');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('cp-error').style.display = 'none';
+}
+function cpClear() {
+  document.getElementById('cp-error').style.display = 'none';
+  document.getElementById('cp-success').style.display = 'none';
+}
+
+async function changeAdminPassword() {
+  cpClear();
+  const current = document.getElementById('cp-current').value;
+  const newPw   = document.getElementById('cp-new').value;
+  const confirm = document.getElementById('cp-confirm').value;
+  const btn     = document.getElementById('cp-btn');
+
+  if (!current)          { cpShowError('Please enter your current password.'); return; }
+  if (!newPw)            { cpShowError('Please enter a new password.'); return; }
+  if (newPw.length < 8)  { cpShowError('New password must be at least 8 characters.'); return; }
+  if (newPw !== confirm) { cpShowError('New passwords do not match.'); return; }
+  if (newPw === current) { cpShowError('New password must be different from your current password.'); return; }
+
+  btn.textContent = 'Updating…';
+  btn.disabled = true;
+
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error('Not signed in');
+
+    // Firebase requires recent login — re-authenticate first
+    const credential = firebase.auth.EmailAuthProvider.credential(user.email, current);
+    await user.reauthenticateWithCredential(credential);
+    await user.updatePassword(newPw);
+
+    // Clear fields on success
+    document.getElementById('cp-current').value = '';
+    document.getElementById('cp-new').value = '';
+    document.getElementById('cp-confirm').value = '';
+    document.getElementById('cp-strength-bar').style.display = 'none';
+
+    cpShowSuccess('Password updated successfully.');
+    showToast('Password changed ✓', 'success');
+  } catch(e) {
+    const msgs = {
+      'auth/wrong-password':       'Current password is incorrect.',
+      'auth/weak-password':        'New password is too weak (min 8 characters).',
+      'auth/requires-recent-login':'Session expired — please sign out and sign back in.',
+      'auth/too-many-requests':    'Too many attempts. Try again later.',
+    };
+    cpShowError(msgs[e.code] || e.message);
+  } finally {
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Update Password`;
+    btn.disabled = false;
+  }
+}
 
 /* ═══════════════════════════════════
    MENU SEED (fallback / first run)
