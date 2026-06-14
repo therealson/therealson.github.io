@@ -9,13 +9,11 @@
     --ks-muted: #8A9BB0;
     --ks-green: #2ECC71;
     --ks-green-bg: #E8F8EF;
-    --ks-card-bg: #F0EEE8;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-  .app-bg { background: var(--ks-cream); min-height: 100vh; }
-  .phone-frame { width: 100%; max-width: 380px; margin: 0 auto; background: var(--ks-white); border-radius: 24px; overflow: hidden; border: 1.5px solid #ddd; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  body { background: var(--ks-white); }
 
-  .nav-tabs { display: flex; border-bottom: 1.5px solid #e8e6e0; background: var(--ks-white); }
+  .nav-tabs { display: flex; border-bottom: 1.5px solid #e8e6e0; background: var(--ks-white); position: sticky; top: 0; z-index: 10; }
   .nav-tab { flex: 1; padding: 10px 4px; text-align: center; font-size: 11px; color: var(--ks-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
   .nav-tab.active { color: var(--ks-navy); border-bottom-color: var(--ks-gold); font-weight: 600; }
 
@@ -62,7 +60,7 @@
   .badge-green { background: var(--ks-green-bg); color: #1a8a4a; }
   .badge-gold { background: #FBF4E0; color: #8a6a1a; }
 
-  .bottom-nav { display: flex; border-top: 1px solid #e8e6e0; padding: 8px 0 12px; background: var(--ks-white); }
+  .bottom-nav { display: flex; border-top: 1px solid #e8e6e0; padding: 8px 0 12px; background: var(--ks-white); position: sticky; bottom: 0; }
   .bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; color: var(--ks-muted); font-size: 9px; }
   .bnav-item.active { color: var(--ks-navy); }
   .bnav-item i { font-size: 20px; }
@@ -72,15 +70,13 @@
   .back-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid #e0ddd8; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ks-navy); font-size: 16px; background: var(--ks-white); }
   .page-title { font-size: 15px; font-weight: 700; color: var(--ks-navy); }
 
-  .progress-steps { display: flex; align-items: center; padding: 16px; gap: 0; }
+  .progress-steps { display: flex; align-items: center; padding: 16px; }
   .step { display: flex; flex-direction: column; align-items: center; flex: 1; }
   .step-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; border: 2px solid #ddd; color: var(--ks-muted); background: var(--ks-white); }
-  .step-dot.done { background: var(--ks-navy); border-color: var(--ks-navy); color: var(--ks-white); }
   .step-dot.current { background: var(--ks-gold); border-color: var(--ks-gold); color: var(--ks-navy); }
   .step-label { font-size: 9px; color: var(--ks-muted); margin-top: 4px; }
   .step-label.active { color: var(--ks-gold); font-weight: 600; }
   .step-line { flex: 1; height: 1.5px; background: #ddd; margin: 0 2px; margin-bottom: 14px; }
-  .step-line.done { background: var(--ks-navy); }
 
   .form-section { padding: 16px; }
   .form-group { margin-bottom: 14px; }
@@ -98,7 +94,7 @@
   .status-pill { display: inline-block; margin-top: 6px; background: var(--ks-gold); color: var(--ks-navy); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
 
   .timeline { padding: 0 20px 16px; }
-  .tl-item { display: flex; gap: 14px; margin-bottom: 4px; position: relative; }
+  .tl-item { display: flex; gap: 14px; margin-bottom: 4px; }
   .tl-left { display: flex; flex-direction: column; align-items: center; width: 24px; flex-shrink: 0; }
   .tl-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
   .tl-icon.done { background: var(--ks-green); color: #fff; }
@@ -133,275 +129,273 @@
   .menu-chevron { color: var(--ks-muted); font-size: 16px; }
 </style>
 
-<h2 class="sr-only">Keepsafe mobile app prototype — home, book storage, track order, and profile screens</h2>
+<h2 class="sr-only">Keepsafe mobile app — home, book storage, track order, and profile screens</h2>
 
-<div class="app-bg" style="padding: 16px 0;">
-  <div class="phone-frame">
-    <div class="nav-tabs">
-      <div class="nav-tab active" onclick="showScreen('home',this)">Home</div>
-      <div class="nav-tab" onclick="showScreen('book',this)">Book Storage</div>
-      <div class="nav-tab" onclick="showScreen('track',this)">Track Order</div>
-      <div class="nav-tab" onclick="showScreen('profile',this)">Profile</div>
-    </div>
+<div style="background: var(--ks-white);">
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showScreen('home',this)">Home</div>
+    <div class="nav-tab" onclick="showScreen('book',this)">Book Storage</div>
+    <div class="nav-tab" onclick="showScreen('track',this)">Track Order</div>
+    <div class="nav-tab" onclick="showScreen('profile',this)">Profile</div>
+  </div>
 
-    <div id="home" class="screen active">
-      <div class="topbar">
-        <div class="topbar-logo">
-          <div class="ks-monogram"><span>KS</span></div>
-          <span class="brand-name">KEEPSAFE</span>
-        </div>
-        <div class="topbar-right">
-          <div class="icon-btn"><i class="ti ti-bell" aria-hidden="true"></i></div>
-          <div class="icon-btn"><i class="ti ti-menu-2" aria-hidden="true"></i></div>
-        </div>
+  <div id="home" class="screen active">
+    <div class="topbar">
+      <div class="topbar-logo">
+        <div class="ks-monogram"><span>KS</span></div>
+        <span class="brand-name">KEEPSAFE</span>
       </div>
-      <div class="hero-section">
-        <div class="greeting">Hello, <span>Jennifer</span> 👋</div>
-        <div class="sub">What would you like to do today?</div>
-      </div>
-      <div class="action-grid">
-        <div class="action-card" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])">
-          <div class="action-icon gold"><i class="ti ti-box" aria-hidden="true"></i></div>
-          <div class="action-label">Book Storage</div>
-          <div class="action-sub">Schedule a pickup for your items</div>
-        </div>
-        <div class="action-card">
-          <div class="action-icon navy"><i class="ti ti-archive" aria-hidden="true"></i></div>
-          <div class="action-label">My Storage</div>
-          <div class="action-sub">View current & past bookings</div>
-        </div>
-        <div class="action-card" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])">
-          <div class="action-icon navy"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
-          <div class="action-label">Track Order</div>
-          <div class="action-sub">Track your items in real time</div>
-        </div>
-        <div class="action-card">
-          <div class="action-icon gold"><i class="ti ti-headset" aria-hidden="true"></i></div>
-          <div class="action-label">Support</div>
-          <div class="action-sub">Chat with our support team</div>
-        </div>
-      </div>
-      <div class="referral-banner">
-        <div>
-          <div class="ref-text">Refer a friend & earn</div>
-          <div class="ref-sub">GHS 5 off your next booking</div>
-        </div>
-        <button class="ref-btn">Refer Now</button>
-      </div>
-      <div class="section-label">Active Bookings</div>
-      <div class="storage-list">
-        <div class="storage-item">
-          <div class="storage-dot dot-green"></div>
-          <div class="storage-info">
-            <div class="storage-name">KS20026061501 — Unity Hall</div>
-            <div class="storage-meta">In Storage · Due: 15th Aug, 2026</div>
-          </div>
-          <span class="storage-badge badge-green">In Storage</span>
-        </div>
-        <div class="storage-item">
-          <div class="storage-dot dot-gold"></div>
-          <div class="storage-info">
-            <div class="storage-name">KS20026051203 — Valco Hall</div>
-            <div class="storage-meta">Pickup Scheduled · 20th Jun</div>
-          </div>
-          <span class="storage-badge badge-gold">Scheduled</span>
-        </div>
-      </div>
-      <div class="bottom-nav">
-        <div class="bnav-item active"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
-        <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
-        <div class="bnav-item" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
-        <div class="bnav-item" onclick="showScreen('profile',document.querySelectorAll('.nav-tab')[3])"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
+      <div class="topbar-right">
+        <div class="icon-btn"><i class="ti ti-bell" aria-hidden="true"></i></div>
+        <div class="icon-btn"><i class="ti ti-menu-2" aria-hidden="true"></i></div>
       </div>
     </div>
-
-    <div id="book" class="screen">
-      <div class="page-header">
-        <div class="back-btn" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-arrow-left" aria-hidden="true"></i></div>
-        <span class="page-title">Book Storage</span>
-      </div>
-      <div class="progress-steps">
-        <div class="step">
-          <div class="step-dot current">1</div>
-          <div class="step-label active">Info</div>
-        </div>
-        <div class="step-line"></div>
-        <div class="step">
-          <div class="step-dot">2</div>
-          <div class="step-label">Pickup</div>
-        </div>
-        <div class="step-line"></div>
-        <div class="step">
-          <div class="step-dot">3</div>
-          <div class="step-label">Items</div>
-        </div>
-        <div class="step-line"></div>
-        <div class="step">
-          <div class="step-dot">4</div>
-          <div class="step-label">Confirm</div>
-        </div>
-      </div>
-      <div style="padding: 0 16px 8px; font-size: 13px; font-weight: 600; color: var(--ks-navy);">Storage Information</div>
-      <div class="form-section" style="padding-top: 8px;">
-        <div class="form-group">
-          <label class="form-label">Storage Duration</label>
-          <div class="select-wrap">
-            <select class="form-select">
-              <option>4 Weeks (Minimum)</option>
-              <option>8 Weeks</option>
-              <option>12 Weeks</option>
-              <option>Full Semester</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Pickup Location</label>
-          <div class="select-wrap">
-            <select class="form-select">
-              <option>Unity Hall</option>
-              <option>Valco Hall</option>
-              <option>Adehye Hall</option>
-              <option>Atlantic Hall</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Preferred Date</label>
-          <div class="date-wrap">
-            <input type="text" class="form-input" value="20th June, 2026" readonly />
-            <i class="ti ti-calendar cal-icon" aria-hidden="true"></i>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Notes (Optional)</label>
-          <textarea class="textarea" placeholder="Any special instructions?"></textarea>
-        </div>
-      </div>
-      <button class="cta-btn" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])">Next →</button>
+    <div class="hero-section">
+      <div class="greeting">Hello, <span>Jennifer</span> 👋</div>
+      <div class="sub">What would you like to do today?</div>
     </div>
-
-    <div id="track" class="screen">
-      <div class="page-header">
-        <div class="back-btn" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-arrow-left" aria-hidden="true"></i></div>
-        <span class="page-title">Track Order</span>
+    <div class="action-grid">
+      <div class="action-card" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])">
+        <div class="action-icon gold"><i class="ti ti-box" aria-hidden="true"></i></div>
+        <div class="action-label">Book Storage</div>
+        <div class="action-sub">Schedule a pickup for your items</div>
       </div>
-      <div class="track-header">
-        <div class="order-id">Order KS20026061501</div>
-        <div class="status-pill">In Storage</div>
+      <div class="action-card">
+        <div class="action-icon navy"><i class="ti ti-archive" aria-hidden="true"></i></div>
+        <div class="action-label">My Storage</div>
+        <div class="action-sub">View current & past bookings</div>
       </div>
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-icon done"><i class="ti ti-check" aria-hidden="true"></i></div>
-            <div class="tl-line done"></div>
-          </div>
-          <div class="tl-content">
-            <div class="tl-title">Pickup Scheduled</div>
-            <div class="tl-meta">15th June, 2026 · 10:00 AM</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-icon done"><i class="ti ti-check" aria-hidden="true"></i></div>
-            <div class="tl-line done"></div>
-          </div>
-          <div class="tl-content">
-            <div class="tl-title">Picked Up</div>
-            <div class="tl-meta">15th June, 2026 · 12:15 PM</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-icon current"><i class="ti ti-lock" aria-hidden="true"></i></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">
-            <div class="tl-title">In Storage</div>
-            <div class="tl-meta">15th June, 2026 · 2:20 PM</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-icon pending"><i class="ti ti-truck-delivery" aria-hidden="true"></i></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">
-            <div class="tl-title pending">Out for Delivery</div>
-            <div class="tl-meta">—</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-icon pending"><i class="ti ti-home" aria-hidden="true"></i></div>
-          </div>
-          <div class="tl-content">
-            <div class="tl-title pending">Delivered</div>
-            <div class="tl-meta">—</div>
-          </div>
-        </div>
+      <div class="action-card" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])">
+        <div class="action-icon navy"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+        <div class="action-label">Track Order</div>
+        <div class="action-sub">Track your items in real time</div>
       </div>
-      <button class="detail-btn">View Order Details</button>
-      <div class="bottom-nav">
-        <div class="bnav-item" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
-        <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
-        <div class="bnav-item active"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
-        <div class="bnav-item" onclick="showScreen('profile',document.querySelectorAll('.nav-tab')[3])"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
+      <div class="action-card">
+        <div class="action-icon gold"><i class="ti ti-headset" aria-hidden="true"></i></div>
+        <div class="action-label">Support</div>
+        <div class="action-sub">Chat with our support team</div>
       </div>
     </div>
+    <div class="referral-banner">
+      <div>
+        <div class="ref-text">Refer a friend & earn</div>
+        <div class="ref-sub">GHS 5 off your next booking</div>
+      </div>
+      <button class="ref-btn">Refer Now</button>
+    </div>
+    <div class="section-label">Active Bookings</div>
+    <div class="storage-list">
+      <div class="storage-item">
+        <div class="storage-dot dot-green"></div>
+        <div class="storage-info">
+          <div class="storage-name">KS20026061501 — Unity Hall</div>
+          <div class="storage-meta">In Storage · Due: 15th Aug, 2026</div>
+        </div>
+        <span class="storage-badge badge-green">In Storage</span>
+      </div>
+      <div class="storage-item">
+        <div class="storage-dot dot-gold"></div>
+        <div class="storage-info">
+          <div class="storage-name">KS20026051203 — Valco Hall</div>
+          <div class="storage-meta">Pickup Scheduled · 20th Jun</div>
+        </div>
+        <span class="storage-badge badge-gold">Scheduled</span>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="bnav-item active"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+      <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
+      <div class="bnav-item" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
+      <div class="bnav-item" onclick="showScreen('profile',document.querySelectorAll('.nav-tab')[3])"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
+    </div>
+  </div>
 
-    <div id="profile" class="screen">
-      <div class="topbar">
-        <span class="brand-name" style="font-size:14px;">My Profile</span>
-        <div class="icon-btn"><i class="ti ti-settings" aria-hidden="true"></i></div>
+  <div id="book" class="screen">
+    <div class="page-header">
+      <div class="back-btn" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-arrow-left" aria-hidden="true"></i></div>
+      <span class="page-title">Book Storage</span>
+    </div>
+    <div class="progress-steps">
+      <div class="step">
+        <div class="step-dot current">1</div>
+        <div class="step-label active">Info</div>
       </div>
-      <div class="profile-header">
-        <div class="avatar"><span>JA</span></div>
-        <div class="profile-name">Jennifer Asante</div>
-        <div class="profile-sub">UCC · Computer Science · L300</div>
-        <div class="profile-stat">
-          <div class="pstat"><div class="pstat-num">3</div><div class="pstat-lbl">Bookings</div></div>
-          <div class="pstat"><div class="pstat-num">2</div><div class="pstat-lbl">Active</div></div>
-          <div class="pstat"><div class="pstat-num">GHS 15</div><div class="pstat-lbl">Saved</div></div>
-        </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-dot">2</div>
+        <div class="step-label">Pickup</div>
       </div>
-      <div class="menu-list">
-        <div class="menu-item">
-          <div class="menu-icon gold-bg"><i class="ti ti-box" aria-hidden="true"></i></div>
-          <span class="menu-text">My Bookings</span>
-          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
-        </div>
-        <div class="menu-item">
-          <div class="menu-icon navy-bg"><i class="ti ti-credit-card" aria-hidden="true"></i></div>
-          <span class="menu-text">Payment Methods</span>
-          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
-        </div>
-        <div class="menu-item">
-          <div class="menu-icon gold-bg"><i class="ti ti-users" aria-hidden="true"></i></div>
-          <span class="menu-text">Refer a Friend</span>
-          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
-        </div>
-        <div class="menu-item">
-          <div class="menu-icon navy-bg"><i class="ti ti-bell" aria-hidden="true"></i></div>
-          <span class="menu-text">Notifications</span>
-          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
-        </div>
-        <div class="menu-item">
-          <div class="menu-icon navy-bg"><i class="ti ti-help" aria-hidden="true"></i></div>
-          <span class="menu-text">Help & Support</span>
-          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
-        </div>
-        <div class="menu-item">
-          <div class="menu-icon red-bg"><i class="ti ti-logout" aria-hidden="true"></i></div>
-          <span class="menu-text" style="color: #e04040;">Sign Out</span>
-          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-dot">3</div>
+        <div class="step-label">Items</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-dot">4</div>
+        <div class="step-label">Confirm</div>
+      </div>
+    </div>
+    <div style="padding: 0 16px 8px; font-size: 13px; font-weight: 600; color: var(--ks-navy);">Storage Information</div>
+    <div class="form-section" style="padding-top: 8px;">
+      <div class="form-group">
+        <label class="form-label">Storage Duration</label>
+        <div class="select-wrap">
+          <select class="form-select">
+            <option>4 Weeks (Minimum)</option>
+            <option>8 Weeks</option>
+            <option>12 Weeks</option>
+            <option>Full Semester</option>
+          </select>
         </div>
       </div>
-      <div class="bottom-nav">
-        <div class="bnav-item" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
-        <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
-        <div class="bnav-item" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
-        <div class="bnav-item active"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
+      <div class="form-group">
+        <label class="form-label">Pickup Location</label>
+        <div class="select-wrap">
+          <select class="form-select">
+            <option>Unity Hall</option>
+            <option>Valco Hall</option>
+            <option>Adehye Hall</option>
+            <option>Atlantic Hall</option>
+          </select>
+        </div>
       </div>
+      <div class="form-group">
+        <label class="form-label">Preferred Date</label>
+        <div class="date-wrap">
+          <input type="text" class="form-input" value="20th June, 2026" readonly />
+          <i class="ti ti-calendar cal-icon" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes (Optional)</label>
+        <textarea class="textarea" placeholder="Any special instructions?"></textarea>
+      </div>
+    </div>
+    <button class="cta-btn">Next →</button>
+  </div>
+
+  <div id="track" class="screen">
+    <div class="page-header">
+      <div class="back-btn" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-arrow-left" aria-hidden="true"></i></div>
+      <span class="page-title">Track Order</span>
+    </div>
+    <div class="track-header">
+      <div class="order-id">Order KS20026061501</div>
+      <div class="status-pill">In Storage</div>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-icon done"><i class="ti ti-check" aria-hidden="true"></i></div>
+          <div class="tl-line done"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">Pickup Scheduled</div>
+          <div class="tl-meta">15th June, 2026 · 10:00 AM</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-icon done"><i class="ti ti-check" aria-hidden="true"></i></div>
+          <div class="tl-line done"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">Picked Up</div>
+          <div class="tl-meta">15th June, 2026 · 12:15 PM</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-icon current"><i class="ti ti-lock" aria-hidden="true"></i></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">In Storage</div>
+          <div class="tl-meta">15th June, 2026 · 2:20 PM</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-icon pending"><i class="ti ti-truck-delivery" aria-hidden="true"></i></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title pending">Out for Delivery</div>
+          <div class="tl-meta">—</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-icon pending"><i class="ti ti-home" aria-hidden="true"></i></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title pending">Delivered</div>
+          <div class="tl-meta">—</div>
+        </div>
+      </div>
+    </div>
+    <button class="detail-btn">View Order Details</button>
+    <div class="bottom-nav">
+      <div class="bnav-item" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+      <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
+      <div class="bnav-item active"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
+      <div class="bnav-item" onclick="showScreen('profile',document.querySelectorAll('.nav-tab')[3])"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
+    </div>
+  </div>
+
+  <div id="profile" class="screen">
+    <div class="topbar">
+      <span class="brand-name" style="font-size:14px;">My Profile</span>
+      <div class="icon-btn"><i class="ti ti-settings" aria-hidden="true"></i></div>
+    </div>
+    <div class="profile-header">
+      <div class="avatar"><span>JA</span></div>
+      <div class="profile-name">Jennifer Asante</div>
+      <div class="profile-sub">UCC · Computer Science · L300</div>
+      <div class="profile-stat">
+        <div class="pstat"><div class="pstat-num">3</div><div class="pstat-lbl">Bookings</div></div>
+        <div class="pstat"><div class="pstat-num">2</div><div class="pstat-lbl">Active</div></div>
+        <div class="pstat"><div class="pstat-num">GHS 15</div><div class="pstat-lbl">Saved</div></div>
+      </div>
+    </div>
+    <div class="menu-list">
+      <div class="menu-item">
+        <div class="menu-icon gold-bg"><i class="ti ti-box" aria-hidden="true"></i></div>
+        <span class="menu-text">My Bookings</span>
+        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon navy-bg"><i class="ti ti-credit-card" aria-hidden="true"></i></div>
+        <span class="menu-text">Payment Methods</span>
+        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon gold-bg"><i class="ti ti-users" aria-hidden="true"></i></div>
+        <span class="menu-text">Refer a Friend</span>
+        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon navy-bg"><i class="ti ti-bell" aria-hidden="true"></i></div>
+        <span class="menu-text">Notifications</span>
+        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon navy-bg"><i class="ti ti-help" aria-hidden="true"></i></div>
+        <span class="menu-text">Help & Support</span>
+        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon red-bg"><i class="ti ti-logout" aria-hidden="true"></i></div>
+        <span class="menu-text" style="color: #e04040;">Sign Out</span>
+        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="bnav-item" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+      <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
+      <div class="bnav-item" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
+      <div class="bnav-item active"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
     </div>
   </div>
 </div>
