@@ -21,647 +21,296 @@
             font-family: 'Space Grotesk', sans-serif;
         }
 
-        .hero-bg {
-            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)), url('https://picsum.photos/id/1015/2000/1200') center/cover no-repeat;
+        .glass {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
         }
 
         .card-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
         }
 
-        .nav-link {
-            position: relative;
-        }
-        
-        .nav-link:after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background-color: rgb(234 179 8);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover:after {
-            width: 100%;
+        .bottom-nav {
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
         }
 
-        .modal {
-            animation: modalPop 0.3s ease forwards;
+        .hero-bg {
+            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.75)), 
+                        url('https://picsum.photos/id/1015/2000/1200') center/cover no-repeat;
+        }
+
+        .section-fade {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
         }
         
-        @keyframes modalPop {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        .section-fade.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100">
-    <!-- NAVBAR -->
+<body class="bg-zinc-950 text-zinc-100 overflow-x-hidden">
+
+    <!-- Top Bar -->
     <nav class="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center gap-x-3">
-                    <img src="attachments/logo.png" alt="KeepSafe Logo" class="w-9 h-9 object-contain">
-                    <div>
-                        <span class="heading-font text-2xl font-semibold tracking-tight text-white">KeepSafe</span>
-                    </div>
-                </div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
-                    <a href="#" onclick="navigateTo('home')" class="nav-link text-zinc-300 hover:text-white transition-colors">Home</a>
-                    <a href="#" onclick="navigateTo('locations')" class="nav-link text-zinc-300 hover:text-white transition-colors">Locations</a>
-                    <a href="#" onclick="navigateTo('book')" class="nav-link text-zinc-300 hover:text-white transition-colors">Book Storage</a>
-                    <a href="#" onclick="navigateTo('dashboard')" class="nav-link text-zinc-300 hover:text-white transition-colors">Dashboard</a>
-                </div>
-
-                <div class="flex items-center gap-x-4">
-                    <button onclick="showLoginModal()" 
-                            class="hidden sm:flex items-center px-5 py-2 text-sm font-semibold rounded-2xl border border-zinc-700 hover:border-zinc-400 transition-colors">
-                        Log in
-                    </button>
-                    <button onclick="navigateTo('dashboard')" 
-                            class="px-6 py-2 bg-yellow-400 hover:bg-yellow-300 transition-colors text-zinc-950 font-semibold rounded-2xl text-sm">
-                        Get Started
-                    </button>
-                    
-                    <!-- Mobile Menu Button -->
-                    <button id="mobile-menu-btn"
-                            class="md:hidden w-10 h-10 flex items-center justify-center text-2xl">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                </div>
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <img src="attachments/logo.png" alt="KeepSafe" class="w-10 h-10 object-contain">
+                <span class="heading-font text-3xl font-bold tracking-tighter">KeepSafe</span>
             </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-zinc-900 border-t border-zinc-800 py-4">
-            <div class="px-6 flex flex-col gap-y-6 text-lg font-medium">
-                <a href="#" onclick="navigateTo('home');toggleMobileMenu()" class="py-2">Home</a>
-                <a href="#" onclick="navigateTo('locations');toggleMobileMenu()" class="py-2">Locations</a>
-                <a href="#" onclick="navigateTo('book');toggleMobileMenu()" class="py-2">Book Storage</a>
-                <a href="#" onclick="navigateTo('dashboard');toggleMobileMenu()" class="py-2">Dashboard</a>
-                <div class="pt-4 border-t border-zinc-700">
-                    <button onclick="showLoginModal();toggleMobileMenu()" 
-                            class="w-full py-3 text-left">Log in</button>
-                </div>
+            <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                <a href="#home" class="hover:text-yellow-400 transition">Home</a>
+                <a href="#how" class="hover:text-yellow-400 transition">How it Works</a>
+                <a href="#pricing" class="hover:text-yellow-400 transition">Pricing</a>
+                <a href="#book" class="hover:text-yellow-400 transition">Book Now</a>
             </div>
         </div>
     </nav>
 
     <!-- HERO -->
-    <section id="home" class="hero-bg h-screen flex items-center relative">
-        <div class="max-w-7xl mx-auto px-6 md:px-8 pt-20">
+    <section id="home" class="hero-bg min-h-screen flex items-center relative">
+        <div class="max-w-7xl mx-auto px-6 pt-20">
             <div class="max-w-2xl">
-                <div class="inline-flex items-center gap-x-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-3xl text-sm mb-6">
-                    <span class="text-yellow-400">●</span>
-                    University of Cape Coast • Ghana
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2 rounded-3xl text-sm mb-6">
+                    <span class="text-emerald-400">●</span>
+                    University of Cape Coast, Ghana
                 </div>
                 
-                <h1 class="heading-font text-5xl md:text-6xl lg:text-7xl font-semibold leading-none tracking-tighter mb-6">
-                    Secure storage.<br>Stress-free semester.
+                <h1 class="heading-font text-5xl md:text-6xl lg:text-7xl font-bold leading-none tracking-tighter mb-6">
+                    Secure storage for<br>UCC students
                 </h1>
-                
-                <p class="text-xl text-zinc-300 mb-10 max-w-md">
-                    KeepSafe offers safe, affordable storage and logistics for UCC students. Book in seconds with campus pickup &amp; delivery.
+                <p class="text-xl text-zinc-300 mb-10">
+                    Pickup, store safely, and get your belongings delivered back when school resumes. 
+                    No more stress during breaks.
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <button onclick="navigateTo('book')" 
-                            class="px-8 py-4 bg-yellow-400 hover:bg-yellow-300 transition-all text-zinc-950 font-semibold text-lg rounded-3xl flex items-center justify-center gap-x-3 group">
-                        Reserve Space Now
-                        <i class="fa-solid fa-arrow-right group-active:translate-x-1 transition"></i>
+                    <button onclick="showBookingModal()" 
+                            class="px-10 py-5 bg-yellow-400 hover:bg-yellow-300 text-zinc-950 font-semibold text-xl rounded-3xl transition-all active:scale-95">
+                        Book KeepSafe Now
                     </button>
-                    <button onclick="navigateTo('locations')" 
-                            class="px-8 py-4 border border-white/30 hover:bg-white/10 transition-all rounded-3xl text-lg font-medium">
-                        See Locations
-                    </button>
+                    <a href="#how" class="px-10 py-5 border border-white/30 hover:bg-white/10 rounded-3xl text-xl font-medium text-center transition">
+                        Learn More
+                    </a>
                 </div>
 
-                <div class="mt-12 flex items-center gap-x-8 text-sm">
-                    <div class="flex items-center gap-x-2">
-                        <i class="fa-solid fa-check text-emerald-400"></i>
-                        <span>Insured</span>
-                    </div>
-                    <div class="flex items-center gap-x-2">
-                        <i class="fa-solid fa-check text-emerald-400"></i>
-                        <span>24/7 Access</span>
-                    </div>
-                    <div class="flex items-center gap-x-2">
-                        <i class="fa-solid fa-check text-emerald-400"></i>
-                        <span>Climate Controlled</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Trust bar -->
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:flex items-center gap-x-10 text-xs uppercase tracking-widest text-zinc-400">
-            <div>UCC</div>
-            <div>KNUST</div>
-            <div>UG Legon</div>
-            <div>UEW</div>
-            <div>UPSA</div>
-        </div>
-    </section>
-
-    <!-- LOCATIONS -->
-    <section id="locations" class="py-20 bg-zinc-950">
-        <div class="max-w-7xl mx-auto px-6 md:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
-                <div>
-                    <span class="text-yellow-400 text-sm font-medium tracking-widest">UCC CAMPUS NETWORK</span>
-                    <h2 class="heading-font text-4xl md:text-5xl font-semibold mt-2">Our Locations</h2>
-                </div>
-                <div class="mt-6 md:mt-0 relative w-full md:w-80">
-                    <input id="location-search" 
-                           onkeyup="filterLocations()"
-                           type="text" 
-                           placeholder="Search campuses..." 
-                           class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-400 rounded-3xl px-6 py-4 text-sm outline-none">
-                    <i class="fa-solid fa-magnifying-glass absolute right-6 top-4 text-zinc-500"></i>
-                </div>
-            </div>
-
-            <div id="locations-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Populated by JS -->
-            </div>
-        </div>
-    </section>
-
-    <!-- BOOKING CTA -->
-    <section id="book" class="py-24 bg-gradient-to-br from-zinc-900 to-zinc-950 border-y border-zinc-800">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <h2 class="heading-font text-5xl font-semibold mb-6">Ready to declutter your room?</h2>
-            <p class="text-xl text-zinc-400 mb-10 max-w-md mx-auto">
-                Book secure storage at UCC in under 60 seconds. Starting at GH₵120/month.
-            </p>
-            <button onclick="showBookingModal()" 
-                    class="inline-flex items-center gap-x-4 bg-yellow-400 hover:bg-yellow-300 transition-colors text-zinc-950 px-10 py-6 rounded-3xl text-2xl font-semibold shadow-xl shadow-yellow-500/20">
-                Book Your Space
-                <i class="fa-solid fa-boxes-packing text-3xl"></i>
-            </button>
-        </div>
-    </section>
-
-    <!-- DASHBOARD PREVIEW -->
-    <section id="dashboard" class="py-20 bg-zinc-950">
-        <div class="max-w-7xl mx-auto px-6 md:px-8">
-            <div class="flex justify-between items-end mb-12">
-                <div>
-                    <span class="uppercase text-yellow-400 text-sm tracking-widest">UCC STUDENT PORTAL</span>
-                    <h2 class="heading-font text-4xl font-semibold">Your KeepSafe</h2>
-                </div>
-                <button onclick="addFakeBooking()" 
-                        class="text-sm flex items-center gap-x-2 px-5 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">
-                    <i class="fa-solid fa-plus"></i>
-                    <span>New Booking</span>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Stats -->
-                <div class="lg:col-span-5 space-y-6">
-                    <div class="bg-zinc-900 rounded-3xl p-8">
-                        <div class="flex justify-between mb-8">
-                            <div>
-                                <p class="text-zinc-400 text-sm">Total Stored</p>
-                                <p class="text-6xl font-semibold heading-font mt-1">3.2 m³</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-emerald-400 text-sm font-medium">+12% this month</p>
-                            </div>
-                        </div>
-                        <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
-                            <div class="h-full w-[65%] bg-yellow-400 rounded-full"></div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="bg-zinc-900 rounded-3xl p-6">
-                            <i class="fa-solid fa-lock text-3xl mb-6 text-yellow-400"></i>
-                            <p class="text-sm text-zinc-400">Active Bookings</p>
-                            <p class="text-5xl font-semibold mt-2">2</p>
-                        </div>
-                        <div class="bg-zinc-900 rounded-3xl p-6">
-                            <i class="fa-solid fa-truck text-3xl mb-6 text-yellow-400"></i>
-                            <p class="text-sm text-zinc-400">Deliveries</p>
-                            <p class="text-5xl font-semibold mt-2">1</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Active Bookings -->
-                <div class="lg:col-span-7">
-                    <h3 class="font-semibold mb-6 text-lg">Active Bookings</h3>
-                    <div id="active-bookings" class="space-y-4">
-                        <!-- Populated by JS -->
-                    </div>
+                <div class="mt-12 flex flex-wrap gap-x-8 text-sm">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-emerald-400"></i> Fully Insured</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-truck text-emerald-400"></i> Door-to-Door</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-clock text-emerald-400"></i> Fast Pickup</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="bg-black py-16">
-        <div class="max-w-7xl mx-auto px-6 md:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-y-10">
-                <div>
-                    <div class="flex items-center gap-x-3 mb-6">
-                        <img src="attachments/logo.png" alt="KeepSafe Logo" class="w-8 h-8 object-contain">
-                        <span class="heading-font text-2xl font-semibold">KeepSafe</span>
-                    </div>
-                    <p class="text-zinc-400 text-sm max-w-xs">Safe, reliable student storage &amp; logistics at UCC.</p>
+    <!-- WHY CHOOSE -->
+    <section class="py-20 bg-zinc-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="heading-font text-4xl font-semibold text-center mb-12">Why UCC Students Choose KeepSafe</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-zinc-800 rounded-3xl p-8 card-hover">
+                    <i class="fa-solid fa-lock text-4xl text-yellow-400 mb-6"></i>
+                    <h3 class="text-2xl font-semibold mb-3">Secure Storage</h3>
+                    <p class="text-zinc-400">Climate-controlled facilities with 24/7 surveillance and insurance.</p>
                 </div>
-                <div>
-                    <h4 class="font-semibold mb-5">Platform</h4>
-                    <ul class="space-y-3 text-sm text-zinc-400">
-                        <li><a href="#" class="hover:text-white">Book Storage</a></li>
-                        <li><a href="#" class="hover:text-white">Pickup &amp; Delivery</a></li>
-                        <li><a href="#" class="hover:text-white">Pricing</a></li>
-                    </ul>
+                <div class="bg-zinc-800 rounded-3xl p-8 card-hover">
+                    <i class="fa-solid fa-truck text-4xl text-yellow-400 mb-6"></i>
+                    <h3 class="text-2xl font-semibold mb-3">Door-to-Door Pickup</h3>
+                    <p class="text-zinc-400">We collect from your hall, hostel, or apartment on campus.</p>
                 </div>
-                <div>
-                    <h4 class="font-semibold mb-5">Company</h4>
-                    <ul class="space-y-3 text-sm text-zinc-400">
-                        <li><a href="#" class="hover:text-white">About</a></li>
-                        <li><a href="#" class="hover:text-white">Campuses</a></li>
-                        <li><a href="#" class="hover:text-white">Blog</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-5">Support</h4>
-                    <ul class="space-y-3 text-sm text-zinc-400">
-                        <li><a href="#" class="hover:text-white">Contact</a></li>
-                        <li><a href="#" class="hover:text-white">Help Center</a></li>
-                        <li><a href="#" class="hover:text-white">Safety</a></li>
-                    </ul>
-                </div>
-                <div class="col-span-2 md:col-span-1">
-                    <h4 class="font-semibold mb-5">Get the app</h4>
-                    <div class="flex gap-4">
-                        <button class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 px-5 py-3 rounded-2xl text-xs">App Store</button>
-                        <button class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 px-5 py-3 rounded-2xl text-xs">Play Store</button>
-                    </div>
+                <div class="bg-zinc-800 rounded-3xl p-8 card-hover">
+                    <i class="fa-solid fa-handshake text-4xl text-yellow-400 mb-6"></i>
+                    <h3 class="text-2xl font-semibold mb-3">Reliable Delivery</h3>
+                    <p class="text-zinc-400">Items returned safely when you need them.</p>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="py-20 bg-zinc-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="heading-font text-4xl font-semibold text-center mb-16">How It Works</h2>
+            <div class="grid md:grid-cols-3 gap-10 max-w-5xl mx-auto">
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto bg-yellow-400 text-zinc-950 rounded-2xl flex items-center justify-center text-4xl mb-6">1</div>
+                    <h3 class="text-2xl font-semibold mb-3">Book Online</h3>
+                    <p class="text-zinc-400">Tell us what you need to store and when.</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto bg-yellow-400 text-zinc-950 rounded-2xl flex items-center justify-center text-4xl mb-6">2</div>
+                    <h3 class="text-2xl font-semibold mb-3">We Pick Up</h3>
+                    <p class="text-zinc-400">Our team collects from your location on campus.</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto bg-yellow-400 text-zinc-950 rounded-2xl flex items-center justify-center text-4xl mb-6">3</div>
+                    <h3 class="text-2xl font-semibold mb-3">Safe Delivery</h3>
+                    <p class="text-zinc-400">Get everything back when school resumes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="py-20 bg-zinc-900">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="heading-font text-4xl font-semibold mb-4">Simple, Transparent Pricing</h2>
+            <p class="text-zinc-400 mb-12">Starting at just GH₵120 per item</p>
             
-            <div class="border-t border-zinc-900 mt-16 pt-8 text-xs text-zinc-500 flex flex-col md:flex-row justify-between items-center gap-y-4">
-                <div>© 2026 KeepSafe • UCC Student Service. All rights reserved.</div>
-                <div class="flex gap-x-6">
-                    <a href="#" class="hover:text-zinc-300">Privacy</a>
-                    <a href="#" class="hover:text-zinc-300">Terms</a>
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="bg-zinc-800 rounded-3xl p-10 card-hover border border-yellow-400/30">
+                    <h3 class="text-3xl font-semibold mb-2">Standard Storage</h3>
+                    <p class="text-5xl font-bold text-yellow-400 mb-8">GH₵190<span class="text-base font-normal text-zinc-400">/month</span></p>
+                    <ul class="space-y-4 text-left mb-10">
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> 4-week minimum</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Pickup + Delivery</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Up to 4 boxes</li>
+                    </ul>
+                    <button onclick="showBookingModal()" class="w-full py-5 bg-white text-zinc-950 font-semibold rounded-3xl">Book Standard</button>
+                </div>
+
+                <div class="bg-zinc-800 rounded-3xl p-10 card-hover relative">
+                    <div class="absolute -top-4 right-8 bg-yellow-400 text-zinc-950 text-sm font-bold px-6 py-1 rounded-3xl">Most Popular</div>
+                    <h3 class="text-3xl font-semibold mb-2">Extended Storage</h3>
+                    <p class="text-5xl font-bold text-yellow-400 mb-8">GH₵290<span class="text-base font-normal text-zinc-400">/month</span></p>
+                    <ul class="space-y-4 text-left mb-10">
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> 4+ weeks</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Larger items allowed</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Priority pickup</li>
+                    </ul>
+                    <button onclick="showBookingModal()" class="w-full py-5 bg-yellow-400 text-zinc-950 font-semibold rounded-3xl">Book Extended</button>
                 </div>
             </div>
         </div>
-    </footer>
+    </section>
 
     <!-- BOOKING MODAL -->
-    <div id="booking-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
-        <div class="modal bg-zinc-900 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-hidden">
+    <div id="booking-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-auto">
             <div class="p-8">
                 <div class="flex justify-between items-center mb-8">
-                    <h3 class="heading-font text-3xl font-semibold">Reserve Storage</h3>
-                    <button onclick="closeBookingModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
+                    <h2 class="heading-font text-3xl font-semibold">Book KeepSafe</h2>
+                    <button onclick="closeBookingModal()" class="text-4xl text-zinc-400 hover:text-white">×</button>
                 </div>
-
-                <form id="booking-form" onsubmit="handleBooking(event)">
-                    <div class="space-y-8">
-                        <!-- Size -->
-                        <div>
-                            <label class="block text-sm text-zinc-400 mb-3">Storage Size</label>
-                            <div class="grid grid-cols-3 gap-3">
-                                <button type="button" onclick="selectSize(this)" data-size="small" class="size-btn border border-zinc-700 hover:border-yellow-400 rounded-2xl p-4 text-center transition-all active:scale-95">
-                                    <div class="text-xl font-medium">Small</div>
-                                    <div class="text-xs text-zinc-400">1-2 boxes</div>
-                                </button>
-                                <button type="button" onclick="selectSize(this)" data-size="medium" class="size-btn border border-zinc-700 hover:border-yellow-400 rounded-2xl p-4 text-center transition-all active:scale-95 bg-yellow-400 text-zinc-950">
-                                    <div class="text-xl font-medium">Medium</div>
-                                    <div class="text-xs text-zinc-400">3-6 boxes</div>
-                                </button>
-                                <button type="button" onclick="selectSize(this)" data-size="large" class="size-btn border border-zinc-700 hover:border-yellow-400 rounded-2xl p-4 text-center transition-all active:scale-95">
-                                    <div class="text-xl font-medium">Large</div>
-                                    <div class="text-xs text-zinc-400">7+ boxes</div>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Campus -->
-                        <div>
-                            <label class="block text-sm text-zinc-400 mb-2">Campus</label>
-                            <select id="campus-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-white outline-none focus:border-yellow-400">
-                                <option value="UCC Main Campus">UCC Main Campus</option>
-                                <option value="Science Block">Science Block Storage</option>
-                                <option value="Student Village">Student Village Hub</option>
-                                <option value="Arts Faculty">Arts & Humanities Depot</option>
-                            </select>
-                        </div>
-
-                        <!-- Dates -->
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm text-zinc-400 mb-2">Start Date</label>
-                                <input type="date" id="start-date" value="2026-06-20" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 outline-none focus:border-yellow-400">
-                            </div>
-                            <div>
-                                <label class="block text-sm text-zinc-400 mb-2">End Date</label>
-                                <input type="date" id="end-date" value="2026-09-10" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 outline-none focus:border-yellow-400">
-                            </div>
-                        </div>
-
-                        <div class="pt-4 border-t border-zinc-700">
-                            <div class="flex justify-between text-lg">
-                                <span class="text-zinc-400">Estimated monthly cost</span>
-                                <span id="price-display" class="font-semibold">GH₵290</span>
-                            </div>
-                        </div>
+                
+                <form id="booking-form" onsubmit="submitBooking(event)" class="space-y-6">
+                    <input type="text" placeholder="Full Name" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
+                    <input type="tel" placeholder="Phone Number" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
+                    <input type="email" placeholder="Student Email" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
+                    <input type="text" placeholder="Hall / Hostel" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="number" placeholder="No. of Items" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
+                        <select class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4">
+                            <option>UCC Main Campus</option>
+                            <option>Science Block</option>
+                            <option>Student Village</option>
+                        </select>
                     </div>
-
-                    <button type="submit" 
-                            class="mt-10 w-full py-5 bg-yellow-400 hover:bg-yellow-300 text-zinc-950 font-semibold text-lg rounded-3xl transition-all active:scale-[0.985]">
-                        Confirm Booking — GH₵290/mo
+                    
+                    <input type="date" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
+                    
+                    <button type="submit" class="w-full py-6 bg-yellow-400 hover:bg-yellow-300 text-zinc-950 font-semibold text-xl rounded-3xl transition">
+                        Confirm Booking
                     </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- LOGIN MODAL -->
-    <div id="login-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
-        <div class="modal bg-zinc-900 rounded-3xl w-full max-w-md p-8">
-            <div class="flex justify-between mb-8">
-                <h3 class="heading-font text-3xl font-semibold">Welcome back</h3>
-                <button onclick="closeLoginModal()" class="text-4xl leading-none text-zinc-400 hover:text-white">×</button>
-            </div>
-            <div class="space-y-6">
-                <input type="email" placeholder="Email address" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-5 outline-none">
-                <input type="password" placeholder="Password" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-5 outline-none">
-                <button onclick="fakeLogin()" 
-                        class="w-full py-5 bg-white text-zinc-950 font-semibold rounded-3xl">Sign in</button>
-            </div>
-            <p class="text-center text-xs text-zinc-500 mt-8">Don't have an account? <span onclick="closeLoginModal()" class="text-yellow-400 cursor-pointer">Sign up free</span></p>
+    <!-- FLOATING BOTTOM NAV -->
+    <nav class="fixed bottom-0 left-0 right-0 glass border-t border-white/10 z-50 md:hidden bottom-nav">
+        <div class="flex justify-around items-center py-3 text-xs">
+            <a href="#home" class="flex flex-col items-center text-yellow-400">
+                <i class="fa-solid fa-house text-2xl"></i>
+                <span>Home</span>
+            </a>
+            <a href="#how" class="flex flex-col items-center text-zinc-400 hover:text-zinc-200">
+                <i class="fa-solid fa-info-circle text-2xl"></i>
+                <span>About</span>
+            </a>
+            <a href="#" onclick="showBookingModal()" class="flex flex-col items-center -mt-6">
+                <div class="bg-yellow-400 text-zinc-950 w-16 h-16 rounded-3xl flex items-center justify-center shadow-xl">
+                    <i class="fa-solid fa-boxes-packing text-3xl"></i>
+                </div>
+                <span class="mt-1 font-medium">Book</span>
+            </a>
+            <a href="#pricing" class="flex flex-col items-center text-zinc-400 hover:text-zinc-200">
+                <i class="fa-solid fa-tag text-2xl"></i>
+                <span>Pricing</span>
+            </a>
+            <a href="#" class="flex flex-col items-center text-zinc-400 hover:text-zinc-200">
+                <i class="fa-solid fa-phone text-2xl"></i>
+                <span>Contact</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- SUCCESS MODAL -->
+    <div id="success-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[100]">
+        <div class="text-center px-8">
+            <i class="fa-solid fa-circle-check text-8xl text-emerald-400 mb-8"></i>
+            <h3 class="text-4xl font-semibold mb-4">Booking Received!</h3>
+            <p class="text-zinc-400 mb-8">Our team will contact you shortly to arrange pickup.</p>
+            <button onclick="closeSuccessModal()" 
+                    class="px-12 py-5 bg-yellow-400 text-zinc-950 font-semibold rounded-3xl">
+                Back to Home
+            </button>
         </div>
     </div>
 
+    <footer class="bg-black py-12 text-center text-sm text-zinc-500">
+        <p>© 2026 KeepSafe • Student Storage & Logistics Service at UCC, Ghana</p>
+    </footer>
+
     <script>
-        // Tailwind script already loaded
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
-
-        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
-
-        // Navigation
-        function navigateTo(section) {
-            document.querySelectorAll('section').forEach(s => {
-                if (s.id === section) {
-                    s.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-            
-            // Close mobile menu if open
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (!mobileMenu.classList.contains('hidden')) {
-                mobileMenu.classList.add('hidden');
-            }
-        }
-
-        // Locations Data - UCC Ghana
-        const locations = [
-            {
-                name: "UCC Main Campus",
-                address: "University of Cape Coast, Cape Coast",
-                distance: "On Campus",
-                spots: "84",
-                img: "https://picsum.photos/id/1015/600/400"
-            },
-            {
-                name: "Science Block Storage",
-                address: "College of Science Complex",
-                distance: "0.6 km",
-                spots: "52",
-                img: "https://picsum.photos/id/106/600/400"
-            },
-            {
-                name: "Student Village Hub",
-                address: "University Hall Area",
-                distance: "1.2 km",
-                spots: "67",
-                img: "https://picsum.photos/id/201/600/400"
-            },
-            {
-                name: "Arts & Humanities Depot",
-                address: "Faculty of Arts Building",
-                distance: "0.9 km",
-                spots: "39",
-                img: "https://picsum.photos/id/251/600/400"
-            }
-        ];
-
-        function renderLocations(filteredLocations = locations) {
-            const grid = document.getElementById('locations-grid');
-            grid.innerHTML = '';
-            
-            filteredLocations.forEach(loc => {
-                const card = document.createElement('div');
-                card.className = `bg-zinc-900 rounded-3xl overflow-hidden card-hover cursor-pointer`;
-                card.innerHTML = `
-                    <img src="${loc.img}" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h4 class="font-semibold text-lg">${loc.name}</h4>
-                                <p class="text-sm text-zinc-400 mt-1">${loc.address}</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-emerald-400 font-medium">${loc.distance}</div>
-                            </div>
-                        </div>
-                        <div class="mt-6 flex items-center justify-between text-sm">
-                            <div class="flex items-center gap-x-2">
-                                <span class="inline-block w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                                <span>${loc.spots} spots left</span>
-                            </div>
-                            <button onclick="quickBook('${loc.name}'); event.stopImmediatePropagation()" 
-                                    class="px-6 py-2 bg-yellow-400 text-zinc-950 rounded-2xl text-sm font-medium hover:bg-yellow-300 transition">
-                                Book
-                            </button>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function filterLocations() {
-            const query = document.getElementById('location-search').value.toLowerCase();
-            const filtered = locations.filter(loc => 
-                loc.name.toLowerCase().includes(query) || 
-                loc.address.toLowerCase().includes(query)
-            );
-            renderLocations(filtered);
-        }
-
-        // Booking Modal
-        let selectedSize = 'medium';
+        // Tailwind script already loaded via CDN
 
         function showBookingModal() {
             document.getElementById('booking-modal').classList.remove('hidden');
-            // Pre-select medium
-            document.querySelectorAll('.size-btn').forEach(btn => {
-                if (btn.getAttribute('data-size') === 'medium') {
-                    btn.classList.add('bg-yellow-400', 'text-zinc-950');
-                }
-            });
         }
 
         function closeBookingModal() {
             document.getElementById('booking-modal').classList.add('hidden');
         }
 
-        function selectSize(el) {
-            document.querySelectorAll('.size-btn').forEach(btn => {
-                btn.classList.remove('bg-yellow-400', 'text-zinc-950');
-            });
-            el.classList.add('bg-yellow-400', 'text-zinc-950');
-            selectedSize = el.getAttribute('data-size');
-            
-            // Update price
-            const priceEl = document.getElementById('price-display');
-            if (selectedSize === 'small') priceEl.textContent = 'GH₵190';
-            else if (selectedSize === 'medium') priceEl.textContent = 'GH₵290';
-            else priceEl.textContent = 'GH₵490';
-        }
-
-        function handleBooking(e) {
+        function submitBooking(e) {
             e.preventDefault();
-            const campus = document.getElementById('campus-select').value;
-            
             closeBookingModal();
             
             // Show success
-            const successHTML = `
-                <div class="fixed inset-0 bg-black/80 flex items-center justify-center z-[200]">
-                    <div class="bg-zinc-900 rounded-3xl p-10 max-w-sm text-center">
-                        <i class="fa-solid fa-check-circle text-6xl text-emerald-400 mb-6"></i>
-                        <h3 class="text-3xl font-semibold mb-3">Booking Confirmed!</h3>
-                        <p class="text-zinc-400">Your ${selectedSize} storage at <span class="font-medium">${campus}</span> is ready.</p>
-                        <button onclick="this.parentElement.parentElement.remove(); navigateTo('dashboard')" 
-                                class="mt-8 w-full py-4 bg-yellow-400 text-zinc-950 font-semibold rounded-3xl">
-                            Go to Dashboard
-                        </button>
-                    </div>
-                </div>
-            `;
+            document.getElementById('success-modal').classList.remove('hidden');
             
-            document.body.insertAdjacentHTML('beforeend', successHTML);
-            
-            // Add to active bookings
-            setTimeout(() => {
-                addBookingToDashboard(campus, selectedSize);
-            }, 800);
+            // Reset form
+            document.getElementById('booking-form').reset();
         }
 
-        // Fake Login
-        function showLoginModal() {
-            document.getElementById('login-modal').classList.remove('hidden');
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
         }
 
-        function closeLoginModal() {
-            document.getElementById('login-modal').classList.add('hidden');
+        // Scroll animations
+        function handleScroll() {
+            document.querySelectorAll('.section-fade').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.8) {
+                    el.classList.add('visible');
+                }
+            });
         }
 
-        function fakeLogin() {
-            closeLoginModal();
-            navigateTo('dashboard');
-        }
-
-        // Dashboard Bookings
-        function renderActiveBookings() {
-            const container = document.getElementById('active-bookings');
-            container.innerHTML = `
-                <div class="bg-zinc-900 rounded-3xl p-6 flex gap-6 items-center">
-                    <div class="w-20 h-20 bg-zinc-800 rounded-2xl flex-shrink-0"></div>
-                    <div class="flex-1">
-                        <div class="flex justify-between">
-                            <div>
-                                <p class="font-medium">Medium Storage • UCC Main Campus</p>
-                                <p class="text-sm text-emerald-400">Until Sep 10, 2026</p>
-                            </div>
-                            <div class="text-right">
-                                <span class="inline-block px-4 py-1 bg-emerald-900 text-emerald-400 text-xs rounded-3xl">Active</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function addBookingToDashboard(campus, size) {
-            const container = document.getElementById('active-bookings');
-            const newBooking = document.createElement('div');
-            newBooking.className = "bg-zinc-900 rounded-3xl p-6 flex gap-6 items-center animate-fade-in";
-            newBooking.innerHTML = `
-                <div class="w-20 h-20 bg-yellow-400/10 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0">📦</div>
-                <div class="flex-1">
-                    <div class="flex justify-between">
-                        <div>
-                            <p class="font-medium">${size.charAt(0).toUpperCase() + size.slice(1)} Storage • ${campus}</p>
-                            <p class="text-sm text-zinc-400">Jun 20 — Sep 10, 2026</p>
-                        </div>
-                        <div>
-                            <span class="inline-block px-4 py-1 bg-emerald-900 text-emerald-400 text-xs rounded-3xl">Active</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            container.prepend(newBooking);
-        }
-
-        function addFakeBooking() {
-            addBookingToDashboard("NYU", "large");
-        }
-
-        function quickBook(campus) {
-            showBookingModal();
-            // Pre-fill campus
-            setTimeout(() => {
-                document.getElementById('campus-select').value = campus.split(' ')[0] || campus;
-            }, 300);
-        }
-
-        // Initialize everything
-        function initializeApp() {
-            renderLocations();
-            renderActiveBookings();
-            
-            // Make all sections visible and properly laid out
-            console.log('%cKeepFace initialized successfully. Fully responsive.', 'color:#facc15; font-size:13px');
-        }
-
-        // Keyboard escape support
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "Escape") {
-                const bookingModal = document.getElementById('booking-modal');
-                const loginModal = document.getElementById('login-modal');
-                if (!bookingModal.classList.contains('hidden')) closeBookingModal();
-                if (!loginModal.classList.contains('hidden')) closeLoginModal();
-            }
-        });
-
-        // Boot the app
-        window.onload = initializeApp;
+        window.addEventListener('scroll', handleScroll);
+        window.onload = () => {
+            handleScroll();
+            console.log('%cKeepSafe - UCC Edition loaded successfully', 'color:#facc15; font-size:14px');
+        };
     </script>
 </body>
 </html>
