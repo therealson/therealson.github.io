@@ -2,11 +2,11 @@
 <html>
 <style>
 :root {
-  --primary-dark: #085041;
-  --primary-main: #0F6E56;
-  --primary-light: #1D9E75;
-  --accent-main: #BA7517;
-  --accent-light: #EF9F27;
+  --primary-dark: #0052CC;
+  --primary-main: #0066FF;
+  --primary-light: #3366FF;
+  --accent-main: #FF8C00;
+  --accent-light: #FFB84D;
   --text-primary: var(--color-text-primary);
   --text-secondary: var(--color-text-secondary);
   --bg-primary: var(--color-background-primary);
@@ -27,8 +27,8 @@ html, body {
 /* MOBILE FIRST - BASE STYLES */
 .navbar {
   background: var(--bg-primary);
-  border-bottom: 0.5px solid var(--border);
-  padding: 1rem;
+  border-bottom: 2px solid var(--primary-dark);
+  padding: 1.25rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -39,34 +39,35 @@ html, body {
 }
 
 .logo {
-  font-weight: 700;
-  font-size: 18px;
+  font-weight: 800;
+  font-size: 22px;
   color: var(--primary-dark);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
 .logo i {
-  font-size: 22px;
+  font-size: 28px;
 }
 
 .nav-links {
   display: none;
   gap: 2rem;
-  font-size: 14px;
+  font-size: 16px;
   align-items: center;
+  font-weight: 600;
 }
 
 .nav-links a {
-  color: var(--text-secondary);
+  color: var(--primary-dark);
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .nav-links a:hover {
-  color: var(--primary-main);
+  color: var(--accent-main);
 }
 
 .hamburger {
@@ -74,7 +75,7 @@ html, body {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 28px;
+  font-size: 32px;
   color: var(--primary-dark);
   padding: 0.5rem;
   flex-shrink: 0;
@@ -88,7 +89,7 @@ html, body {
   left: 0;
   right: 0;
   background: var(--bg-primary);
-  border-bottom: 0.5px solid var(--border);
+  border-bottom: 2px solid var(--primary-dark);
   flex-direction: column;
   gap: 0;
   padding: 0;
@@ -100,12 +101,13 @@ html, body {
 }
 
 .mobile-menu a {
-  color: var(--text-secondary);
+  color: var(--primary-dark);
   text-decoration: none;
-  padding: 1rem;
-  border-bottom: 0.5px solid var(--border);
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border);
   transition: color 0.2s;
-  font-size: 15px;
+  font-size: 17px;
+  font-weight: 600;
 }
 
 .mobile-menu a:last-child {
@@ -113,7 +115,7 @@ html, body {
 }
 
 .mobile-menu a:hover {
-  color: var(--primary-main);
+  color: var(--accent-main);
   background: var(--bg-secondary);
 }
 
@@ -121,21 +123,21 @@ html, body {
   background: var(--primary-dark);
   color: white;
   border: none;
-  padding: 0.7rem 1.2rem;
+  padding: 1rem 1.5rem;
   border-radius: var(--border-radius-md);
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 700;
   cursor: pointer;
   transition: background 0.2s;
   white-space: nowrap;
-  min-height: 44px;
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .btn-primary:hover {
-  background: var(--primary-main);
+  background: var(--primary-light);
 }
 
 .btn-primary:active {
@@ -143,24 +145,25 @@ html, body {
 }
 
 .btn-secondary {
-  background: transparent;
-  color: var(--primary-main);
-  border: 1px solid var(--primary-main);
-  padding: 0.7rem 1.2rem;
+  background: white;
+  color: var(--accent-main);
+  border: 2px solid var(--accent-main);
+  padding: 1rem 1.5rem;
   border-radius: var(--border-radius-md);
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
-  min-height: 44px;
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .btn-secondary:hover {
-  background: var(--bg-secondary);
+  background: var(--accent-main);
+  color: white;
 }
 
 .btn-secondary:active {
@@ -169,76 +172,79 @@ html, body {
 
 /* HERO SECTION */
 .hero {
-  padding: 2.5rem 1.25rem;
+  padding: 3.5rem 1.5rem;
   text-align: center;
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-  border-bottom: 0.5px solid var(--border);
+  background: linear-gradient(135deg, rgba(0, 102, 255, 0.08) 0%, var(--bg-primary) 100%);
+  border-bottom: 3px solid var(--accent-main);
 }
 
 .hero h1 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 1rem;
+  font-size: 42px;
+  font-weight: 800;
+  margin-bottom: 1.25rem;
   color: var(--primary-dark);
   line-height: 1.2;
 }
 
 .hero .tagline {
-  font-size: 16px;
+  font-size: 20px;
   color: var(--text-secondary);
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   max-width: 95%;
   margin-left: auto;
   margin-right: auto;
   line-height: 1.5;
+  font-weight: 500;
 }
 
 .hero-cta {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   width: 100%;
 }
 
 .hero-cta button {
-  font-size: 15px;
-  padding: 1rem;
+  font-size: 17px;
+  padding: 1.25rem;
   width: 100%;
 }
 
 .compartments {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  max-width: 280px;
-  margin: 1.5rem auto 0;
+  gap: 16px;
+  max-width: 320px;
+  margin: 2rem auto 0;
 }
 
 .compartment {
   aspect-ratio: 1;
-  background: var(--primary-light);
-  border: 0.5px solid var(--primary-main);
-  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  border: 3px solid var(--accent-main);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 26px;
-  min-height: 70px;
+  font-size: 36px;
+  min-height: 90px;
+  font-weight: 700;
 }
 
 /* SERVICES SECTION */
 .services {
-  padding: 2.5rem 1.25rem;
+  padding: 3.5rem 1.5rem;
   width: 100%;
+  background: var(--bg-primary);
 }
 
 .section-title {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 1.75rem;
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 2.25rem;
   text-align: center;
   color: var(--primary-dark);
 }
@@ -246,141 +252,145 @@ html, body {
 .cards-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.25rem;
-  margin-bottom: 2rem;
+  gap: 1.75rem;
+  margin-bottom: 2.5rem;
   max-width: 100%;
 }
 
 .service-card {
   background: var(--bg-primary);
-  border: 0.5px solid var(--border);
+  border: 3px solid var(--primary-light);
   border-radius: var(--border-radius-lg);
-  padding: 1.5rem;
+  padding: 2rem;
   transition: all 0.2s;
   cursor: pointer;
 }
 
 .service-card:active {
   border-color: var(--accent-main);
-  background: var(--bg-secondary);
+  background: rgba(255, 140, 0, 0.05);
+  transform: translateY(-2px);
 }
 
 .card-icon {
-  font-size: 32px;
-  color: var(--primary-dark);
-  margin-bottom: 1rem;
+  font-size: 48px;
+  color: var(--accent-main);
+  margin-bottom: 1.25rem;
 }
 
 .service-card h3 {
-  font-size: 17px;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
+  font-size: 21px;
+  font-weight: 800;
+  margin-bottom: 1rem;
   color: var(--primary-dark);
 }
 
 .service-card p {
-  font-size: 14px;
+  font-size: 17px;
   color: var(--text-secondary);
   margin-bottom: 0;
-  line-height: 1.6;
+  line-height: 1.7;
+  font-weight: 500;
 }
 
 /* CTA SECTION */
 .cta-section {
-  background: var(--bg-secondary);
-  padding: 2.5rem 1.25rem;
+  background: linear-gradient(135deg, rgba(0, 102, 255, 0.12), rgba(255, 140, 0, 0.08));
+  padding: 3.5rem 1.5rem;
   text-align: center;
-  border: 0.5px solid var(--border);
+  border: 3px solid var(--primary-dark);
   border-radius: 0;
   margin: 0;
-  border-top: 0.5px solid var(--border);
-  border-bottom: 0.5px solid var(--border);
+  border-top: 3px solid var(--primary-dark);
+  border-bottom: 3px solid var(--primary-dark);
 }
 
 .cta-section h2 {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 1rem;
   color: var(--primary-dark);
 }
 
 .cta-section p {
   color: var(--text-secondary);
-  margin-bottom: 1.5rem;
-  font-size: 15px;
-  line-height: 1.5;
+  margin-bottom: 2rem;
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 500;
 }
 
 .inquiry-form {
   background: var(--bg-primary);
-  border: 0.5px solid var(--border);
+  border: 3px solid var(--accent-main);
   border-radius: var(--border-radius-lg);
-  padding: 1.75rem;
+  padding: 2.25rem;
   max-width: 100%;
-  margin: 1.5rem 0;
+  margin: 2rem 0;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
   text-align: left;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-group label {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary-dark);
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: 0.9rem;
-  border: 0.5px solid var(--border);
+  padding: 1.25rem;
+  border: 2px solid var(--primary-light);
   border-radius: var(--border-radius-md);
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 17px;
   background: var(--bg-primary);
   color: var(--text-primary);
   width: 100%;
   -webkit-appearance: none;
   appearance: none;
-  min-height: 44px;
+  min-height: 50px;
+  font-weight: 500;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--primary-main);
-  box-shadow: 0 0 0 3px rgba(15, 110, 86, 0.1);
+  border-color: var(--accent-main);
+  box-shadow: 0 0 0 4px rgba(255, 140, 0, 0.15);
 }
 
 .form-group textarea {
   resize: vertical;
-  min-height: 100px;
-  padding: 0.9rem;
+  min-height: 120px;
+  padding: 1.25rem;
 }
 
 .form-group select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23085041' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%230052CC' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
-  padding-right: 2.75rem;
+  padding-right: 3rem;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .inquiry-form h3 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 1.75rem;
   color: var(--primary-dark);
 }
 
@@ -389,18 +399,18 @@ html, body {
   background: var(--accent-main);
   color: white;
   border: none;
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: var(--border-radius-md);
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 19px;
+  font-weight: 800;
   cursor: pointer;
   transition: background 0.2s;
-  margin-top: 1rem;
-  min-height: 48px;
+  margin-top: 1.5rem;
+  min-height: 56px;
 }
 
 .inquiry-form button:hover {
-  background: #9E6412;
+  background: #E67E00;
 }
 
 .inquiry-form button:active {
@@ -409,64 +419,67 @@ html, body {
 
 /* TESTIMONIALS */
 .testimonials {
-  padding: 2.5rem 1.25rem;
-  background: var(--bg-secondary);
-  border-top: 0.5px solid var(--border);
-  border-bottom: 0.5px solid var(--border);
+  padding: 3.5rem 1.5rem;
+  background: linear-gradient(135deg, rgba(255, 140, 0, 0.08), var(--bg-primary));
+  border-top: 3px solid var(--accent-main);
+  border-bottom: 3px solid var(--accent-main);
 }
 
 .testimonial-card {
   background: var(--bg-primary);
-  border: 0.5px solid var(--border);
-  padding: 1.5rem;
+  border: 2px solid var(--primary-light);
+  padding: 2rem;
   border-radius: var(--border-radius-lg);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .testimonial-author {
-  font-weight: 700;
+  font-weight: 800;
   color: var(--primary-dark);
-  margin-bottom: 0.25rem;
-  font-size: 15px;
+  margin-bottom: 0.5rem;
+  font-size: 18px;
 }
 
 .testimonial-role {
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-bottom: 1rem;
+  font-size: 16px;
+  color: var(--accent-main);
+  margin-bottom: 1.25rem;
+  font-weight: 600;
 }
 
 .testimonial-text {
   font-style: italic;
   color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.7;
+  font-weight: 500;
 }
 
 /* FOOTER */
 .footer {
   background: var(--primary-dark);
   color: white;
-  padding: 2rem 1.25rem;
+  padding: 2.5rem 1.5rem;
   text-align: center;
-  font-size: 14px;
 }
 
 .footer p {
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 16px;
 }
 
 .footer strong {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .footer a {
   color: var(--accent-light);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .footer a:hover {
@@ -476,11 +489,12 @@ html, body {
 /* TABLET (768px and up) */
 @media (min-width: 768px) {
   .navbar {
-    padding: 1rem 1.5rem;
+    padding: 1.5rem 2rem;
+    border-bottom: 3px solid var(--primary-dark);
   }
 
   .logo {
-    font-size: 18px;
+    font-size: 24px;
   }
 
   .hamburger {
@@ -489,8 +503,8 @@ html, body {
 
   .nav-links {
     display: flex;
-    gap: 2rem;
-    font-size: 14px;
+    gap: 2.5rem;
+    font-size: 16px;
   }
 
   .mobile-menu {
@@ -498,222 +512,314 @@ html, body {
   }
 
   .hero {
-    padding: 3.5rem 1.5rem;
+    padding: 4.5rem 2rem;
+    border-bottom: 4px solid var(--accent-main);
   }
 
   .hero h1 {
-    font-size: 36px;
+    font-size: 48px;
   }
 
   .hero .tagline {
-    font-size: 17px;
-    max-width: 600px;
+    font-size: 22px;
+    max-width: 700px;
   }
 
   .hero-cta {
     flex-direction: row;
-    gap: 1rem;
+    gap: 1.5rem;
+    justify-content: center;
   }
 
   .hero-cta button {
-    font-size: 15px;
-    padding: 0.75rem 1.5rem;
+    font-size: 18px;
+    padding: 1.25rem 2rem;
     width: auto;
   }
 
   .compartments {
-    max-width: 350px;
-    gap: 14px;
+    max-width: 400px;
+    gap: 18px;
+    margin-top: 2.5rem;
   }
 
   .compartment {
-    font-size: 26px;
-    min-height: 85px;
+    font-size: 40px;
+    min-height: 110px;
   }
 
   .services {
-    padding: 3.5rem 1.5rem;
-    max-width: 1200px;
+    padding: 4.5rem 2rem;
+    max-width: 1400px;
     margin: 0 auto;
   }
 
   .section-title {
-    font-size: 26px;
-    margin-bottom: 2.25rem;
+    font-size: 38px;
+    margin-bottom: 3rem;
   }
 
   .cards-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.75rem;
+    gap: 2.25rem;
   }
 
   .service-card {
-    padding: 1.75rem;
+    padding: 2.25rem;
   }
 
   .service-card:hover {
     border-color: var(--accent-main);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 8px 24px rgba(255, 140, 0, 0.15);
+    transform: translateY(-4px);
   }
 
   .card-icon {
-    font-size: 36px;
+    font-size: 54px;
   }
 
   .service-card h3 {
-    font-size: 17px;
+    font-size: 24px;
   }
 
   .service-card p {
-    font-size: 14px;
+    font-size: 18px;
   }
 
   .cta-section {
-    padding: 3.5rem 1.5rem;
+    padding: 4.5rem 2rem;
     border-radius: var(--border-radius-lg);
-    margin: 3.5rem 1.5rem;
+    margin: 4.5rem 2rem;
+    border: 3px solid var(--primary-dark);
   }
 
   .cta-section h2 {
-    font-size: 26px;
+    font-size: 38px;
   }
 
   .cta-section p {
-    font-size: 16px;
+    font-size: 20px;
   }
 
   .inquiry-form {
-    max-width: 550px;
-    padding: 2.25rem;
-    margin: 2.25rem auto;
+    max-width: 600px;
+    padding: 2.75rem;
+    margin: 2.5rem auto;
+    border: 3px solid var(--accent-main);
   }
 
   .form-row {
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 18px;
+    padding: 1.25rem;
+    min-height: 52px;
   }
 
   .inquiry-form h3 {
-    font-size: 19px;
+    font-size: 26px;
   }
 
   .testimonials {
-    padding: 3.5rem 1.5rem;
+    padding: 4.5rem 2rem;
+    border-top: 4px solid var(--accent-main);
+    border-bottom: 4px solid var(--accent-main);
   }
 
   .testimonials > div {
-    max-width: 650px;
+    max-width: 750px;
     margin: 0 auto;
   }
 
   .testimonial-card {
-    padding: 1.75rem;
-    margin-bottom: 1.5rem;
+    padding: 2.25rem;
+    margin-bottom: 2rem;
+    border: 3px solid var(--primary-light);
+  }
+
+  .testimonial-author {
+    font-size: 20px;
+  }
+
+  .testimonial-role {
+    font-size: 17px;
+  }
+
+  .testimonial-text {
+    font-size: 18px;
   }
 
   .footer {
-    padding: 2.5rem 1.5rem;
+    padding: 3rem 2rem;
+  }
+
+  .footer p {
+    font-size: 17px;
+    margin-bottom: 1.25rem;
+  }
+
+  .footer strong {
+    font-size: 26px;
+  }
+
+  .footer a {
+    font-size: 17px;
   }
 }
 
 /* DESKTOP (1024px and up) */
 @media (min-width: 1024px) {
   .logo {
-    font-size: 18px;
+    font-size: 26px;
+  }
+
+  .nav-links {
+    font-size: 17px;
   }
 
   .hero {
-    padding: 4.5rem 2rem;
+    padding: 5rem 3rem;
   }
 
   .hero h1 {
-    font-size: 40px;
-    margin-bottom: 1.25rem;
+    font-size: 54px;
+    margin-bottom: 1.5rem;
   }
 
   .hero .tagline {
-    font-size: 18px;
-    margin-bottom: 2.25rem;
+    font-size: 24px;
+    margin-bottom: 2.75rem;
   }
 
   .compartments {
-    max-width: 420px;
-    gap: 16px;
-    margin: 2rem auto 0;
+    max-width: 480px;
+    gap: 20px;
+    margin: 3rem auto 0;
   }
 
   .compartment {
-    font-size: 30px;
-    min-height: 100px;
+    font-size: 44px;
+    min-height: 130px;
   }
 
   .services {
-    padding: 4.5rem 2rem;
+    padding: 5rem 3rem;
   }
 
   .section-title {
-    font-size: 30px;
-    margin-bottom: 2.75rem;
+    font-size: 44px;
+    margin-bottom: 3.5rem;
   }
 
   .cards-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 2.25rem;
-    margin-bottom: 3rem;
+    gap: 2.75rem;
+    margin-bottom: 3.5rem;
   }
 
   .service-card {
-    padding: 2.25rem;
+    padding: 2.75rem;
   }
 
   .card-icon {
-    font-size: 40px;
-    margin-bottom: 1.25rem;
+    font-size: 60px;
+    margin-bottom: 1.5rem;
   }
 
   .service-card h3 {
-    font-size: 18px;
-    margin-bottom: 1rem;
-  }
-
-  .service-card p {
-    font-size: 15px;
-  }
-
-  .cta-section {
-    padding: 4.5rem 2rem;
-    margin: 4.5rem 2rem;
-  }
-
-  .cta-section h2 {
-    font-size: 30px;
+    font-size: 26px;
     margin-bottom: 1.25rem;
   }
 
+  .service-card p {
+    font-size: 19px;
+  }
+
+  .cta-section {
+    padding: 5rem 3rem;
+    margin: 5rem 3rem;
+  }
+
+  .cta-section h2 {
+    font-size: 44px;
+    margin-bottom: 1.5rem;
+  }
+
   .cta-section p {
-    font-size: 17px;
+    font-size: 22px;
   }
 
   .inquiry-form {
-    max-width: 650px;
-    padding: 2.75rem;
-    margin: 2.75rem auto;
+    max-width: 700px;
+    padding: 3.25rem;
+    margin: 3rem auto;
+  }
+
+  .form-group label {
+    font-size: 18px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 18px;
+    padding: 1.35rem;
+  }
+
+  .inquiry-form h3 {
+    font-size: 28px;
+  }
+
+  .inquiry-form button {
+    font-size: 20px;
+    padding: 1.75rem;
+    min-height: 60px;
   }
 
   .testimonials {
-    padding: 4.5rem 2rem;
+    padding: 5rem 3rem;
   }
 
   .testimonial-card {
-    padding: 2.25rem;
+    padding: 2.75rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .testimonial-author {
+    font-size: 22px;
+  }
+
+  .testimonial-role {
+    font-size: 18px;
+  }
+
+  .testimonial-text {
+    font-size: 19px;
   }
 
   .footer {
-    padding: 3rem 2rem;
+    padding: 3.5rem 3rem;
+  }
+
+  .footer p {
+    font-size: 18px;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer strong {
+    font-size: 28px;
+  }
+
+  .footer a {
+    font-size: 18px;
   }
 }
 
-/* MOBILE MENU TOGGLE */
 @media (max-width: 767px) {
   .hamburger {
     display: flex;
@@ -743,7 +849,7 @@ html, body {
     <a href="#services" onclick="toggleMenu()">Services</a>
     <a href="#book" onclick="toggleMenu()">Book appointment</a>
     <a href="#contact" onclick="toggleMenu()">Contact</a>
-    <button class="btn-primary" onclick="scrollToSection('book'); toggleMenu()" style="margin: 1rem; width: calc(100% - 2rem);">Book now</button>
+    <button class="btn-primary" onclick="scrollToSection('book'); toggleMenu()" style="margin: 1.5rem; width: calc(100% - 3rem);">Book now</button>
   </div>
 </nav>
 
@@ -752,7 +858,7 @@ html, body {
   <p class="tagline">Secure storage and logistics solutions for UCC students. Store with confidence, manage with ease.</p>
   <div class="hero-cta">
     <button class="btn-primary" onclick="scrollToSection('book')">Book appointment</button>
-    <button class="btn-secondary" onclick="scrollToSection('enquire')">Learn more</button>
+    <button class="btn-secondary" onclick="scrollToSection('services')">Learn more</button>
   </div>
   <div class="compartments">
     <div class="compartment"><i class="ti ti-packages"></i></div>
@@ -886,7 +992,7 @@ html, body {
   <p>Student storage & logistics at UCC</p>
   <p><a href="tel:+233XXXXXXXXXX">📞 +233 XXX XXX XXXX</a></p>
   <p><a href="mailto:hello@keepsafe.edu.gh">📧 hello@keepsafe.edu.gh</a></p>
-  <p style="margin-top: 1.5rem; opacity: 0.8; font-size: 12px;">© 2024 Keep Safe. All rights reserved.</p>
+  <p style="margin-top: 2rem; opacity: 0.8; font-size: 15px;">© 2024 Keep Safe. All rights reserved.</p>
 </footer>
 
 <script>
@@ -905,7 +1011,6 @@ function toggleMenu() {
 document.addEventListener('click', function(event) {
   const navbar = document.querySelector('.navbar');
   const mobileMenu = document.getElementById('mobileMenu');
-  const hamburger = document.getElementById('hamburger');
   
   if (!navbar.contains(event.target) && mobileMenu.classList.contains('active')) {
     mobileMenu.classList.remove('active');
