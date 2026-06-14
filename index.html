@@ -1,808 +1,416 @@
 
-<html>
 <style>
-:root {
-  --navy: #0C2340;
-  --orange: #FF8C00;
-  --light-gray: #F5F5F5;
-  --text-dark: #2C3E50;
-  --text-muted: #7F8C8D;
-  --border-color: #E0E0E0;
-  --green: #4CAF50;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: white;
-  color: var(--text-dark);
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-.app-container {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  padding-bottom: 80px;
-}
-
-.screen {
-  display: none;
-  flex: 1;
-}
-
-.screen.active {
-  display: flex;
-  flex-direction: column;
-}
-
-/* HOME SCREEN */
-.greeting {
-  padding: 24px 20px;
-  background: var(--light-gray);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.greeting-text {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 4px;
-  color: var(--text-dark);
-}
-
-.greeting-subtext {
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-.action-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  padding: 18px;
-  background: white;
-}
-
-.action-btn {
-  background: white;
-  border: 1.5px solid var(--border-color);
-  border-radius: 12px;
-  padding: 20px 14px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  min-height: auto;
-}
-
-.action-btn:hover {
-  border-color: var(--orange);
-  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.1);
-}
-
-.action-btn:active {
-  transform: scale(0.95);
-}
-
-.action-icon {
-  font-size: 38px;
-  color: var(--navy);
-  width: 52px;
-  height: 52px;
-  background: rgba(255, 140, 0, 0.1);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.action-icon.orange-bg {
-  background: rgba(255, 140, 0, 0.2);
-  color: var(--orange);
-}
-
-.action-label {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-dark);
-  line-height: 1.2;
-}
-
-.action-sublabel {
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.3;
-}
-
-.referral-section {
-  background: var(--navy);
-  color: white;
-  margin: 12px 18px;
-  padding: 18px;
-  border-radius: 12px;
-}
-
-.referral-title {
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.referral-text {
-  font-size: 13px;
-  margin-bottom: 12px;
-  opacity: 0.9;
-  line-height: 1.3;
-}
-
-.referral-btn {
-  background: var(--orange);
-  color: white;
-  border: none;
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.2s;
-}
-
-.referral-btn:hover {
-  background: #E67E00;
-}
-
-.referral-btn:active {
-  transform: scale(0.98);
-}
-
-/* RECENT ACTIVITY SECTION */
-.section-header {
-  padding: 18px 20px 12px 20px;
-  background: white;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-dark);
-  border-top: 1px solid var(--border-color);
-}
-
-.activity-list {
-  background: white;
-  padding: 0;
-}
-
-.activity-item {
-  display: flex;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--border-color);
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.activity-item:last-child {
-  border-bottom: none;
-}
-
-.activity-item:hover {
-  background: var(--light-gray);
-}
-
-.activity-icon {
-  width: 44px;
-  height: 44px;
-  background: rgba(255, 140, 0, 0.1);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  flex-shrink: 0;
-}
-
-.activity-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.activity-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-dark);
-  margin-bottom: 2px;
-}
-
-.activity-desc {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.activity-status {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--green);
-  flex-shrink: 0;
-}
-
-/* QUICK STATS */
-.stats-section {
-  padding: 18px;
-  background: white;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  border-top: 1px solid var(--border-color);
-}
-
-.stat-card {
-  background: var(--light-gray);
-  padding: 14px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.stat-number {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--navy);
-  margin-bottom: 4px;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-/* BOOK STORAGE SCREEN */
-.step-indicators {
-  display: flex;
-  gap: 10px;
-  padding: 18px;
-  background: white;
-  justify-content: center;
-  flex-wrap: wrap;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.step-circle {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--light-gray);
-  border: 2.5px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.step-circle:hover {
-  border-color: var(--navy);
-}
-
-.step-circle.active {
-  background: var(--navy);
-  border-color: var(--navy);
-  color: white;
-}
-
-.step-label {
-  text-align: center;
-  margin-top: 8px;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.form-section {
-  padding: 18px;
-  background: white;
-  flex: 1;
-}
-
-.form-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-dark);
-  margin-bottom: 16px;
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-
-.form-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-dark);
-  margin-bottom: 8px;
-  display: block;
-}
-
-.form-input, .form-select {
-  width: 100%;
-  border: 1.5px solid var(--border-color);
-  border-radius: 8px;
-  padding: 12px 12px;
-  font-size: 14px;
-  color: var(--text-dark);
-  background: white;
-  font-family: inherit;
-  -webkit-appearance: none;
-  appearance: none;
-  transition: all 0.2s;
-}
-
-.form-input:focus, .form-select:focus {
-  outline: none;
-  border-color: var(--navy);
-  box-shadow: 0 0 0 3px rgba(12, 35, 64, 0.08);
-}
-
-.form-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230C2340' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 36px;
-}
-
-.next-btn {
-  background: var(--orange);
-  color: white;
-  border: none;
-  padding: 14px 18px;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  margin: 12px 18px;
-  width: calc(100% - 36px);
-  transition: all 0.2s;
-}
-
-.next-btn:hover {
-  background: #E67E00;
-}
-
-.next-btn:active {
-  transform: scale(0.98);
-}
-
-/* TRACK ORDER SCREEN */
-.order-header {
-  background: white;
-  padding: 18px;
-  border-bottom: 1.5px solid var(--border-color);
-}
-
-.order-id {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 6px;
-}
-
-.order-number {
-  font-size: 19px;
-  font-weight: 700;
-  color: var(--text-dark);
-  margin-bottom: 10px;
-}
-
-.order-status {
-  display: inline-block;
-  background: rgba(76, 175, 80, 0.15);
-  color: var(--green);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.timeline {
-  padding: 18px;
-  background: white;
-  flex: 1;
-}
-
-.timeline-item {
-  display: flex;
-  gap: 14px;
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.timeline-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 11px;
-  top: 42px;
-  width: 2.5px;
-  height: calc(100% + 14px);
-  background: var(--border-color);
-}
-
-.timeline-marker {
-  width: 24px;
-  height: 24px;
-  background: white;
-  border: 2.5px solid var(--border-color);
-  border-radius: 50%;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: white;
-  margin-top: 2px;
-  font-weight: 700;
-}
-
-.timeline-marker.completed {
-  background: var(--green);
-  border-color: var(--green);
-}
-
-.timeline-marker.current {
-  background: var(--navy);
-  border-color: var(--navy);
-  width: 28px;
-  height: 28px;
-}
-
-.timeline-content h4 {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-dark);
-  margin-bottom: 2px;
-}
-
-.timeline-content p {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.view-details-btn {
-  background: white;
-  border: 2.5px solid var(--navy);
-  color: var(--navy);
-  padding: 12px 18px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  width: calc(100% - 36px);
-  margin: 12px 18px;
-  transition: all 0.2s;
-}
-
-.view-details-btn:hover {
-  background: rgba(12, 35, 64, 0.05);
-}
-
-.view-details-btn:active {
-  transform: scale(0.98);
-}
-
-/* BOTTOM NAVIGATION */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 70px;
-  background: white;
-  border-top: 1.5px solid var(--border-color);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 100;
-}
-
-.nav-item {
-  flex: 1;
-  text-align: center;
-  cursor: pointer;
-  padding: 10px 0;
-  border-top: 3px solid transparent;
-  transition: all 0.2s;
-  font-size: 22px;
-  color: var(--text-muted);
-}
-
-.nav-item:hover {
-  color: var(--navy);
-}
-
-.nav-item.active {
-  color: var(--navy);
-  border-top-color: var(--navy);
-}
-
-.nav-label {
-  font-size: 10px;
-  margin-top: 4px;
-  display: block;
-  color: inherit;
-  font-weight: 600;
-}
-
-@media (max-width: 600px) {
-  .action-grid {
-    gap: 12px;
-    padding: 14px;
+  :root {
+    --ks-navy: #0D1F4E;
+    --ks-gold: #C9A84C;
+    --ks-gold-light: #E8D5A0;
+    --ks-cream: #F5F3EE;
+    --ks-white: #ffffff;
+    --ks-muted: #8A9BB0;
+    --ks-green: #2ECC71;
+    --ks-green-bg: #E8F8EF;
+    --ks-card-bg: #F0EEE8;
   }
-  
-  .form-section, .order-header, .timeline {
-    padding: 14px;
-  }
-  
-  .next-btn, .view-details-btn {
-    margin: 10px 14px;
-    width: calc(100% - 28px);
-  }
-  
-  .referral-section, .stats-section {
-    margin: 10px 14px;
-  }
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  .app-bg { background: var(--ks-cream); min-height: 100vh; }
+  .phone-frame { width: 100%; max-width: 380px; margin: 0 auto; background: var(--ks-white); border-radius: 24px; overflow: hidden; border: 1.5px solid #ddd; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+
+  .nav-tabs { display: flex; border-bottom: 1.5px solid #e8e6e0; background: var(--ks-white); }
+  .nav-tab { flex: 1; padding: 10px 4px; text-align: center; font-size: 11px; color: var(--ks-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .nav-tab.active { color: var(--ks-navy); border-bottom-color: var(--ks-gold); font-weight: 600; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; background: var(--ks-white); }
+  .topbar-logo { display: flex; align-items: center; gap: 8px; }
+  .ks-monogram { width: 28px; height: 28px; background: var(--ks-navy); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .ks-monogram span { color: var(--ks-gold); font-size: 11px; font-weight: 800; letter-spacing: -0.5px; }
+  .brand-name { font-size: 13px; font-weight: 800; color: var(--ks-navy); letter-spacing: 1px; }
+  .icon-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #e0ddd8; background: var(--ks-white); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ks-navy); font-size: 16px; }
+  .topbar-right { display: flex; gap: 8px; align-items: center; }
+
+  .hero-section { padding: 20px 16px 16px; background: var(--ks-navy); }
+  .greeting { font-size: 20px; font-weight: 700; color: var(--ks-white); }
+  .greeting span { color: var(--ks-gold); }
+  .sub { font-size: 12px; color: var(--ks-muted); margin-top: 3px; }
+
+  .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; }
+  .action-card { background: var(--ks-white); border: 1px solid #e8e6e0; border-radius: 14px; padding: 14px; cursor: pointer; transition: all 0.15s; }
+  .action-card:hover { border-color: var(--ks-gold); }
+  .action-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; font-size: 18px; }
+  .action-icon.gold { background: #FBF4E0; color: var(--ks-gold); }
+  .action-icon.navy { background: #E8EBF3; color: var(--ks-navy); }
+  .action-label { font-size: 12px; font-weight: 700; color: var(--ks-navy); }
+  .action-sub { font-size: 10px; color: var(--ks-muted); margin-top: 2px; line-height: 1.4; }
+
+  .referral-banner { margin: 0 16px 16px; background: var(--ks-navy); border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .ref-text { color: var(--ks-white); font-size: 12px; font-weight: 500; }
+  .ref-sub { color: var(--ks-muted); font-size: 10px; margin-top: 2px; }
+  .ref-btn { background: var(--ks-gold); color: var(--ks-navy); font-size: 10px; font-weight: 700; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; white-space: nowrap; }
+
+  .section-label { font-size: 12px; font-weight: 700; color: var(--ks-navy); padding: 0 16px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .storage-list { padding: 0 16px 16px; }
+  .storage-item { background: var(--ks-white); border: 1px solid #e8e6e0; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .storage-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-green { background: var(--ks-green); }
+  .dot-gold { background: var(--ks-gold); }
+  .storage-info { flex: 1; }
+  .storage-name { font-size: 12px; font-weight: 600; color: var(--ks-navy); }
+  .storage-meta { font-size: 10px; color: var(--ks-muted); margin-top: 2px; }
+  .storage-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+  .badge-green { background: var(--ks-green-bg); color: #1a8a4a; }
+  .badge-gold { background: #FBF4E0; color: #8a6a1a; }
+
+  .bottom-nav { display: flex; border-top: 1px solid #e8e6e0; padding: 8px 0 12px; background: var(--ks-white); }
+  .bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; color: var(--ks-muted); font-size: 9px; }
+  .bnav-item.active { color: var(--ks-navy); }
+  .bnav-item i { font-size: 20px; }
+  .bnav-item.active i { color: var(--ks-gold); }
+
+  .page-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #e8e6e0; }
+  .back-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid #e0ddd8; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ks-navy); font-size: 16px; background: var(--ks-white); }
+  .page-title { font-size: 15px; font-weight: 700; color: var(--ks-navy); }
+
+  .progress-steps { display: flex; align-items: center; padding: 16px; gap: 0; }
+  .step { display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .step-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; border: 2px solid #ddd; color: var(--ks-muted); background: var(--ks-white); }
+  .step-dot.done { background: var(--ks-navy); border-color: var(--ks-navy); color: var(--ks-white); }
+  .step-dot.current { background: var(--ks-gold); border-color: var(--ks-gold); color: var(--ks-navy); }
+  .step-label { font-size: 9px; color: var(--ks-muted); margin-top: 4px; }
+  .step-label.active { color: var(--ks-gold); font-weight: 600; }
+  .step-line { flex: 1; height: 1.5px; background: #ddd; margin: 0 2px; margin-bottom: 14px; }
+  .step-line.done { background: var(--ks-navy); }
+
+  .form-section { padding: 16px; }
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 11px; font-weight: 600; color: var(--ks-navy); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.3px; }
+  .form-select, .form-input { width: 100%; border: 1px solid #e0ddd8; border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--ks-navy); background: var(--ks-white); appearance: none; -webkit-appearance: none; }
+  .select-wrap { position: relative; }
+  .select-wrap::after { content: ''; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: 4px solid transparent; border-top: 5px solid var(--ks-muted); }
+  .date-wrap { position: relative; }
+  .date-wrap .cal-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ks-muted); font-size: 16px; }
+  .textarea { width: 100%; border: 1px solid #e0ddd8; border-radius: 10px; padding: 10px 12px; font-size: 12px; color: var(--ks-muted); background: var(--ks-white); resize: none; height: 64px; }
+  .cta-btn { display: block; width: calc(100% - 32px); margin: 0 16px 16px; background: var(--ks-gold); color: var(--ks-navy); border: none; border-radius: 12px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; }
+
+  .track-header { background: var(--ks-navy); padding: 16px; border-radius: 0 0 16px 16px; margin-bottom: 16px; }
+  .order-id { font-size: 15px; font-weight: 700; color: var(--ks-white); }
+  .status-pill { display: inline-block; margin-top: 6px; background: var(--ks-gold); color: var(--ks-navy); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+
+  .timeline { padding: 0 20px 16px; }
+  .tl-item { display: flex; gap: 14px; margin-bottom: 4px; position: relative; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; width: 24px; flex-shrink: 0; }
+  .tl-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .tl-icon.done { background: var(--ks-green); color: #fff; }
+  .tl-icon.current { background: var(--ks-navy); color: var(--ks-gold); }
+  .tl-icon.pending { background: #e8e6e0; color: var(--ks-muted); }
+  .tl-line { flex: 1; width: 2px; background: #e8e6e0; min-height: 28px; }
+  .tl-line.done { background: var(--ks-green); }
+  .tl-content { flex: 1; padding-bottom: 20px; }
+  .tl-title { font-size: 13px; font-weight: 600; color: var(--ks-navy); }
+  .tl-title.pending { color: var(--ks-muted); font-weight: 400; }
+  .tl-meta { font-size: 10px; color: var(--ks-muted); margin-top: 2px; }
+
+  .detail-btn { display: block; width: calc(100% - 32px); margin: 0 16px 16px; background: var(--ks-white); color: var(--ks-navy); border: 1.5px solid var(--ks-navy); border-radius: 12px; padding: 13px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+  .profile-header { padding: 24px 16px 16px; text-align: center; border-bottom: 1px solid #e8e6e0; }
+  .avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--ks-navy); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 3px solid var(--ks-gold); }
+  .avatar span { color: var(--ks-gold); font-size: 22px; font-weight: 800; }
+  .profile-name { font-size: 17px; font-weight: 700; color: var(--ks-navy); }
+  .profile-sub { font-size: 12px; color: var(--ks-muted); margin-top: 2px; }
+  .profile-stat { display: flex; gap: 16px; justify-content: center; margin-top: 14px; }
+  .pstat { text-align: center; }
+  .pstat-num { font-size: 18px; font-weight: 700; color: var(--ks-navy); }
+  .pstat-lbl { font-size: 10px; color: var(--ks-muted); }
+  .menu-list { padding: 12px 16px; }
+  .menu-item { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #f0ede8; cursor: pointer; }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; }
+  .menu-icon.gold-bg { background: #FBF4E0; color: var(--ks-gold); }
+  .menu-icon.navy-bg { background: #E8EBF3; color: var(--ks-navy); }
+  .menu-icon.red-bg { background: #FEE8E8; color: #e04040; }
+  .menu-text { flex: 1; font-size: 13px; font-weight: 500; color: var(--ks-navy); }
+  .menu-chevron { color: var(--ks-muted); font-size: 16px; }
 </style>
 
-<div class="app-container">
-  <div class="main-content">
-    <!-- HOME SCREEN -->
-    <div class="screen active" id="homeScreen">
-      <div class="greeting">
-        <div class="greeting-text">Hello, Jennifer 👋</div>
-        <div class="greeting-subtext">What would you like to do today?</div>
-      </div>
+<h2 class="sr-only">Keepsafe mobile app prototype — home, book storage, track order, and profile screens</h2>
 
+<div class="app-bg" style="padding: 16px 0;">
+  <div class="phone-frame">
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="showScreen('home',this)">Home</div>
+      <div class="nav-tab" onclick="showScreen('book',this)">Book Storage</div>
+      <div class="nav-tab" onclick="showScreen('track',this)">Track Order</div>
+      <div class="nav-tab" onclick="showScreen('profile',this)">Profile</div>
+    </div>
+
+    <div id="home" class="screen active">
+      <div class="topbar">
+        <div class="topbar-logo">
+          <div class="ks-monogram"><span>KS</span></div>
+          <span class="brand-name">KEEPSAFE</span>
+        </div>
+        <div class="topbar-right">
+          <div class="icon-btn"><i class="ti ti-bell" aria-hidden="true"></i></div>
+          <div class="icon-btn"><i class="ti ti-menu-2" aria-hidden="true"></i></div>
+        </div>
+      </div>
+      <div class="hero-section">
+        <div class="greeting">Hello, <span>Jennifer</span> 👋</div>
+        <div class="sub">What would you like to do today?</div>
+      </div>
       <div class="action-grid">
-        <div class="action-btn" onclick="goToScreen('bookScreen')">
-          <div class="action-icon orange-bg">💼</div>
+        <div class="action-card" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])">
+          <div class="action-icon gold"><i class="ti ti-box" aria-hidden="true"></i></div>
           <div class="action-label">Book Storage</div>
-          <div class="action-sublabel">Schedule pickup for your items</div>
+          <div class="action-sub">Schedule a pickup for your items</div>
         </div>
-
-        <div class="action-btn" onclick="goToScreen('homeScreen')">
-          <div class="action-icon">📋</div>
+        <div class="action-card">
+          <div class="action-icon navy"><i class="ti ti-archive" aria-hidden="true"></i></div>
           <div class="action-label">My Storage</div>
-          <div class="action-sublabel">View your bookings and past tracking</div>
+          <div class="action-sub">View current & past bookings</div>
         </div>
-
-        <div class="action-btn" onclick="goToScreen('trackScreen')">
-          <div class="action-icon">🔍</div>
+        <div class="action-card" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])">
+          <div class="action-icon navy"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
           <div class="action-label">Track Order</div>
-          <div class="action-sublabel">Track your items in real-time</div>
+          <div class="action-sub">Track your items in real time</div>
         </div>
-
-        <div class="action-btn" onclick="goToScreen('homeScreen')">
-          <div class="action-icon">💬</div>
+        <div class="action-card">
+          <div class="action-icon gold"><i class="ti ti-headset" aria-hidden="true"></i></div>
           <div class="action-label">Support</div>
-          <div class="action-sublabel">Chat with our support team</div>
+          <div class="action-sub">Chat with our support team</div>
         </div>
       </div>
-
-      <div class="referral-section">
-        <div class="referral-title">Refer a friend & earn</div>
-        <div class="referral-text">Get 50% off your subscriptions.</div>
-        <button class="referral-btn">Refer Now</button>
+      <div class="referral-banner">
+        <div>
+          <div class="ref-text">Refer a friend & earn</div>
+          <div class="ref-sub">GHS 5 off your next booking</div>
+        </div>
+        <button class="ref-btn">Refer Now</button>
       </div>
-
-      <div class="stats-section">
-        <div class="stat-card">
-          <div class="stat-number">3</div>
-          <div class="stat-label">Active Bookings</div>
+      <div class="section-label">Active Bookings</div>
+      <div class="storage-list">
+        <div class="storage-item">
+          <div class="storage-dot dot-green"></div>
+          <div class="storage-info">
+            <div class="storage-name">KS20026061501 — Unity Hall</div>
+            <div class="storage-meta">In Storage · Due: 15th Aug, 2026</div>
+          </div>
+          <span class="storage-badge badge-green">In Storage</span>
         </div>
-        <div class="stat-card">
-          <div class="stat-number">₵2,450</div>
-          <div class="stat-label">Total Spent</div>
+        <div class="storage-item">
+          <div class="storage-dot dot-gold"></div>
+          <div class="storage-info">
+            <div class="storage-name">KS20026051203 — Valco Hall</div>
+            <div class="storage-meta">Pickup Scheduled · 20th Jun</div>
+          </div>
+          <span class="storage-badge badge-gold">Scheduled</span>
         </div>
       </div>
-
-      <div class="section-header">Recent Activity</div>
-      <div class="activity-list">
-        <div class="activity-item" onclick="goToScreen('trackScreen')">
-          <div class="activity-icon">📦</div>
-          <div class="activity-content">
-            <div class="activity-title">Order K520026061501</div>
-            <div class="activity-desc">In storage since June 15</div>
-          </div>
-          <div class="activity-status">Active</div>
-        </div>
-
-        <div class="activity-item">
-          <div class="activity-icon">✓</div>
-          <div class="activity-content">
-            <div class="activity-title">Order K520025041203</div>
-            <div class="activity-desc">Delivered on June 10</div>
-          </div>
-          <div class="activity-status" style="color: var(--text-muted);">Completed</div>
-        </div>
-
-        <div class="activity-item">
-          <div class="activity-icon">📅</div>
-          <div class="activity-content">
-            <div class="activity-title">Order K520024031501</div>
-            <div class="activity-desc">Scheduled for June 20</div>
-          </div>
-          <div class="activity-status">Pending</div>
-        </div>
+      <div class="bottom-nav">
+        <div class="bnav-item active"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+        <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
+        <div class="bnav-item" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
+        <div class="bnav-item" onclick="showScreen('profile',document.querySelectorAll('.nav-tab')[3])"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
       </div>
     </div>
 
-    <!-- BOOK STORAGE SCREEN -->
-    <div class="screen" id="bookScreen">
-      <div class="step-indicators">
-        <div>
-          <div class="step-circle active">1</div>
-          <div class="step-label">Info</div>
+    <div id="book" class="screen">
+      <div class="page-header">
+        <div class="back-btn" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-arrow-left" aria-hidden="true"></i></div>
+        <span class="page-title">Book Storage</span>
+      </div>
+      <div class="progress-steps">
+        <div class="step">
+          <div class="step-dot current">1</div>
+          <div class="step-label active">Info</div>
         </div>
-        <div>
-          <div class="step-circle">2</div>
-          <div class="step-label">Method</div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-dot">2</div>
+          <div class="step-label">Pickup</div>
         </div>
-        <div>
-          <div class="step-circle">3</div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-dot">3</div>
           <div class="step-label">Items</div>
         </div>
-        <div>
-          <div class="step-circle">4</div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-dot">4</div>
           <div class="step-label">Confirm</div>
         </div>
       </div>
-
-      <div class="form-section">
-        <div class="form-title">Storage Information</div>
-
+      <div style="padding: 0 16px 8px; font-size: 13px; font-weight: 600; color: var(--ks-navy);">Storage Information</div>
+      <div class="form-section" style="padding-top: 8px;">
         <div class="form-group">
           <label class="form-label">Storage Duration</label>
-          <select class="form-select">
-            <option>4 Weeks (Minimum)</option>
-            <option>8 Weeks</option>
-            <option>12 Weeks</option>
-            <option>6 Months</option>
-          </select>
+          <div class="select-wrap">
+            <select class="form-select">
+              <option>4 Weeks (Minimum)</option>
+              <option>8 Weeks</option>
+              <option>12 Weeks</option>
+              <option>Full Semester</option>
+            </select>
+          </div>
         </div>
-
         <div class="form-group">
           <label class="form-label">Pickup Location</label>
-          <select class="form-select">
-            <option>Unity Hall</option>
-            <option>North Campus</option>
-            <option>South Campus</option>
-            <option>Central Point</option>
-          </select>
+          <div class="select-wrap">
+            <select class="form-select">
+              <option>Unity Hall</option>
+              <option>Valco Hall</option>
+              <option>Adehye Hall</option>
+              <option>Atlantic Hall</option>
+            </select>
+          </div>
         </div>
-
         <div class="form-group">
           <label class="form-label">Preferred Date</label>
-          <input type="date" class="form-input" value="2026-06-20">
+          <div class="date-wrap">
+            <input type="text" class="form-input" value="20th June, 2026" readonly />
+            <i class="ti ti-calendar cal-icon" aria-hidden="true"></i>
+          </div>
         </div>
-
         <div class="form-group">
           <label class="form-label">Notes (Optional)</label>
-          <input type="text" class="form-input" placeholder="Any special advices?">
+          <textarea class="textarea" placeholder="Any special instructions?"></textarea>
         </div>
       </div>
-
-      <button class="next-btn" onclick="nextStep()">Next</button>
+      <button class="cta-btn" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])">Next →</button>
     </div>
 
-    <!-- TRACK ORDER SCREEN -->
-    <div class="screen" id="trackScreen">
-      <div class="order-header">
-        <div class="order-id">Order ID</div>
-        <div class="order-number">K520026061501</div>
-        <div class="order-status">✓ In Storage</div>
+    <div id="track" class="screen">
+      <div class="page-header">
+        <div class="back-btn" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-arrow-left" aria-hidden="true"></i></div>
+        <span class="page-title">Track Order</span>
       </div>
-
+      <div class="track-header">
+        <div class="order-id">Order KS20026061501</div>
+        <div class="status-pill">In Storage</div>
+      </div>
       <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-marker completed">✓</div>
-          <div class="timeline-content">
-            <h4>Pickup Scheduled</h4>
-            <p>15th June, 2026 - 10:00 AM</p>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon done"><i class="ti ti-check" aria-hidden="true"></i></div>
+            <div class="tl-line done"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title">Pickup Scheduled</div>
+            <div class="tl-meta">15th June, 2026 · 10:00 AM</div>
           </div>
         </div>
-
-        <div class="timeline-item">
-          <div class="timeline-marker completed">✓</div>
-          <div class="timeline-content">
-            <h4>Picked Up</h4>
-            <p>15th June, 2026 - 12:15 PM</p>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon done"><i class="ti ti-check" aria-hidden="true"></i></div>
+            <div class="tl-line done"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title">Picked Up</div>
+            <div class="tl-meta">15th June, 2026 · 12:15 PM</div>
           </div>
         </div>
-
-        <div class="timeline-item">
-          <div class="timeline-marker current">◉</div>
-          <div class="timeline-content">
-            <h4>In Storage</h4>
-            <p>15th June, 2026 - 2:30 PM</p>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon current"><i class="ti ti-lock" aria-hidden="true"></i></div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title">In Storage</div>
+            <div class="tl-meta">15th June, 2026 · 2:20 PM</div>
           </div>
         </div>
-
-        <div class="timeline-item">
-          <div class="timeline-marker">○</div>
-          <div class="timeline-content">
-            <h4>Out for Delivery</h4>
-            <p>Pending...</p>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon pending"><i class="ti ti-truck-delivery" aria-hidden="true"></i></div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title pending">Out for Delivery</div>
+            <div class="tl-meta">—</div>
           </div>
         </div>
-
-        <div class="timeline-item">
-          <div class="timeline-marker">○</div>
-          <div class="timeline-content">
-            <h4>Delivered</h4>
-            <p>Pending...</p>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon pending"><i class="ti ti-home" aria-hidden="true"></i></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title pending">Delivered</div>
+            <div class="tl-meta">—</div>
           </div>
         </div>
       </div>
+      <button class="detail-btn">View Order Details</button>
+      <div class="bottom-nav">
+        <div class="bnav-item" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+        <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
+        <div class="bnav-item active"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
+        <div class="bnav-item" onclick="showScreen('profile',document.querySelectorAll('.nav-tab')[3])"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
+      </div>
+    </div>
 
-      <button class="view-details-btn">View Details</button>
-    </div>
-  </div>
-
-  <!-- BOTTOM NAVIGATION -->
-  <div class="bottom-nav">
-    <div class="nav-item active" onclick="goToScreen('homeScreen')">
-      🏠
-      <span class="nav-label">Home</span>
-    </div>
-    <div class="nav-item" onclick="goToScreen('homeScreen')">
-      ⚙️
-      <span class="nav-label">Settings</span>
-    </div>
-    <div class="nav-item" onclick="goToScreen('trackScreen')">
-      📍
-      <span class="nav-label">Track</span>
-    </div>
-    <div class="nav-item" onclick="goToScreen('homeScreen')">
-      👤
-      <span class="nav-label">Profile</span>
+    <div id="profile" class="screen">
+      <div class="topbar">
+        <span class="brand-name" style="font-size:14px;">My Profile</span>
+        <div class="icon-btn"><i class="ti ti-settings" aria-hidden="true"></i></div>
+      </div>
+      <div class="profile-header">
+        <div class="avatar"><span>JA</span></div>
+        <div class="profile-name">Jennifer Asante</div>
+        <div class="profile-sub">UCC · Computer Science · L300</div>
+        <div class="profile-stat">
+          <div class="pstat"><div class="pstat-num">3</div><div class="pstat-lbl">Bookings</div></div>
+          <div class="pstat"><div class="pstat-num">2</div><div class="pstat-lbl">Active</div></div>
+          <div class="pstat"><div class="pstat-num">GHS 15</div><div class="pstat-lbl">Saved</div></div>
+        </div>
+      </div>
+      <div class="menu-list">
+        <div class="menu-item">
+          <div class="menu-icon gold-bg"><i class="ti ti-box" aria-hidden="true"></i></div>
+          <span class="menu-text">My Bookings</span>
+          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="menu-item">
+          <div class="menu-icon navy-bg"><i class="ti ti-credit-card" aria-hidden="true"></i></div>
+          <span class="menu-text">Payment Methods</span>
+          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="menu-item">
+          <div class="menu-icon gold-bg"><i class="ti ti-users" aria-hidden="true"></i></div>
+          <span class="menu-text">Refer a Friend</span>
+          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="menu-item">
+          <div class="menu-icon navy-bg"><i class="ti ti-bell" aria-hidden="true"></i></div>
+          <span class="menu-text">Notifications</span>
+          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="menu-item">
+          <div class="menu-icon navy-bg"><i class="ti ti-help" aria-hidden="true"></i></div>
+          <span class="menu-text">Help & Support</span>
+          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+        </div>
+        <div class="menu-item">
+          <div class="menu-icon red-bg"><i class="ti ti-logout" aria-hidden="true"></i></div>
+          <span class="menu-text" style="color: #e04040;">Sign Out</span>
+          <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="bnav-item" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+        <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
+        <div class="bnav-item" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
+        <div class="bnav-item active"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-function goToScreen(screenId) {
-  document.querySelectorAll('.screen').forEach(screen => {
-    screen.classList.remove('active');
-  });
-  
-  document.getElementById(screenId).classList.add('active');
-
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.classList.remove('active');
-  });
-  
-  if (screenId === 'homeScreen') {
-    document.querySelectorAll('.nav-item')[0].classList.add('active');
-  } else if (screenId === 'trackScreen') {
-    document.querySelectorAll('.nav-item')[2].classList.add('active');
-  }
-}
-
-function nextStep() {
-  alert('Moving to step 2: Payment Method');
+function showScreen(id, tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (tab) tab.classList.add('active');
 }
 </script>
-</html>
