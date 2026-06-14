@@ -184,7 +184,7 @@
                         <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Pickup + Delivery</li>
                         <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Up to 4 bags</li>
                     </ul>
-                    <button onclick="showBookingModal()" class="w-full py-5 bg-white text-zinc-950 font-semibold rounded-3xl">Book Standard</button>
+                    <button onclick="showBookingModal('Standard')" class="w-full py-5 bg-white text-zinc-950 font-semibold rounded-3xl">Book Standard</button>
                 </div>
 
                 <div class="bg-zinc-800 rounded-3xl p-10 card-hover relative">
@@ -197,7 +197,7 @@
                         <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Up to 8 bags + Fridge</li>
                         <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Priority pickup</li>
                     </ul>
-                    <button onclick="showBookingModal()" class="w-full py-5 bg-yellow-400 text-zinc-950 font-semibold rounded-3xl">Book Extended</button>
+                    <button onclick="showBookingModal('Extended')" class="w-full py-5 bg-yellow-400 text-zinc-950 font-semibold rounded-3xl">Book Extended</button>
                 </div>
             </div>
         </div>
@@ -207,12 +207,16 @@
     <div id="booking-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="booking-title" tabindex="-1">
         <div class="bg-zinc-900 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-auto">
             <div class="p-8">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 id="booking-title" class="heading-font text-3xl font-semibold">Book KeepSafe</h2>
+                <div class="flex justify-between items-center mb-2">
+                    <div>
+                        <h2 id="booking-title" class="heading-font text-3xl font-semibold">Book KeepSafe</h2>
+                        <div id="selected-plan" class="text-zinc-400 text-sm mt-1">Selected: <span id="plan-label">—</span></div>
+                    </div>
                     <button onclick="closeBookingModal()" class="text-4xl text-zinc-400 hover:text-white">×</button>
                 </div>
                 
                 <form id="booking-form" onsubmit="submitBooking(event)" class="space-y-6">
+                    <input type="hidden" id="plan" name="plan" value="">
                     <label for="name" class="sr-only">Full Name</label>
                     <input id="name" name="name" type="text" placeholder="Full Name" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
 
@@ -313,12 +317,19 @@
             return keyHandler;
         }
 
-        function showBookingModal() {
+        function showBookingModal(plan) {
             const modal = document.getElementById('booking-modal');
             modal.classList.remove('hidden');
             modal.setAttribute('aria-hidden', 'false');
+
+            // set selected plan if provided
+            const planInput = document.getElementById('plan');
+            const planLabel = document.getElementById('plan-label');
+            if (planInput) planInput.value = plan || '';
+            if (planLabel) planLabel.textContent = plan || '—';
+
             // focus first input
-            const firstInput = modal.querySelector('input,button,select,textarea');
+            const firstInput = modal.querySelector('input:not([type="hidden"]),button,select,textarea');
             if (firstInput) firstInput.focus();
 
             // trap focus and overlay click
@@ -333,6 +344,11 @@
             modal.setAttribute('aria-hidden', 'true');
             if (modal._trapHandler) modal.removeEventListener('keydown', modal._trapHandler);
             if (modal._overlayHandler) modal.removeEventListener('click', modal._overlayHandler);
+            // clear selected plan
+            const planInput = document.getElementById('plan');
+            const planLabel = document.getElementById('plan-label');
+            if (planInput) planInput.value = '';
+            if (planLabel) planLabel.textContent = '—';
         }
 
         function submitBooking(e) {
