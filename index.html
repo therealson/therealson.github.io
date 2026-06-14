@@ -1,410 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeepFace - Student Storage Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .logo-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .hero-bg {
+            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.75)), url('https://picsum.photos/id/1015/1920/1080') center/cover no-repeat;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, #3b82f6, #60a5fa);
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        .modal {
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes modalPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white overflow-x-hidden">
+    <!-- NAVBAR -->
+    <nav class="bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800 fixed w-full z-50">
+        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-4">
+                <div onclick="navigateTo('home')" class="flex items-center gap-3 cursor-pointer">
+                    <div class="w-11 h-11 bg-gradient-to-br from-blue-500 to-violet-600 rounded-3xl flex items-center justify-center text-3xl font-black logo-font shadow-inner">KF</div>
+                    <span class="text-4xl font-bold tracking-[-2px] logo-font">keepface</span>
+                </div>
+            </div>
 
-<style>
-  :root {
-    --ks-navy: #0D1F4E;
-    --ks-gold: #C9A84C;
-    --ks-gold-light: #E8D5A0;
-    --ks-cream: #F5F3EE;
-    --ks-white: #ffffff;
-    --ks-muted: #8A9BB0;
-    --ks-green: #2ECC71;
-    --ks-green-bg: #E8F8EF;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-  body { background: var(--ks-white); }
+            <div class="hidden md:flex items-center gap-x-10 text-sm font-medium">
+                <a onclick="navigateTo('home')" class="nav-link cursor-pointer">Discover</a>
+                <a onclick="navigateTo('locations')" class="nav-link cursor-pointer">Locations</a>
+                <a onclick="navigateTo('book')" class="nav-link cursor-pointer">Book Now</a>
+                <a onclick="navigateTo('dashboard')" class="nav-link cursor-pointer">Dashboard</a>
+            </div>
 
-  .nav-tabs { display: flex; border-bottom: 1.5px solid #e8e6e0; background: var(--ks-white); position: sticky; top: 0; z-index: 10; }
-  .nav-tab { flex: 1; padding: 10px 4px; text-align: center; font-size: 11px; color: var(--ks-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
-  .nav-tab.active { color: var(--ks-navy); border-bottom-color: var(--ks-gold); font-weight: 600; }
-
-  .screen { display: none; }
-  .screen.active { display: block; }
-
-  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; background: var(--ks-white); }
-  .topbar-logo { display: flex; align-items: center; gap: 8px; }
-  .ks-monogram { width: 28px; height: 28px; background: var(--ks-navy); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
-  .ks-monogram span { color: var(--ks-gold); font-size: 11px; font-weight: 800; letter-spacing: -0.5px; }
-  .brand-name { font-size: 13px; font-weight: 800; color: var(--ks-navy); letter-spacing: 1px; }
-  .icon-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #e0ddd8; background: var(--ks-white); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ks-navy); font-size: 16px; }
-  .topbar-right { display: flex; gap: 8px; align-items: center; }
-
-  .hero-section { padding: 20px 16px 16px; background: var(--ks-navy); }
-  .greeting { font-size: 20px; font-weight: 700; color: var(--ks-white); }
-  .greeting span { color: var(--ks-gold); }
-  .sub { font-size: 12px; color: var(--ks-muted); margin-top: 3px; }
-
-  .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; }
-  .action-card { background: var(--ks-white); border: 1px solid #e8e6e0; border-radius: 14px; padding: 14px; cursor: pointer; transition: all 0.15s; }
-  .action-card:hover { border-color: var(--ks-gold); }
-  .action-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; font-size: 18px; }
-  .action-icon.gold { background: #FBF4E0; color: var(--ks-gold); }
-  .action-icon.navy { background: #E8EBF3; color: var(--ks-navy); }
-  .action-label { font-size: 12px; font-weight: 700; color: var(--ks-navy); }
-  .action-sub { font-size: 10px; color: var(--ks-muted); margin-top: 2px; line-height: 1.4; }
-
-  .referral-banner { margin: 0 16px 16px; background: var(--ks-navy); border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
-  .ref-text { color: var(--ks-white); font-size: 12px; font-weight: 500; }
-  .ref-sub { color: var(--ks-muted); font-size: 10px; margin-top: 2px; }
-  .ref-btn { background: var(--ks-gold); color: var(--ks-navy); font-size: 10px; font-weight: 700; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; white-space: nowrap; }
-
-  .section-label { font-size: 12px; font-weight: 700; color: var(--ks-navy); padding: 0 16px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .storage-list { padding: 0 16px 16px; }
-  .storage-item { background: var(--ks-white); border: 1px solid #e8e6e0; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-  .storage-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .dot-green { background: var(--ks-green); }
-  .dot-gold { background: var(--ks-gold); }
-  .storage-info { flex: 1; }
-  .storage-name { font-size: 12px; font-weight: 600; color: var(--ks-navy); }
-  .storage-meta { font-size: 10px; color: var(--ks-muted); margin-top: 2px; }
-  .storage-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
-  .badge-green { background: var(--ks-green-bg); color: #1a8a4a; }
-  .badge-gold { background: #FBF4E0; color: #8a6a1a; }
-
-  .bottom-nav { display: flex; border-top: 1px solid #e8e6e0; padding: 8px 0 12px; background: var(--ks-white); position: sticky; bottom: 0; }
-  .bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; color: var(--ks-muted); font-size: 9px; }
-  .bnav-item.active { color: var(--ks-navy); }
-  .bnav-item i { font-size: 20px; }
-  .bnav-item.active i { color: var(--ks-gold); }
-
-  .page-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #e8e6e0; }
-  .back-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid #e0ddd8; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ks-navy); font-size: 16px; background: var(--ks-white); }
-  .page-title { font-size: 15px; font-weight: 700; color: var(--ks-navy); }
-
-  .progress-steps { display: flex; align-items: center; padding: 16px; }
-  .step { display: flex; flex-direction: column; align-items: center; flex: 1; }
-  .step-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; border: 2px solid #ddd; color: var(--ks-muted); background: var(--ks-white); }
-  .step-dot.current { background: var(--ks-gold); border-color: var(--ks-gold); color: var(--ks-navy); }
-  .step-label { font-size: 9px; color: var(--ks-muted); margin-top: 4px; }
-  .step-label.active { color: var(--ks-gold); font-weight: 600; }
-  .step-line { flex: 1; height: 1.5px; background: #ddd; margin: 0 2px; margin-bottom: 14px; }
-
-  .form-section { padding: 16px; }
-  .form-group { margin-bottom: 14px; }
-  .form-label { font-size: 11px; font-weight: 600; color: var(--ks-navy); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.3px; }
-  .form-select, .form-input { width: 100%; border: 1px solid #e0ddd8; border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--ks-navy); background: var(--ks-white); appearance: none; -webkit-appearance: none; }
-  .select-wrap { position: relative; }
-  .select-wrap::after { content: ''; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: 4px solid transparent; border-top: 5px solid var(--ks-muted); }
-  .date-wrap { position: relative; }
-  .date-wrap .cal-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ks-muted); font-size: 16px; }
-  .textarea { width: 100%; border: 1px solid #e0ddd8; border-radius: 10px; padding: 10px 12px; font-size: 12px; color: var(--ks-muted); background: var(--ks-white); resize: none; height: 64px; }
-  .cta-btn { display: block; width: calc(100% - 32px); margin: 0 16px 16px; background: var(--ks-gold); color: var(--ks-navy); border: none; border-radius: 12px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; }
-
-  .track-header { background: var(--ks-navy); padding: 16px; border-radius: 0 0 16px 16px; margin-bottom: 16px; }
-  .order-id { font-size: 15px; font-weight: 700; color: var(--ks-white); }
-  .status-pill { display: inline-block; margin-top: 6px; background: var(--ks-gold); color: var(--ks-navy); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-
-  .timeline { padding: 0 20px 16px; }
-  .tl-item { display: flex; gap: 14px; margin-bottom: 4px; }
-  .tl-left { display: flex; flex-direction: column; align-items: center; width: 24px; flex-shrink: 0; }
-  .tl-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
-  .tl-icon.done { background: var(--ks-green); color: #fff; }
-  .tl-icon.current { background: var(--ks-navy); color: var(--ks-gold); }
-  .tl-icon.pending { background: #e8e6e0; color: var(--ks-muted); }
-  .tl-line { flex: 1; width: 2px; background: #e8e6e0; min-height: 28px; }
-  .tl-line.done { background: var(--ks-green); }
-  .tl-content { flex: 1; padding-bottom: 20px; }
-  .tl-title { font-size: 13px; font-weight: 600; color: var(--ks-navy); }
-  .tl-title.pending { color: var(--ks-muted); font-weight: 400; }
-  .tl-meta { font-size: 10px; color: var(--ks-muted); margin-top: 2px; }
-
-  .detail-btn { display: block; width: calc(100% - 32px); margin: 0 16px 16px; background: var(--ks-white); color: var(--ks-navy); border: 1.5px solid var(--ks-navy); border-radius: 12px; padding: 13px; font-size: 13px; font-weight: 700; cursor: pointer; }
-
-  .profile-header { padding: 24px 16px 16px; text-align: center; border-bottom: 1px solid #e8e6e0; }
-  .avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--ks-navy); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 3px solid var(--ks-gold); }
-  .avatar span { color: var(--ks-gold); font-size: 22px; font-weight: 800; }
-  .profile-name { font-size: 17px; font-weight: 700; color: var(--ks-navy); }
-  .profile-sub { font-size: 12px; color: var(--ks-muted); margin-top: 2px; }
-  .profile-stat { display: flex; gap: 16px; justify-content: center; margin-top: 14px; }
-  .pstat { text-align: center; }
-  .pstat-num { font-size: 18px; font-weight: 700; color: var(--ks-navy); }
-  .pstat-lbl { font-size: 10px; color: var(--ks-muted); }
-  .menu-list { padding: 12px 16px; }
-  .menu-item { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #f0ede8; cursor: pointer; }
-  .menu-item:last-child { border-bottom: none; }
-  .menu-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; }
-  .menu-icon.gold-bg { background: #FBF4E0; color: var(--ks-gold); }
-  .menu-icon.navy-bg { background: #E8EBF3; color: var(--ks-navy); }
-  .menu-icon.red-bg { background: #FEE8E8; color: #e04040; }
-  .menu-text { flex: 1; font-size: 13px; font-weight: 500; color: var(--ks-navy); }
-  .menu-chevron { color: var(--ks-muted); font-size: 16px; }
-</style>
-
-<h2 class="sr-only">Keepsafe mobile app — home, book storage, track order, and profile screens</h2>
-
-<div style="background: var(--ks-white);">
-  <div class="nav-tabs">
-    <div class="nav-tab active" onclick="showScreen('home',this)">Home</div>
-    <div class="nav-tab" onclick="showScreen('book',this)">Book Storage</div>
-    <div class="nav-tab" onclick="showScreen('track',this)">Track Order</div>
-    <div class="nav-tab" onclick="showScreen('profile',this)">Profile</div>
-  </div>
-
-  <div id="home" class="screen active">
-    <div class="topbar">
-      <div class="topbar-logo">
-        <div class="ks-monogram"><span>KS</span></div>
-        <span class="brand-name">KEEPSAFE</span>
-      </div>
-      <div class="topbar-right">
-        <div class="icon-btn"><i class="ti ti-bell" aria-hidden="true"></i></div>
-        <div class="icon-btn"><i class="ti ti-menu-2" aria-hidden="true"></i></div>
-      </div>
-    </div>
-    <div class="hero-section">
-      <div class="greeting">Hello, <span>Jennifer</span> 👋</div>
-      <div class="sub">What would you like to do today?</div>
-    </div>
-    <div class="action-grid">
-      <div class="action-card" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])">
-        <div class="action-icon gold"><i class="ti ti-box" aria-hidden="true"></i></div>
-        <div class="action-label">Book Storage</div>
-        <div class="action-sub">Schedule a pickup for your items</div>
-      </div>
-      <div class="action-card">
-        <div class="action-icon navy"><i class="ti ti-archive" aria-hidden="true"></i></div>
-        <div class="action-label">My Storage</div>
-        <div class="action-sub">View current & past bookings</div>
-      </div>
-      <div class="action-card" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])">
-        <div class="action-icon navy"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
-        <div class="action-label">Track Order</div>
-        <div class="action-sub">Track your items in real time</div>
-      </div>
-      <div class="action-card">
-        <div class="action-icon gold"><i class="ti ti-headset" aria-hidden="true"></i></div>
-        <div class="action-label">Support</div>
-        <div class="action-sub">Chat with our support team</div>
-      </div>
-    </div>
-    <div class="referral-banner">
-      <div>
-        <div class="ref-text">Refer a friend & earn</div>
-        <div class="ref-sub">GHS 5 off your next booking</div>
-      </div>
-      <button class="ref-btn">Refer Now</button>
-    </div>
-    <div class="section-label">Active Bookings</div>
-    <div class="storage-list">
-      <div class="storage-item">
-        <div class="storage-dot dot-green"></div>
-        <div class="storage-info">
-          <div class="storage-name">KS20026061501 — Unity Hall</div>
-          <div class="storage-meta">In Storage · Due: 15th Aug, 2026</div>
+            <div class="flex items-center gap-x-4">
+                <button onclick="toggleLoginModal()" 
+                        class="hidden sm:block px-6 py-3 text-sm font-semibold border border-zinc-700 hover:border-white rounded-3xl transition-colors">
+                    Sign in
+                </button>
+                <button onclick="showBookingModal()" 
+                        class="px-7 py-3.5 bg-white hover:bg-zinc-100 text-zinc-900 font-semibold rounded-3xl text-sm transition-all flex items-center gap-x-2 active:scale-95">
+                    <i class="fa-solid fa-boxes-packing"></i>
+                    <span>Reserve Space</span>
+                </button>
+                <button onclick="toggleMobileMenu()" class="md:hidden text-3xl p-2">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
         </div>
-        <span class="storage-badge badge-green">In Storage</span>
-      </div>
-      <div class="storage-item">
-        <div class="storage-dot dot-gold"></div>
-        <div class="storage-info">
-          <div class="storage-name">KS20026051203 — Valco Hall</div>
-          <div class="storage-meta">Pickup Scheduled · 20th Jun</div>
+        
+        <!-- MOBILE MENU -->
+        <div id="mobile-menu" class="hidden fixed inset-0 bg-zinc-950 z-[60] pt-20 px-8">
+            <div class="flex flex-col gap-y-8 text-2xl font-medium">
+                <a onclick="navigateTo('home');toggleMobileMenu()" class="py-4 border-b border-zinc-800">Home</a>
+                <a onclick="navigateTo('locations');toggleMobileMenu()" class="py-4 border-b border-zinc-800">Locations</a>
+                <a onclick="navigateTo('book');toggleMobileMenu()" class="py-4 border-b border-zinc-800">Book Storage</a>
+                <a onclick="navigateTo('dashboard');toggleMobileMenu()" class="py-4 border-b border-zinc-800">My Dashboard</a>
+                <button onclick="toggleLoginModal();toggleMobileMenu()" class="mt-8 w-full py-5 border border-white/60 rounded-3xl">Sign in with University Email</button>
+            </div>
         </div>
-        <span class="storage-badge badge-gold">Scheduled</span>
-      </div>
-    </div>
-    <div class="bottom-nav">
-      <div class="bnav-item active"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
-      <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
-      <div class="bnav-item" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
-      <div class="bnav-item" onclick="showScreen('profile',document.querySelectorAll('.nav-tab')[3])"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
-    </div>
-  </div>
+    </nav>
 
-  <div id="book" class="screen">
-    <div class="page-header">
-      <div class="back-btn" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-arrow-left" aria-hidden="true"></i></div>
-      <span class="page-title">Book Storage</span>
-    </div>
-    <div class="progress-steps">
-      <div class="step">
-        <div class="step-dot current">1</div>
-        <div class="step-label active">Info</div>
-      </div>
-      <div class="step-line"></div>
-      <div class="step">
-        <div class="step-dot">2</div>
-        <div class="step-label">Pickup</div>
-      </div>
-      <div class="step-line"></div>
-      <div class="step">
-        <div class="step-dot">3</div>
-        <div class="step-label">Items</div>
-      </div>
-      <div class="step-line"></div>
-      <div class="step">
-        <div class="step-dot">4</div>
-        <div class="step-label">Confirm</div>
-      </div>
-    </div>
-    <div style="padding: 0 16px 8px; font-size: 13px; font-weight: 600; color: var(--ks-navy);">Storage Information</div>
-    <div class="form-section" style="padding-top: 8px;">
-      <div class="form-group">
-        <label class="form-label">Storage Duration</label>
-        <div class="select-wrap">
-          <select class="form-select">
-            <option>4 Weeks (Minimum)</option>
-            <option>8 Weeks</option>
-            <option>12 Weeks</option>
-            <option>Full Semester</option>
-          </select>
+    <!-- HERO -->
+    <section id="home" class="hero-bg min-h-screen flex items-center pt-16">
+        <div class="max-w-screen-2xl mx-auto px-8 grid md:grid-cols-12 gap-12 items-center">
+            <div class="md:col-span-7">
+                <div class="inline-flex items-center rounded-full bg-white/10 px-5 py-1.5 text-sm mb-8 backdrop-blur">
+                    <span class="bg-green-400 w-2 h-2 rounded-full mr-2 animate-ping"></span>
+                    23 universities • Live availability
+                </div>
+                
+                <h1 class="text-6xl md:text-[72px] leading-none font-bold tracking-tighter logo-font">
+                    YOUR STUFF.<br>OUR SAFE KEEP.
+                </h1>
+                
+                <p class="mt-8 max-w-lg text-xl text-zinc-300">
+                    Book secure, affordable student storage with doorstep pickup and delivery. 
+                    Never stress about moving again.
+                </p>
+                
+                <div class="flex flex-wrap gap-4 mt-12">
+                    <button onclick="showBookingModal()" 
+                            class="flex-1 md:flex-none bg-white text-black font-semibold px-10 py-6 rounded-3xl text-lg flex items-center justify-center gap-3 hover:shadow-2xl hover:shadow-blue-500/30 transition-all">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        START BOOKING
+                    </button>
+                    <button onclick="navigateTo('locations')" 
+                            class="flex-1 md:flex-none border-2 border-white/60 hover:border-white font-semibold px-10 py-6 rounded-3xl text-lg transition-all">
+                        SEE LOCATIONS
+                    </button>
+                </div>
+                
+                <div class="mt-16 flex items-center gap-12 text-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="-space-x-6 flex">
+                            <img src="https://picsum.photos/id/64/44/44" alt="" class="w-11 h-11 object-cover rounded-2xl border-2 border-zinc-900">
+                            <img src="https://picsum.photos/id/201/44/44" alt="" class="w-11 h-11 object-cover rounded-2xl border-2 border-zinc-900">
+                        </div>
+                        <div>Trusted by <span class="font-semibold">4,872</span> students</div>
+                    </div>
+                    <div class="pl-8 border-l border-white/20">
+                        <div class="flex text-amber-400">★★★★★</div>
+                        <div class="text-xs mt-1">4.98 average rating</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="md:col-span-5 relative hidden lg:block">
+                <div class="absolute -right-12 top-12 bg-zinc-900/90 backdrop-blur border border-zinc-700 rounded-3xl p-6 w-80 shadow-2xl">
+                    <div class="flex justify-between text-xs mb-6">
+                        <div class="text-emerald-400">NYU • 0.3mi</div>
+                        <div>12 SPOTS LEFT</div>
+                    </div>
+                    <div class="text-4xl font-semibold mb-1">$29<small class="text-base font-normal">/mo</small></div>
+                    <div class="text-zinc-400">Medium locker • Jul 10 – Aug 25</div>
+                    
+                    <button onclick="showBookingModal()" class="mt-8 w-full py-4 bg-blue-600 rounded-2xl text-sm font-semibold">BOOK THIS SPACE</button>
+                </div>
+                
+                <img src="https://picsum.photos/id/1015/620/720" class="rounded-[3rem] shadow-2xl" alt="Storage facility">
+            </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Pickup Location</label>
-        <div class="select-wrap">
-          <select class="form-select">
-            <option>Unity Hall</option>
-            <option>Valco Hall</option>
-            <option>Adehye Hall</option>
-            <option>Atlantic Hall</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Preferred Date</label>
-        <div class="date-wrap">
-          <input type="text" class="form-input" value="20th June, 2026" readonly />
-          <i class="ti ti-calendar cal-icon" aria-hidden="true"></i>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Notes (Optional)</label>
-        <textarea class="textarea" placeholder="Any special instructions?"></textarea>
-      </div>
-    </div>
-    <button class="cta-btn">Next →</button>
-  </div>
+    </section>
 
-  <div id="track" class="screen">
-    <div class="page-header">
-      <div class="back-btn" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-arrow-left" aria-hidden="true"></i></div>
-      <span class="page-title">Track Order</span>
-    </div>
-    <div class="track-header">
-      <div class="order-id">Order KS20026061501</div>
-      <div class="status-pill">In Storage</div>
-    </div>
-    <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-left">
-          <div class="tl-icon done"><i class="ti ti-check" aria-hidden="true"></i></div>
-          <div class="tl-line done"></div>
+    <!-- LOCATIONS -->
+    <section id="locations" class="py-28 hidden">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <span class="px-4 py-2 bg-amber-400 text-zinc-950 rounded-full text-xs font-semibold">CAMPUS NETWORK</span>
+                    <h2 class="text-6xl font-bold tracking-tighter mt-4">Storage near campus</h2>
+                </div>
+                <input id="search-input" type="text" placeholder="Search by school or city..." 
+                       onkeyup="if(event.key === 'Enter') filterLocations()" 
+                       class="bg-zinc-900 border border-zinc-700 focus:border-blue-500 px-6 py-4 rounded-3xl w-80 outline-none">
+            </div>
+            
+            <div id="locations-container" class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+                <!-- JS injected -->
+            </div>
         </div>
-        <div class="tl-content">
-          <div class="tl-title">Pickup Scheduled</div>
-          <div class="tl-meta">15th June, 2026 · 10:00 AM</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-left">
-          <div class="tl-icon done"><i class="ti ti-check" aria-hidden="true"></i></div>
-          <div class="tl-line done"></div>
-        </div>
-        <div class="tl-content">
-          <div class="tl-title">Picked Up</div>
-          <div class="tl-meta">15th June, 2026 · 12:15 PM</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-left">
-          <div class="tl-icon current"><i class="ti ti-lock" aria-hidden="true"></i></div>
-          <div class="tl-line"></div>
-        </div>
-        <div class="tl-content">
-          <div class="tl-title">In Storage</div>
-          <div class="tl-meta">15th June, 2026 · 2:20 PM</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-left">
-          <div class="tl-icon pending"><i class="ti ti-truck-delivery" aria-hidden="true"></i></div>
-          <div class="tl-line"></div>
-        </div>
-        <div class="tl-content">
-          <div class="tl-title pending">Out for Delivery</div>
-          <div class="tl-meta">—</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-left">
-          <div class="tl-icon pending"><i class="ti ti-home" aria-hidden="true"></i></div>
-        </div>
-        <div class="tl-content">
-          <div class="tl-title pending">Delivered</div>
-          <div class="tl-meta">—</div>
-        </div>
-      </div>
-    </div>
-    <button class="detail-btn">View Order Details</button>
-    <div class="bottom-nav">
-      <div class="bnav-item" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
-      <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
-      <div class="bnav-item active"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
-      <div class="bnav-item" onclick="showScreen('profile',document.querySelectorAll('.nav-tab')[3])"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
-    </div>
-  </div>
+    </section>
 
-  <div id="profile" class="screen">
-    <div class="topbar">
-      <span class="brand-name" style="font-size:14px;">My Profile</span>
-      <div class="icon-btn"><i class="ti ti-settings" aria-hidden="true"></i></div>
+    <!-- BOOKING MODAL -->
+    <div id="booking-modal" class="hidden fixed inset-0 z-[100] items-center justify-center bg-black/70">
+        <div class="modal bg-zinc-900 w-full max-w-lg mx-4 rounded-3xl overflow-hidden">
+            <div class="px-8 py-7 border-b border-zinc-700 flex items-center justify-between">
+                <h2 class="text-3xl font-semibold">New Storage Booking</h2>
+                <button onclick="hideBookingModal()" class="text-4xl leading-none text-zinc-400 hover:text-white">×</button>
+            </div>
+            
+            <div class="p-8 space-y-8">
+                <div>
+                    <label class="text-xs uppercase tracking-widest block mb-4 text-zinc-400">Storage Size</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div onclick="selectPackage(this)" data-price="19" class="package-option border border-transparent hover:border-blue-400 bg-zinc-800 rounded-2xl p-5 text-center cursor-pointer">
+                            <i class="fa-solid fa-box text-5xl mb-3 text-sky-400"></i>
+                            <div class="font-semibold">Locker</div>
+                            <div class="text-xs text-zinc-400">Small</div>
+                            <div class="mt-6 text-3xl font-bold">$19</div>
+                        </div>
+                        <div onclick="selectPackage(this)" data-price="39" class="package-option border-2 border-blue-500 bg-zinc-800 rounded-2xl p-5 text-center cursor-pointer ring-1 ring-blue-400">
+                            <i class="fa-solid fa-cubes text-5xl mb-3 text-violet-400"></i>
+                            <div class="font-semibold">Box Set</div>
+                            <div class="text-xs text-zinc-400">Medium</div>
+                            <div class="mt-6 text-3xl font-bold">$39</div>
+                        </div>
+                        <div onclick="selectPackage(this)" data-price="69" class="package-option border border-transparent hover:border-blue-400 bg-zinc-800 rounded-2xl p-5 text-center cursor-pointer">
+                            <i class="fa-solid fa-warehouse text-5xl mb-3 text-amber-400"></i>
+                            <div class="font-semibold">Room</div>
+                            <div class="text-xs text-zinc-400">Large</div>
+                            <div class="mt-6 text-3xl font-bold">$69</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block mb-2 text-sm text-zinc-400">Pickup</label>
+                        <input id="pickup" type="date" value="2026-07-12" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4">
+                    </div>
+                    <div>
+                        <label class="block mb-2 text-sm text-zinc-400">Return</label>
+                        <input id="return" type="date" value="2026-09-05" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block mb-2 text-sm text-zinc-400">Campus Location</label>
+                    <select id="campus" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                        <option>NYU - Greenwich Village</option>
+                        <option>Columbia University</option>
+                        <option>UC Berkeley Campus</option>
+                        <option>University of Texas</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="px-8 py-8 bg-black/40 flex items-center justify-between border-t border-zinc-700">
+                <div>
+                    <span class="text-zinc-400 text-sm">Total estimate</span>
+                    <div id="total-price" class="text-5xl font-bold">$39/mo</div>
+                </div>
+                <button onclick="submitBooking()" 
+                        class="bg-gradient-to-r from-blue-500 to-violet-600 px-14 py-5 rounded-3xl font-semibold text-lg">
+                    CONFIRM &amp; PAY
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="profile-header">
-      <div class="avatar"><span>JA</span></div>
-      <div class="profile-name">Jennifer Asante</div>
-      <div class="profile-sub">UCC · Computer Science · L300</div>
-      <div class="profile-stat">
-        <div class="pstat"><div class="pstat-num">3</div><div class="pstat-lbl">Bookings</div></div>
-        <div class="pstat"><div class="pstat-num">2</div><div class="pstat-lbl">Active</div></div>
-        <div class="pstat"><div class="pstat-num">GHS 15</div><div class="pstat-lbl">Saved</div></div>
-      </div>
-    </div>
-    <div class="menu-list">
-      <div class="menu-item">
-        <div class="menu-icon gold-bg"><i class="ti ti-box" aria-hidden="true"></i></div>
-        <span class="menu-text">My Bookings</span>
-        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
-      </div>
-      <div class="menu-item">
-        <div class="menu-icon navy-bg"><i class="ti ti-credit-card" aria-hidden="true"></i></div>
-        <span class="menu-text">Payment Methods</span>
-        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
-      </div>
-      <div class="menu-item">
-        <div class="menu-icon gold-bg"><i class="ti ti-users" aria-hidden="true"></i></div>
-        <span class="menu-text">Refer a Friend</span>
-        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
-      </div>
-      <div class="menu-item">
-        <div class="menu-icon navy-bg"><i class="ti ti-bell" aria-hidden="true"></i></div>
-        <span class="menu-text">Notifications</span>
-        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
-      </div>
-      <div class="menu-item">
-        <div class="menu-icon navy-bg"><i class="ti ti-help" aria-hidden="true"></i></div>
-        <span class="menu-text">Help & Support</span>
-        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
-      </div>
-      <div class="menu-item">
-        <div class="menu-icon red-bg"><i class="ti ti-logout" aria-hidden="true"></i></div>
-        <span class="menu-text" style="color: #e04040;">Sign Out</span>
-        <i class="ti ti-chevron-right menu-chevron" aria-hidden="true"></i>
-      </div>
-    </div>
-    <div class="bottom-nav">
-      <div class="bnav-item" onclick="showScreen('home',document.querySelectorAll('.nav-tab')[0])"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
-      <div class="bnav-item" onclick="showScreen('book',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-box" aria-hidden="true"></i><span>Bookings</span></div>
-      <div class="bnav-item" onclick="showScreen('track',document.querySelectorAll('.nav-tab')[2])"><i class="ti ti-map-pin" aria-hidden="true"></i><span>Track</span></div>
-      <div class="bnav-item active"><i class="ti ti-user" aria-hidden="true"></i><span>Profile</span></div>
-    </div>
-  </div>
-</div>
 
-<script>
-function showScreen(id, tab) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if (tab) tab.classList.add('active');
-}
-</script>
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="py-28 hidden bg-zinc-900">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="lg:w-3/4">
+                    <h1 class="text-6xl font-bold tracking-tighter mb-2">Welcome back, Alex 👋</h1>
+                    <p class="text-zinc-400">Here's what's happening with your storage</p>
+                    
+                    <div class="mt-16">
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="uppercase text-xs tracking-widest font-medium">Your Bookings</div>
+                            <button onclick="showBookingModal()" class="flex items-center gap-x-2 text-blue-400 text-sm font-medium">
+                                <i class="fa-solid fa-plus"></i> NEW BOOKING
+                            </button>
+                        </div>
+                        
+                        <div id="bookings-list" class="space-y-6">
+                            <!-- JS populated -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/4 space-y-8">
+                    <div class="bg-zinc-800 border border-zinc-700 rounded-3xl p-8">
+                        <div class="text-xs uppercase">Space Used</div>
+                        <div class="flex items-baseline gap-1 my-8">
+                            <span class="text-7xl font-semibold tabular-nums">3.8</span>
+                            <span class="text-3xl text-zinc-400">/ 8 ft³</span>
+                        </div>
+                        <div class="relative h-2 bg-zinc-700 rounded-full">
+                            <div class="absolute left-0 top-0 h-2 w-3/5 bg-blue-500 rounded-full"></div>
+                        </div>
+                    </div>
+                    
+                    <div onclick="alert('Tracking page would open here.')" class="bg-gradient-to-br from-zinc-900 to-zinc-800 border border-zinc-700 rounded-3xl p-8 cursor-pointer hover:border-blue-400 transition-all">
+                        <i class="fa-solid fa-truck text-4xl"></i>
+                        <div class="mt-6 font-medium">Track your delivery</div>
+                        <div class="text-xs text-emerald-400">Arriving in 2 days</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Render locations
+        const locationsData = [
+            { name: "NYU Village Hub", dist: "0.3 mi", avail: "18", price: "$29", img: "https://picsum.photos/id/1015/400/260" },
+            { name: "Columbia Morningside", dist: "1.8 mi", avail: "9", price: "$35", img: "https://picsum.photos/id/133/400/260" },
+            { name: "MIT East Campus", dist: "Campus", avail: "31", price: "$22", img: "https://picsum.photos/id/180/400/260" },
+            { name: "Berkeley Downtown", dist: "0.9 mi", avail: "4", price: "$41", img: "https://picsum.photos/id/201/400/260" }
+        ];
+        
+        function renderLocations(filtered = locationsData) {
+            const container = document.getElementById("locations-container");
+            container.innerHTML = "";
+            
+            filtered.forEach(loc => {
+                const div = document.createElement("div");
+                div.className = "bg-zinc-900 border border-zinc-700 rounded-3xl overflow-hidden card-hover cursor-pointer";
+                div.innerHTML = `
+                    <img src="${loc.img}" class="w-full h-56 object-cover">
+                    <div class="p-7">
+                        <div class="font-bold text-xl">${loc.name}</div>
+                        <div class="flex justify-between text-sm mt-6">
+                            <div class="text-zinc-400">${loc.dist} away</div>
+                            <div><span class="text-emerald-400">${loc.avail}</span> spots</div>
+                        </div>
+                        <div class="mt-8 flex items-center justify-between">
+                            <div>
+                                <span class="text-3xl font-semibold">${loc.price}</span><span class="text-xs text-zinc-400"> /mo</span>
+                            </div>
+                            <button onclick="event.stopImmediatePropagation(); showBookingModal()" 
+                                    class="px-6 py-3 bg-white text-zinc-900 text-sm font-semibold rounded-2xl">Reserve</button>
+                        </div>
+                    </div>
+                `;
+                div.onclick = () => showBookingModal();
+                container.append(div);
+            });
+        }
+        
+        function filterLocations() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const filtered = locationsData.filter(l => 
+                l.name.toLowerCase().includes(term)
+            );
+            renderLocations(filtered);
+        }
+        
+        // Bookings in dashboard
+        function renderBookings() {
+            const container = document.getElementById("bookings-list");
+            container.innerHTML = `
+                <div class="border border-zinc-700 bg-zinc-900 rounded-3xl p-8 flex gap-8">
+                    <div class="flex-shrink-0 w-24 h-24 bg-zinc-700 rounded-2xl"></div>
+                    <div class="flex-1">
+                        <div class="flex justify-between">
+                            <span class="px-4 py-1 text-xs rounded-3xl bg-emerald-900 text-emerald-300">ACTIVE</span>
+                            <span class="text-xs text-zinc-400">Ends Sep 5</span>
+                        </div>
+                        <div class="mt-5 text-2xl font-semibold">Summer Break Kit • 14 items</div>
+                        <div class="text-zinc-400">NYU Village Hub</div>
+                        
+                        <div class="flex gap-8 mt-10">
+                            <div>
+                                <div class="text-xs text-zinc-400">VALUE INSURED</div>
+                                <div class="font-semibold">$2,450</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-zinc-400">PICKUP</div>
+                                <div class="font-semibold">Jul 12</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Modal controls
+        function showBookingModal() {
+            document.getElementById('booking-modal').classList.remove('hidden');
+            document.getElementById('booking-modal').classList.add('flex');
+        }
+        
+        function hideBookingModal() {
+            const modal = document.getElementById('booking-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        
+        function selectPackage(el) {
+            document.querySelectorAll('.package-option').forEach(option => {
+                option.classList.remove('border-blue-500', 'ring-1', 'ring-blue-400');
+            });
+            el.classList.add('border-blue-500', 'ring-1', 'ring-blue-400');
+            
+            const price = el.getAttribute('data-price');
+            document.getElementById('total-price').textContent = '$' + price + '/mo';
+        }
+        
+        function submitBooking() {
+            hideBookingModal();
+            setTimeout(() => {
+                alert("✅ Booking confirmed! A confirmation email has been sent to your university inbox.");
+                navigateTo('dashboard');
+            }, 400);
+        }
+        
+        function toggleLoginModal() {
+            const email = prompt("University email (demo mode):", "you@nyu.edu");
+            if (email) alert("Signed in as " + email + " 🎓");
+        }
+        
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+        
+        function navigateTo(page) {
+            document.querySelectorAll('section').forEach(section => section.classList.add('hidden'));
+            
+            const sectionEl = document.getElementById(page);
+            if (sectionEl) sectionEl.classList.remove('hidden');
+            
+            window.scrollTo(0, 0);
+        }
+        
+        // Init
+        window.onload = () => {
+            renderLocations();
+            renderBookings();
+            
+            // Keyboard support
+            document.addEventListener('keypress', (e) => {
+                if (e.key === '/' && document.getElementById('search-input')) {
+                    document.getElementById('search-input').focus();
+                    e.preventDefault();
+                }
+            });
+            
+            // Show home by default
+            document.getElementById('home').classList.remove('hidden');
+            
+            console.log('%cKeepFace built successfully. Responsive, modern student logistics app.', 'color: #60a5fa; font-family: monospace');
+        };
+    </script>
+</body>
+</html>
