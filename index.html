@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KeepSafe • UCC Student Storage & Logistics</title>
+    <meta name="description" content="KeepSafe — secure, insured student storage and door-to-door pickup for University of Cape Coast students.">
+    <link rel="icon" href="favicon.ico">
+    <meta property="og:title" content="KeepSafe — UCC Student Storage">
+    <meta property="og:description" content="Pickup, store safely, and get your belongings delivered back when school resumes.">
+    <meta property="og:image" content="UCC.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -54,12 +59,18 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Visible focus styles for accessibility */
+        :focus {
+            outline: 3px solid rgba(234,179,8,0.18);
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body class="bg-zinc-950 text-zinc-100 overflow-x-hidden">
 
     <!-- Top Bar -->
-    <nav class="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
+    <nav class="bg-zinc-900 border-b border-zinc-800 md:sticky md:top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
                 <img src="logo.png" alt="KeepSafe" class="w-10 h-10 object-contain">
@@ -171,7 +182,7 @@
                     <ul class="space-y-4 text-left mb-10">
                         <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> 4-week minimum</li>
                         <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Pickup + Delivery</li>
-                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Up to 4 4bags</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Up to 4 bags</li>
                     </ul>
                     <button onclick="showBookingModal()" class="w-full py-5 bg-white text-zinc-950 font-semibold rounded-3xl">Book Standard</button>
                 </div>
@@ -193,21 +204,33 @@
     </section>
 
     <!-- BOOKING MODAL -->
-    <div id="booking-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+    <div id="booking-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="booking-title" tabindex="-1">
         <div class="bg-zinc-900 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-auto">
             <div class="p-8">
                 <div class="flex justify-between items-center mb-8">
-                    <h2 class="heading-font text-3xl font-semibold">Book KeepSafe</h2>
+                    <h2 id="booking-title" class="heading-font text-3xl font-semibold">Book KeepSafe</h2>
                     <button onclick="closeBookingModal()" class="text-4xl text-zinc-400 hover:text-white">×</button>
                 </div>
                 
                 <form id="booking-form" onsubmit="submitBooking(event)" class="space-y-6">
-                    <input type="text" placeholder="Full Name" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
-                    <input type="tel" placeholder="Phone Number" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
-                    <input type="email" placeholder="Student Email" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
-                    <input type="text" placeholder="Hall / Hostel" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
-                    <input type="datetime" placeholder="Date" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
-        
+                    <label for="name" class="sr-only">Full Name</label>
+                    <input id="name" name="name" type="text" placeholder="Full Name" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
+
+                    <label for="phone" class="sr-only">Phone Number</label>
+                    <input id="phone" name="phone" type="tel" placeholder="Phone Number" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
+
+                    <label for="email" class="sr-only">Student Email</label>
+                    <input id="email" name="email" type="email" placeholder="Student Email" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
+
+                    <label for="hall" class="sr-only">Hall / Hostel</label>
+                    <input id="hall" name="hall" type="text" placeholder="Hall / Hostel" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
+
+                    <label for="pickup" class="sr-only">Pickup Date and Time</label>
+                    <input id="pickup" name="pickup" type="datetime-local" placeholder="Date" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" required>
+
+                    <!-- honeypot to reduce spam -->
+                    <input type="text" name="website" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;">
+
                     <button type="submit" class="w-full py-6 bg-yellow-400 hover:bg-yellow-300 text-zinc-950 font-semibold text-xl rounded-3xl transition">
                         Confirm Booking
                     </button>
@@ -245,10 +268,10 @@
     </nav>
 
     <!-- SUCCESS MODAL -->
-    <div id="success-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[100]">
+    <div id="success-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[100]" role="dialog" aria-modal="true" aria-labelledby="success-title" tabindex="-1">
         <div class="text-center px-8">
             <i class="fa-solid fa-circle-check text-8xl text-emerald-400 mb-8"></i>
-            <h3 class="text-4xl font-semibold mb-4">Booking Received!</h3>
+            <h3 id="success-title" class="text-4xl font-semibold mb-4">Booking Received!</h3>
             <p class="text-zinc-400 mb-8">Our team will contact you shortly to arrange pickup.</p>
             <button onclick="closeSuccessModal()" 
                     class="px-12 py-5 bg-yellow-400 text-zinc-950 font-semibold rounded-3xl">
@@ -263,13 +286,53 @@
 
     <script>
         // Tailwind script already loaded via CDN
+        function trapFocus(modal) {
+            const focusable = modal.querySelectorAll('a,button,input,textarea,select,[tabindex]:not([tabindex="-1"])');
+            if (!focusable.length) return null;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            function keyHandler(e) {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey && document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    } else if (!e.shiftKey && document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+                if (e.key === 'Escape') {
+                    // close whichever modal is open
+                    if (!document.getElementById('booking-modal').classList.contains('hidden')) closeBookingModal();
+                    if (!document.getElementById('success-modal').classList.contains('hidden')) closeSuccessModal();
+                }
+            }
+
+            modal.addEventListener('keydown', keyHandler);
+            return keyHandler;
+        }
 
         function showBookingModal() {
-            document.getElementById('booking-modal').classList.remove('hidden');
+            const modal = document.getElementById('booking-modal');
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            // focus first input
+            const firstInput = modal.querySelector('input,button,select,textarea');
+            if (firstInput) firstInput.focus();
+
+            // trap focus and overlay click
+            modal._trapHandler = trapFocus(modal);
+            modal._overlayHandler = function (e) { if (e.target === modal) closeBookingModal(); };
+            modal.addEventListener('click', modal._overlayHandler);
         }
 
         function closeBookingModal() {
-            document.getElementById('booking-modal').classList.add('hidden');
+            const modal = document.getElementById('booking-modal');
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            if (modal._trapHandler) modal.removeEventListener('keydown', modal._trapHandler);
+            if (modal._overlayHandler) modal.removeEventListener('click', modal._overlayHandler);
         }
 
         function submitBooking(e) {
@@ -277,14 +340,27 @@
             closeBookingModal();
             
             // Show success
-            document.getElementById('success-modal').classList.remove('hidden');
-            
+            const success = document.getElementById('success-modal');
+            success.classList.remove('hidden');
+            success.setAttribute('aria-hidden', 'false');
+            const closeBtn = success.querySelector('button');
+            if (closeBtn) closeBtn.focus();
+
+            // trap focus and overlay click for success modal
+            success._trapHandler = trapFocus(success);
+            success._overlayHandler = function (e) { if (e.target === success) closeSuccessModal(); };
+            success.addEventListener('click', success._overlayHandler);
+
             // Reset form
             document.getElementById('booking-form').reset();
         }
 
         function closeSuccessModal() {
-            document.getElementById('success-modal').classList.add('hidden');
+            const success = document.getElementById('success-modal');
+            success.classList.add('hidden');
+            success.setAttribute('aria-hidden', 'true');
+            if (success._trapHandler) success.removeEventListener('keydown', success._trapHandler);
+            if (success._overlayHandler) success.removeEventListener('click', success._overlayHandler);
         }
 
         // Scroll animations
