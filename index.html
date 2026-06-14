@@ -3,432 +3,665 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KeepFace - Student Storage Booking</title>
+    <title>KeepFace • Student Storage</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap');
+        
+        :root {
+            --primary: 234 179 8;
         }
-        .logo-font {
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .heading-font {
             font-family: 'Space Grotesk', sans-serif;
         }
+
         .hero-bg {
-            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.75)), url('https://picsum.photos/id/1015/1920/1080') center/cover no-repeat;
+            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)), url('https://picsum.photos/id/1015/2000/1200') center/cover no-repeat;
         }
+
         .card-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
         .card-hover:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
+
         .nav-link {
             position: relative;
         }
+        
         .nav-link:after {
             content: '';
             position: absolute;
-            bottom: -4px;
-            left: 0;
             width: 0;
             height: 2px;
-            background: linear-gradient(to right, #3b82f6, #60a5fa);
-            transition: all 0.3s ease;
+            bottom: -2px;
+            left: 0;
+            background-color: rgb(234 179 8);
+            transition: width 0.3s ease;
         }
+        
         .nav-link:hover:after {
             width: 100%;
         }
+
         .modal {
-            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: modalPop 0.3s ease forwards;
         }
+        
         @keyframes modalPop {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
-<body class="bg-zinc-950 text-white overflow-x-hidden">
+<body class="bg-zinc-950 text-zinc-100">
     <!-- NAVBAR -->
-    <nav class="bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800 fixed w-full z-50">
-        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-x-4">
-                <div onclick="navigateTo('home')" class="flex items-center gap-3 cursor-pointer">
-                    <div class="w-11 h-11 bg-gradient-to-br from-blue-500 to-violet-600 rounded-3xl flex items-center justify-center text-3xl font-black logo-font shadow-inner">KF</div>
-                    <span class="text-4xl font-bold tracking-[-2px] logo-font">keepface</span>
+    <nav class="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-x-3">
+                    <div class="w-9 h-9 bg-yellow-400 rounded-2xl flex items-center justify-center text-zinc-950 font-bold text-2xl">K</div>
+                    <div>
+                        <span class="heading-font text-2xl font-semibold tracking-tight">keepface</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                    <a href="#" onclick="navigateTo('home')" class="nav-link text-zinc-300 hover:text-white transition-colors">Home</a>
+                    <a href="#" onclick="navigateTo('locations')" class="nav-link text-zinc-300 hover:text-white transition-colors">Locations</a>
+                    <a href="#" onclick="navigateTo('book')" class="nav-link text-zinc-300 hover:text-white transition-colors">Book Storage</a>
+                    <a href="#" onclick="navigateTo('dashboard')" class="nav-link text-zinc-300 hover:text-white transition-colors">Dashboard</a>
+                </div>
+
+                <div class="flex items-center gap-x-4">
+                    <button onclick="showLoginModal()" 
+                            class="hidden sm:flex items-center px-5 py-2 text-sm font-semibold rounded-2xl border border-zinc-700 hover:border-zinc-400 transition-colors">
+                        Log in
+                    </button>
+                    <button onclick="navigateTo('dashboard')" 
+                            class="px-6 py-2 bg-yellow-400 hover:bg-yellow-300 transition-colors text-zinc-950 font-semibold rounded-2xl text-sm">
+                        Get Started
+                    </button>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn"
+                            class="md:hidden w-10 h-10 flex items-center justify-center text-2xl">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
                 </div>
             </div>
-
-            <div class="hidden md:flex items-center gap-x-10 text-sm font-medium">
-                <a onclick="navigateTo('home')" class="nav-link cursor-pointer">Discover</a>
-                <a onclick="navigateTo('locations')" class="nav-link cursor-pointer">Locations</a>
-                <a onclick="navigateTo('book')" class="nav-link cursor-pointer">Book Now</a>
-                <a onclick="navigateTo('dashboard')" class="nav-link cursor-pointer">Dashboard</a>
-            </div>
-
-            <div class="flex items-center gap-x-4">
-                <button onclick="toggleLoginModal()" 
-                        class="hidden sm:block px-6 py-3 text-sm font-semibold border border-zinc-700 hover:border-white rounded-3xl transition-colors">
-                    Sign in
-                </button>
-                <button onclick="showBookingModal()" 
-                        class="px-7 py-3.5 bg-white hover:bg-zinc-100 text-zinc-900 font-semibold rounded-3xl text-sm transition-all flex items-center gap-x-2 active:scale-95">
-                    <i class="fa-solid fa-boxes-packing"></i>
-                    <span>Reserve Space</span>
-                </button>
-                <button onclick="toggleMobileMenu()" class="md:hidden text-3xl p-2">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-            </div>
         </div>
-        
-        <!-- MOBILE MENU -->
-        <div id="mobile-menu" class="hidden fixed inset-0 bg-zinc-950 z-[60] pt-20 px-8">
-            <div class="flex flex-col gap-y-8 text-2xl font-medium">
-                <a onclick="navigateTo('home');toggleMobileMenu()" class="py-4 border-b border-zinc-800">Home</a>
-                <a onclick="navigateTo('locations');toggleMobileMenu()" class="py-4 border-b border-zinc-800">Locations</a>
-                <a onclick="navigateTo('book');toggleMobileMenu()" class="py-4 border-b border-zinc-800">Book Storage</a>
-                <a onclick="navigateTo('dashboard');toggleMobileMenu()" class="py-4 border-b border-zinc-800">My Dashboard</a>
-                <button onclick="toggleLoginModal();toggleMobileMenu()" class="mt-8 w-full py-5 border border-white/60 rounded-3xl">Sign in with University Email</button>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-zinc-900 border-t border-zinc-800 py-4">
+            <div class="px-6 flex flex-col gap-y-6 text-lg font-medium">
+                <a href="#" onclick="navigateTo('home');toggleMobileMenu()" class="py-2">Home</a>
+                <a href="#" onclick="navigateTo('locations');toggleMobileMenu()" class="py-2">Locations</a>
+                <a href="#" onclick="navigateTo('book');toggleMobileMenu()" class="py-2">Book Storage</a>
+                <a href="#" onclick="navigateTo('dashboard');toggleMobileMenu()" class="py-2">Dashboard</a>
+                <div class="pt-4 border-t border-zinc-700">
+                    <button onclick="showLoginModal();toggleMobileMenu()" 
+                            class="w-full py-3 text-left">Log in</button>
+                </div>
             </div>
         </div>
     </nav>
 
     <!-- HERO -->
-    <section id="home" class="hero-bg min-h-screen flex items-center pt-16">
-        <div class="max-w-screen-2xl mx-auto px-8 grid md:grid-cols-12 gap-12 items-center">
-            <div class="md:col-span-7">
-                <div class="inline-flex items-center rounded-full bg-white/10 px-5 py-1.5 text-sm mb-8 backdrop-blur">
-                    <span class="bg-green-400 w-2 h-2 rounded-full mr-2 animate-ping"></span>
-                    23 universities • Live availability
+    <section id="home" class="hero-bg h-screen flex items-center relative">
+        <div class="max-w-7xl mx-auto px-6 md:px-8 pt-20">
+            <div class="max-w-2xl">
+                <div class="inline-flex items-center gap-x-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-3xl text-sm mb-6">
+                    <span class="text-yellow-400">●</span>
+                    Now serving 12 campuses
                 </div>
                 
-                <h1 class="text-6xl md:text-[72px] leading-none font-bold tracking-tighter logo-font">
-                    YOUR STUFF.<br>OUR SAFE KEEP.
+                <h1 class="heading-font text-5xl md:text-6xl lg:text-7xl font-semibold leading-none tracking-tighter mb-6">
+                    Store smarter.<br>Live lighter.
                 </h1>
                 
-                <p class="mt-8 max-w-lg text-xl text-zinc-300">
-                    Book secure, affordable student storage with doorstep pickup and delivery. 
-                    Never stress about moving again.
+                <p class="text-xl text-zinc-300 mb-10 max-w-md">
+                    Secure, affordable campus storage for students. Book in seconds. Pickup &amp; delivery available.
                 </p>
-                
-                <div class="flex flex-wrap gap-4 mt-12">
-                    <button onclick="showBookingModal()" 
-                            class="flex-1 md:flex-none bg-white text-black font-semibold px-10 py-6 rounded-3xl text-lg flex items-center justify-center gap-3 hover:shadow-2xl hover:shadow-blue-500/30 transition-all">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        START BOOKING
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button onclick="navigateTo('book')" 
+                            class="px-8 py-4 bg-yellow-400 hover:bg-yellow-300 transition-all text-zinc-950 font-semibold text-lg rounded-3xl flex items-center justify-center gap-x-3 group">
+                        Reserve Space Now
+                        <i class="fa-solid fa-arrow-right group-active:translate-x-1 transition"></i>
                     </button>
                     <button onclick="navigateTo('locations')" 
-                            class="flex-1 md:flex-none border-2 border-white/60 hover:border-white font-semibold px-10 py-6 rounded-3xl text-lg transition-all">
-                        SEE LOCATIONS
+                            class="px-8 py-4 border border-white/30 hover:bg-white/10 transition-all rounded-3xl text-lg font-medium">
+                        See Locations
                     </button>
                 </div>
-                
-                <div class="mt-16 flex items-center gap-12 text-sm">
-                    <div class="flex items-center gap-4">
-                        <div class="-space-x-6 flex">
-                            <img src="https://picsum.photos/id/64/44/44" alt="" class="w-11 h-11 object-cover rounded-2xl border-2 border-zinc-900">
-                            <img src="https://picsum.photos/id/201/44/44" alt="" class="w-11 h-11 object-cover rounded-2xl border-2 border-zinc-900">
-                        </div>
-                        <div>Trusted by <span class="font-semibold">4,872</span> students</div>
+
+                <div class="mt-12 flex items-center gap-x-8 text-sm">
+                    <div class="flex items-center gap-x-2">
+                        <i class="fa-solid fa-check text-emerald-400"></i>
+                        <span>Insured</span>
                     </div>
-                    <div class="pl-8 border-l border-white/20">
-                        <div class="flex text-amber-400">★★★★★</div>
-                        <div class="text-xs mt-1">4.98 average rating</div>
+                    <div class="flex items-center gap-x-2">
+                        <i class="fa-solid fa-check text-emerald-400"></i>
+                        <span>24/7 Access</span>
+                    </div>
+                    <div class="flex items-center gap-x-2">
+                        <i class="fa-solid fa-check text-emerald-400"></i>
+                        <span>Climate Controlled</span>
                     </div>
                 </div>
             </div>
-            
-            <div class="md:col-span-5 relative hidden lg:block">
-                <div class="absolute -right-12 top-12 bg-zinc-900/90 backdrop-blur border border-zinc-700 rounded-3xl p-6 w-80 shadow-2xl">
-                    <div class="flex justify-between text-xs mb-6">
-                        <div class="text-emerald-400">NYU • 0.3mi</div>
-                        <div>12 SPOTS LEFT</div>
-                    </div>
-                    <div class="text-4xl font-semibold mb-1">$29<small class="text-base font-normal">/mo</small></div>
-                    <div class="text-zinc-400">Medium locker • Jul 10 – Aug 25</div>
-                    
-                    <button onclick="showBookingModal()" class="mt-8 w-full py-4 bg-blue-600 rounded-2xl text-sm font-semibold">BOOK THIS SPACE</button>
-                </div>
-                
-                <img src="https://picsum.photos/id/1015/620/720" class="rounded-[3rem] shadow-2xl" alt="Storage facility">
-            </div>
+        </div>
+
+        <!-- Trust bar -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:flex items-center gap-x-10 text-xs uppercase tracking-widest text-zinc-400">
+            <div>Stanford</div>
+            <div>NYU</div>
+            <div>MIT</div>
+            <div>UCLA</div>
+            <div>UT Austin</div>
         </div>
     </section>
 
     <!-- LOCATIONS -->
-    <section id="locations" class="py-28 hidden">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <div class="flex justify-between items-end mb-12">
+    <section id="locations" class="py-20 bg-zinc-950">
+        <div class="max-w-7xl mx-auto px-6 md:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
                 <div>
-                    <span class="px-4 py-2 bg-amber-400 text-zinc-950 rounded-full text-xs font-semibold">CAMPUS NETWORK</span>
-                    <h2 class="text-6xl font-bold tracking-tighter mt-4">Storage near campus</h2>
+                    <span class="text-yellow-400 text-sm font-medium tracking-widest">CAMPUS NETWORK</span>
+                    <h2 class="heading-font text-4xl md:text-5xl font-semibold mt-2">Storage near you</h2>
                 </div>
-                <input id="search-input" type="text" placeholder="Search by school or city..." 
-                       onkeyup="if(event.key === 'Enter') filterLocations()" 
-                       class="bg-zinc-900 border border-zinc-700 focus:border-blue-500 px-6 py-4 rounded-3xl w-80 outline-none">
+                <div class="mt-6 md:mt-0 relative w-full md:w-80">
+                    <input id="location-search" 
+                           onkeyup="filterLocations()"
+                           type="text" 
+                           placeholder="Search campuses..." 
+                           class="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-400 rounded-3xl px-6 py-4 text-sm outline-none">
+                    <i class="fa-solid fa-magnifying-glass absolute right-6 top-4 text-zinc-500"></i>
+                </div>
             </div>
-            
-            <div id="locations-container" class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
-                <!-- JS injected -->
+
+            <div id="locations-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated by JS -->
             </div>
         </div>
     </section>
 
-    <!-- BOOKING MODAL -->
-    <div id="booking-modal" class="hidden fixed inset-0 z-[100] items-center justify-center bg-black/70">
-        <div class="modal bg-zinc-900 w-full max-w-lg mx-4 rounded-3xl overflow-hidden">
-            <div class="px-8 py-7 border-b border-zinc-700 flex items-center justify-between">
-                <h2 class="text-3xl font-semibold">New Storage Booking</h2>
-                <button onclick="hideBookingModal()" class="text-4xl leading-none text-zinc-400 hover:text-white">×</button>
-            </div>
-            
-            <div class="p-8 space-y-8">
+    <!-- BOOKING CTA -->
+    <section id="book" class="py-24 bg-gradient-to-br from-zinc-900 to-zinc-950 border-y border-zinc-800">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="heading-font text-5xl font-semibold mb-6">Ready to declutter?</h2>
+            <p class="text-xl text-zinc-400 mb-10 max-w-md mx-auto">
+                Book secure storage in under 60 seconds. Starting at $9/month.
+            </p>
+            <button onclick="showBookingModal()" 
+                    class="inline-flex items-center gap-x-4 bg-yellow-400 hover:bg-yellow-300 transition-colors text-zinc-950 px-10 py-6 rounded-3xl text-2xl font-semibold shadow-xl shadow-yellow-500/20">
+                Book Your Space
+                <i class="fa-solid fa-boxes-packing text-3xl"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- DASHBOARD PREVIEW -->
+    <section id="dashboard" class="py-20 bg-zinc-950">
+        <div class="max-w-7xl mx-auto px-6 md:px-8">
+            <div class="flex justify-between items-end mb-12">
                 <div>
-                    <label class="text-xs uppercase tracking-widest block mb-4 text-zinc-400">Storage Size</label>
-                    <div class="grid grid-cols-3 gap-4">
-                        <div onclick="selectPackage(this)" data-price="19" class="package-option border border-transparent hover:border-blue-400 bg-zinc-800 rounded-2xl p-5 text-center cursor-pointer">
-                            <i class="fa-solid fa-box text-5xl mb-3 text-sky-400"></i>
-                            <div class="font-semibold">Locker</div>
-                            <div class="text-xs text-zinc-400">Small</div>
-                            <div class="mt-6 text-3xl font-bold">$19</div>
-                        </div>
-                        <div onclick="selectPackage(this)" data-price="39" class="package-option border-2 border-blue-500 bg-zinc-800 rounded-2xl p-5 text-center cursor-pointer ring-1 ring-blue-400">
-                            <i class="fa-solid fa-cubes text-5xl mb-3 text-violet-400"></i>
-                            <div class="font-semibold">Box Set</div>
-                            <div class="text-xs text-zinc-400">Medium</div>
-                            <div class="mt-6 text-3xl font-bold">$39</div>
-                        </div>
-                        <div onclick="selectPackage(this)" data-price="69" class="package-option border border-transparent hover:border-blue-400 bg-zinc-800 rounded-2xl p-5 text-center cursor-pointer">
-                            <i class="fa-solid fa-warehouse text-5xl mb-3 text-amber-400"></i>
-                            <div class="font-semibold">Room</div>
-                            <div class="text-xs text-zinc-400">Large</div>
-                            <div class="mt-6 text-3xl font-bold">$69</div>
-                        </div>
-                    </div>
+                    <span class="uppercase text-yellow-400 text-sm tracking-widest">Student Portal</span>
+                    <h2 class="heading-font text-4xl font-semibold">Your KeepFace</h2>
                 </div>
-                
-                <div class="grid grid-cols-2 gap-6">
-                    <div>
-                        <label class="block mb-2 text-sm text-zinc-400">Pickup</label>
-                        <input id="pickup" type="date" value="2026-07-12" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4">
-                    </div>
-                    <div>
-                        <label class="block mb-2 text-sm text-zinc-400">Return</label>
-                        <input id="return" type="date" value="2026-09-05" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block mb-2 text-sm text-zinc-400">Campus Location</label>
-                    <select id="campus" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
-                        <option>NYU - Greenwich Village</option>
-                        <option>Columbia University</option>
-                        <option>UC Berkeley Campus</option>
-                        <option>University of Texas</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="px-8 py-8 bg-black/40 flex items-center justify-between border-t border-zinc-700">
-                <div>
-                    <span class="text-zinc-400 text-sm">Total estimate</span>
-                    <div id="total-price" class="text-5xl font-bold">$39/mo</div>
-                </div>
-                <button onclick="submitBooking()" 
-                        class="bg-gradient-to-r from-blue-500 to-violet-600 px-14 py-5 rounded-3xl font-semibold text-lg">
-                    CONFIRM &amp; PAY
+                <button onclick="addFakeBooking()" 
+                        class="text-sm flex items-center gap-x-2 px-5 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-3xl">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>New Booking</span>
                 </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Stats -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="bg-zinc-900 rounded-3xl p-8">
+                        <div class="flex justify-between mb-8">
+                            <div>
+                                <p class="text-zinc-400 text-sm">Total Stored</p>
+                                <p class="text-6xl font-semibold heading-font mt-1">3.2 m³</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-emerald-400 text-sm font-medium">+12% this month</p>
+                            </div>
+                        </div>
+                        <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                            <div class="h-full w-[65%] bg-yellow-400 rounded-full"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="bg-zinc-900 rounded-3xl p-6">
+                            <i class="fa-solid fa-lock text-3xl mb-6 text-yellow-400"></i>
+                            <p class="text-sm text-zinc-400">Active Bookings</p>
+                            <p class="text-5xl font-semibold mt-2">2</p>
+                        </div>
+                        <div class="bg-zinc-900 rounded-3xl p-6">
+                            <i class="fa-solid fa-truck text-3xl mb-6 text-yellow-400"></i>
+                            <p class="text-sm text-zinc-400">Deliveries</p>
+                            <p class="text-5xl font-semibold mt-2">1</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Bookings -->
+                <div class="lg:col-span-7">
+                    <h3 class="font-semibold mb-6 text-lg">Active Bookings</h3>
+                    <div id="active-bookings" class="space-y-4">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black py-16">
+        <div class="max-w-7xl mx-auto px-6 md:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-y-10">
+                <div>
+                    <div class="flex items-center gap-x-3 mb-6">
+                        <div class="w-8 h-8 bg-yellow-400 rounded-2xl flex items-center justify-center text-zinc-950 font-bold">K</div>
+                        <span class="heading-font text-2xl font-semibold">keepface</span>
+                    </div>
+                    <p class="text-zinc-400 text-sm max-w-xs">Student-first storage &amp; logistics.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-5">Platform</h4>
+                    <ul class="space-y-3 text-sm text-zinc-400">
+                        <li><a href="#" class="hover:text-white">Book Storage</a></li>
+                        <li><a href="#" class="hover:text-white">Pickup &amp; Delivery</a></li>
+                        <li><a href="#" class="hover:text-white">Pricing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-5">Company</h4>
+                    <ul class="space-y-3 text-sm text-zinc-400">
+                        <li><a href="#" class="hover:text-white">About</a></li>
+                        <li><a href="#" class="hover:text-white">Campuses</a></li>
+                        <li><a href="#" class="hover:text-white">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-5">Support</h4>
+                    <ul class="space-y-3 text-sm text-zinc-400">
+                        <li><a href="#" class="hover:text-white">Contact</a></li>
+                        <li><a href="#" class="hover:text-white">Help Center</a></li>
+                        <li><a href="#" class="hover:text-white">Safety</a></li>
+                    </ul>
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                    <h4 class="font-semibold mb-5">Get the app</h4>
+                    <div class="flex gap-4">
+                        <button class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 px-5 py-3 rounded-2xl text-xs">App Store</button>
+                        <button class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 px-5 py-3 rounded-2xl text-xs">Play Store</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-zinc-900 mt-16 pt-8 text-xs text-zinc-500 flex flex-col md:flex-row justify-between items-center gap-y-4">
+                <div>© 2026 KeepFace, Inc. All rights reserved.</div>
+                <div class="flex gap-x-6">
+                    <a href="#" class="hover:text-zinc-300">Privacy</a>
+                    <a href="#" class="hover:text-zinc-300">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- BOOKING MODAL -->
+    <div id="booking-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
+        <div class="modal bg-zinc-900 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-hidden">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="heading-font text-3xl font-semibold">Reserve Storage</h3>
+                    <button onclick="closeBookingModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
+                </div>
+
+                <form id="booking-form" onsubmit="handleBooking(event)">
+                    <div class="space-y-8">
+                        <!-- Size -->
+                        <div>
+                            <label class="block text-sm text-zinc-400 mb-3">Storage Size</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <button type="button" onclick="selectSize(this)" data-size="small" class="size-btn border border-zinc-700 hover:border-yellow-400 rounded-2xl p-4 text-center transition-all active:scale-95">
+                                    <div class="text-xl font-medium">Small</div>
+                                    <div class="text-xs text-zinc-400">1-2 boxes</div>
+                                </button>
+                                <button type="button" onclick="selectSize(this)" data-size="medium" class="size-btn border border-zinc-700 hover:border-yellow-400 rounded-2xl p-4 text-center transition-all active:scale-95 bg-yellow-400 text-zinc-950">
+                                    <div class="text-xl font-medium">Medium</div>
+                                    <div class="text-xs text-zinc-400">3-6 boxes</div>
+                                </button>
+                                <button type="button" onclick="selectSize(this)" data-size="large" class="size-btn border border-zinc-700 hover:border-yellow-400 rounded-2xl p-4 text-center transition-all active:scale-95">
+                                    <div class="text-xl font-medium">Large</div>
+                                    <div class="text-xs text-zinc-400">7+ boxes</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Campus -->
+                        <div>
+                            <label class="block text-sm text-zinc-400 mb-2">Campus</label>
+                            <select id="campus-select" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-white outline-none focus:border-yellow-400">
+                                <option value="Stanford">Stanford University</option>
+                                <option value="NYU">New York University</option>
+                                <option value="MIT">MIT</option>
+                                <option value="UCLA">UCLA</option>
+                            </select>
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">Start Date</label>
+                                <input type="date" id="start-date" value="2026-06-20" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 outline-none focus:border-yellow-400">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-zinc-400 mb-2">End Date</label>
+                                <input type="date" id="end-date" value="2026-09-10" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 outline-none focus:border-yellow-400">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-zinc-700">
+                            <div class="flex justify-between text-lg">
+                                <span class="text-zinc-400">Estimated monthly cost</span>
+                                <span id="price-display" class="font-semibold">$29</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" 
+                            class="mt-10 w-full py-5 bg-yellow-400 hover:bg-yellow-300 text-zinc-950 font-semibold text-lg rounded-3xl transition-all active:scale-[0.985]">
+                        Confirm Booking — $29/mo
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
-    <section id="dashboard" class="py-28 hidden bg-zinc-900">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <div class="flex flex-col lg:flex-row gap-8">
-                <div class="lg:w-3/4">
-                    <h1 class="text-6xl font-bold tracking-tighter mb-2">Welcome back, Alex 👋</h1>
-                    <p class="text-zinc-400">Here's what's happening with your storage</p>
-                    
-                    <div class="mt-16">
-                        <div class="flex items-center justify-between mb-8">
-                            <div class="uppercase text-xs tracking-widest font-medium">Your Bookings</div>
-                            <button onclick="showBookingModal()" class="flex items-center gap-x-2 text-blue-400 text-sm font-medium">
-                                <i class="fa-solid fa-plus"></i> NEW BOOKING
-                            </button>
-                        </div>
-                        
-                        <div id="bookings-list" class="space-y-6">
-                            <!-- JS populated -->
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lg:w-1/4 space-y-8">
-                    <div class="bg-zinc-800 border border-zinc-700 rounded-3xl p-8">
-                        <div class="text-xs uppercase">Space Used</div>
-                        <div class="flex items-baseline gap-1 my-8">
-                            <span class="text-7xl font-semibold tabular-nums">3.8</span>
-                            <span class="text-3xl text-zinc-400">/ 8 ft³</span>
-                        </div>
-                        <div class="relative h-2 bg-zinc-700 rounded-full">
-                            <div class="absolute left-0 top-0 h-2 w-3/5 bg-blue-500 rounded-full"></div>
-                        </div>
-                    </div>
-                    
-                    <div onclick="alert('Tracking page would open here.')" class="bg-gradient-to-br from-zinc-900 to-zinc-800 border border-zinc-700 rounded-3xl p-8 cursor-pointer hover:border-blue-400 transition-all">
-                        <i class="fa-solid fa-truck text-4xl"></i>
-                        <div class="mt-6 font-medium">Track your delivery</div>
-                        <div class="text-xs text-emerald-400">Arriving in 2 days</div>
-                    </div>
-                </div>
+    <!-- LOGIN MODAL -->
+    <div id="login-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
+        <div class="modal bg-zinc-900 rounded-3xl w-full max-w-md p-8">
+            <div class="flex justify-between mb-8">
+                <h3 class="heading-font text-3xl font-semibold">Welcome back</h3>
+                <button onclick="closeLoginModal()" class="text-4xl leading-none text-zinc-400 hover:text-white">×</button>
             </div>
+            <div class="space-y-6">
+                <input type="email" placeholder="Email address" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-5 outline-none">
+                <input type="password" placeholder="Password" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-5 outline-none">
+                <button onclick="fakeLogin()" 
+                        class="w-full py-5 bg-white text-zinc-950 font-semibold rounded-3xl">Sign in</button>
+            </div>
+            <p class="text-center text-xs text-zinc-500 mt-8">Don't have an account? <span onclick="closeLoginModal()" class="text-yellow-400 cursor-pointer">Sign up free</span></p>
         </div>
-    </section>
+    </div>
 
     <script>
-        // Render locations
-        const locationsData = [
-            { name: "NYU Village Hub", dist: "0.3 mi", avail: "18", price: "$29", img: "https://picsum.photos/id/1015/400/260" },
-            { name: "Columbia Morningside", dist: "1.8 mi", avail: "9", price: "$35", img: "https://picsum.photos/id/133/400/260" },
-            { name: "MIT East Campus", dist: "Campus", avail: "31", price: "$22", img: "https://picsum.photos/id/180/400/260" },
-            { name: "Berkeley Downtown", dist: "0.9 mi", avail: "4", price: "$41", img: "https://picsum.photos/id/201/400/260" }
-        ];
-        
-        function renderLocations(filtered = locationsData) {
-            const container = document.getElementById("locations-container");
-            container.innerHTML = "";
+        // Tailwind script already loaded
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
+
+        // Navigation
+        function navigateTo(section) {
+            document.querySelectorAll('section').forEach(s => {
+                if (s.id === section) {
+                    s.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
             
-            filtered.forEach(loc => {
-                const div = document.createElement("div");
-                div.className = "bg-zinc-900 border border-zinc-700 rounded-3xl overflow-hidden card-hover cursor-pointer";
-                div.innerHTML = `
-                    <img src="${loc.img}" class="w-full h-56 object-cover">
-                    <div class="p-7">
-                        <div class="font-bold text-xl">${loc.name}</div>
-                        <div class="flex justify-between text-sm mt-6">
-                            <div class="text-zinc-400">${loc.dist} away</div>
-                            <div><span class="text-emerald-400">${loc.avail}</span> spots</div>
-                        </div>
-                        <div class="mt-8 flex items-center justify-between">
+            // Close mobile menu if open
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (!mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        }
+
+        // Locations Data
+        const locations = [
+            {
+                name: "Stanford University",
+                address: "450 Serra Mall, Stanford, CA",
+                distance: "0.8 mi",
+                spots: "47",
+                img: "https://picsum.photos/id/1015/600/400"
+            },
+            {
+                name: "New York University",
+                address: "70 Washington Square S, New York, NY",
+                distance: "1.2 mi",
+                spots: "23",
+                img: "https://picsum.photos/id/106/600/400"
+            },
+            {
+                name: "MIT Campus",
+                address: "77 Massachusetts Ave, Cambridge, MA",
+                distance: "0.4 mi",
+                spots: "61",
+                img: "https://picsum.photos/id/201/600/400"
+            },
+            {
+                name: "UCLA",
+                address: "Los Angeles, CA",
+                distance: "2.1 mi",
+                spots: "19",
+                img: "https://picsum.photos/id/251/600/400"
+            }
+        ];
+
+        function renderLocations(filteredLocations = locations) {
+            const grid = document.getElementById('locations-grid');
+            grid.innerHTML = '';
+            
+            filteredLocations.forEach(loc => {
+                const card = document.createElement('div');
+                card.className = `bg-zinc-900 rounded-3xl overflow-hidden card-hover cursor-pointer`;
+                card.innerHTML = `
+                    <img src="${loc.img}" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
                             <div>
-                                <span class="text-3xl font-semibold">${loc.price}</span><span class="text-xs text-zinc-400"> /mo</span>
+                                <h4 class="font-semibold text-lg">${loc.name}</h4>
+                                <p class="text-sm text-zinc-400 mt-1">${loc.address}</p>
                             </div>
-                            <button onclick="event.stopImmediatePropagation(); showBookingModal()" 
-                                    class="px-6 py-3 bg-white text-zinc-900 text-sm font-semibold rounded-2xl">Reserve</button>
+                            <div class="text-right">
+                                <div class="text-emerald-400 font-medium">${loc.distance}</div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-x-2">
+                                <span class="inline-block w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                                <span>${loc.spots} spots left</span>
+                            </div>
+                            <button onclick="quickBook('${loc.name}'); event.stopImmediatePropagation()" 
+                                    class="px-6 py-2 bg-yellow-400 text-zinc-950 rounded-2xl text-sm font-medium hover:bg-yellow-300 transition">
+                                Book
+                            </button>
                         </div>
                     </div>
                 `;
-                div.onclick = () => showBookingModal();
-                container.append(div);
+                grid.appendChild(card);
             });
         }
-        
+
         function filterLocations() {
-            const term = document.getElementById('search-input').value.toLowerCase();
-            const filtered = locationsData.filter(l => 
-                l.name.toLowerCase().includes(term)
+            const query = document.getElementById('location-search').value.toLowerCase();
+            const filtered = locations.filter(loc => 
+                loc.name.toLowerCase().includes(query) || 
+                loc.address.toLowerCase().includes(query)
             );
             renderLocations(filtered);
         }
-        
-        // Bookings in dashboard
-        function renderBookings() {
-            const container = document.getElementById("bookings-list");
+
+        // Booking Modal
+        let selectedSize = 'medium';
+
+        function showBookingModal() {
+            document.getElementById('booking-modal').classList.remove('hidden');
+            // Pre-select medium
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                if (btn.getAttribute('data-size') === 'medium') {
+                    btn.classList.add('bg-yellow-400', 'text-zinc-950');
+                }
+            });
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+        }
+
+        function selectSize(el) {
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.classList.remove('bg-yellow-400', 'text-zinc-950');
+            });
+            el.classList.add('bg-yellow-400', 'text-zinc-950');
+            selectedSize = el.getAttribute('data-size');
+            
+            // Update price
+            const priceEl = document.getElementById('price-display');
+            if (selectedSize === 'small') priceEl.textContent = '$19';
+            else if (selectedSize === 'medium') priceEl.textContent = '$29';
+            else priceEl.textContent = '$49';
+        }
+
+        function handleBooking(e) {
+            e.preventDefault();
+            const campus = document.getElementById('campus-select').value;
+            
+            closeBookingModal();
+            
+            // Show success
+            const successHTML = `
+                <div class="fixed inset-0 bg-black/80 flex items-center justify-center z-[200]">
+                    <div class="bg-zinc-900 rounded-3xl p-10 max-w-sm text-center">
+                        <i class="fa-solid fa-check-circle text-6xl text-emerald-400 mb-6"></i>
+                        <h3 class="text-3xl font-semibold mb-3">Booking Confirmed!</h3>
+                        <p class="text-zinc-400">Your ${selectedSize} storage at <span class="font-medium">${campus}</span> is ready.</p>
+                        <button onclick="this.parentElement.parentElement.remove(); navigateTo('dashboard')" 
+                                class="mt-8 w-full py-4 bg-yellow-400 text-zinc-950 font-semibold rounded-3xl">
+                            Go to Dashboard
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', successHTML);
+            
+            // Add to active bookings
+            setTimeout(() => {
+                addBookingToDashboard(campus, selectedSize);
+            }, 800);
+        }
+
+        // Fake Login
+        function showLoginModal() {
+            document.getElementById('login-modal').classList.remove('hidden');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('login-modal').classList.add('hidden');
+        }
+
+        function fakeLogin() {
+            closeLoginModal();
+            navigateTo('dashboard');
+        }
+
+        // Dashboard Bookings
+        function renderActiveBookings() {
+            const container = document.getElementById('active-bookings');
             container.innerHTML = `
-                <div class="border border-zinc-700 bg-zinc-900 rounded-3xl p-8 flex gap-8">
-                    <div class="flex-shrink-0 w-24 h-24 bg-zinc-700 rounded-2xl"></div>
+                <div class="bg-zinc-900 rounded-3xl p-6 flex gap-6 items-center">
+                    <div class="w-20 h-20 bg-zinc-800 rounded-2xl flex-shrink-0"></div>
                     <div class="flex-1">
                         <div class="flex justify-between">
-                            <span class="px-4 py-1 text-xs rounded-3xl bg-emerald-900 text-emerald-300">ACTIVE</span>
-                            <span class="text-xs text-zinc-400">Ends Sep 5</span>
-                        </div>
-                        <div class="mt-5 text-2xl font-semibold">Summer Break Kit • 14 items</div>
-                        <div class="text-zinc-400">NYU Village Hub</div>
-                        
-                        <div class="flex gap-8 mt-10">
                             <div>
-                                <div class="text-xs text-zinc-400">VALUE INSURED</div>
-                                <div class="font-semibold">$2,450</div>
+                                <p class="font-medium">Medium Locker • Stanford</p>
+                                <p class="text-sm text-emerald-400">Until Sep 10, 2026</p>
                             </div>
-                            <div>
-                                <div class="text-xs text-zinc-400">PICKUP</div>
-                                <div class="font-semibold">Jul 12</div>
+                            <div class="text-right">
+                                <span class="inline-block px-4 py-1 bg-emerald-900 text-emerald-400 text-xs rounded-3xl">Active</span>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
         }
-        
-        // Modal controls
-        function showBookingModal() {
-            document.getElementById('booking-modal').classList.remove('hidden');
-            document.getElementById('booking-modal').classList.add('flex');
+
+        function addBookingToDashboard(campus, size) {
+            const container = document.getElementById('active-bookings');
+            const newBooking = document.createElement('div');
+            newBooking.className = "bg-zinc-900 rounded-3xl p-6 flex gap-6 items-center animate-fade-in";
+            newBooking.innerHTML = `
+                <div class="w-20 h-20 bg-yellow-400/10 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0">📦</div>
+                <div class="flex-1">
+                    <div class="flex justify-between">
+                        <div>
+                            <p class="font-medium">${size.charAt(0).toUpperCase() + size.slice(1)} Storage • ${campus}</p>
+                            <p class="text-sm text-zinc-400">Jun 20 — Sep 10, 2026</p>
+                        </div>
+                        <div>
+                            <span class="inline-block px-4 py-1 bg-emerald-900 text-emerald-400 text-xs rounded-3xl">Active</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.prepend(newBooking);
         }
-        
-        function hideBookingModal() {
-            const modal = document.getElementById('booking-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+
+        function addFakeBooking() {
+            addBookingToDashboard("NYU", "large");
         }
-        
-        function selectPackage(el) {
-            document.querySelectorAll('.package-option').forEach(option => {
-                option.classList.remove('border-blue-500', 'ring-1', 'ring-blue-400');
-            });
-            el.classList.add('border-blue-500', 'ring-1', 'ring-blue-400');
-            
-            const price = el.getAttribute('data-price');
-            document.getElementById('total-price').textContent = '$' + price + '/mo';
-        }
-        
-        function submitBooking() {
-            hideBookingModal();
+
+        function quickBook(campus) {
+            showBookingModal();
+            // Pre-fill campus
             setTimeout(() => {
-                alert("✅ Booking confirmed! A confirmation email has been sent to your university inbox.");
-                navigateTo('dashboard');
-            }, 400);
+                document.getElementById('campus-select').value = campus.split(' ')[0] || campus;
+            }, 300);
         }
-        
-        function toggleLoginModal() {
-            const email = prompt("University email (demo mode):", "you@nyu.edu");
-            if (email) alert("Signed in as " + email + " 🎓");
-        }
-        
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        }
-        
-        function navigateTo(page) {
-            document.querySelectorAll('section').forEach(section => section.classList.add('hidden'));
-            
-            const sectionEl = document.getElementById(page);
-            if (sectionEl) sectionEl.classList.remove('hidden');
-            
-            window.scrollTo(0, 0);
-        }
-        
-        // Init
-        window.onload = () => {
+
+        // Initialize everything
+        function initializeApp() {
             renderLocations();
-            renderBookings();
+            renderActiveBookings();
             
-            // Keyboard support
-            document.addEventListener('keypress', (e) => {
-                if (e.key === '/' && document.getElementById('search-input')) {
-                    document.getElementById('search-input').focus();
-                    e.preventDefault();
-                }
-            });
-            
-            // Show home by default
-            document.getElementById('home').classList.remove('hidden');
-            
-            console.log('%cKeepFace built successfully. Responsive, modern student logistics app.', 'color: #60a5fa; font-family: monospace');
-        };
+            // Make all sections visible and properly laid out
+            console.log('%cKeepFace initialized successfully. Fully responsive.', 'color:#facc15; font-size:13px');
+        }
+
+        // Keyboard escape support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") {
+                const bookingModal = document.getElementById('booking-modal');
+                const loginModal = document.getElementById('login-modal');
+                if (!bookingModal.classList.contains('hidden')) closeBookingModal();
+                if (!loginModal.classList.contains('hidden')) closeLoginModal();
+            }
+        });
+
+        // Boot the app
+        window.onload = initializeApp;
     </script>
 </body>
 </html>
