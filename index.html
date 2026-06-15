@@ -205,8 +205,8 @@
 
     <!-- BOOKING MODAL -->
     <div id="booking-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-3 md:p-4" role="dialog" aria-modal="true" aria-labelledby="booking-title" tabindex="-1">
-        <div class="bg-zinc-900 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-auto">
-            <div class="p-5 md:p-8">
+        <div class="bg-zinc-900 rounded-3xl w-full max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-auto">
+            <div class="p-4 md:p-8">
                 <div class="flex justify-between items-start gap-4 mb-6">
                     <div class="flex-1">
                         <h2 id="booking-title" class="heading-font text-2xl md:text-3xl font-semibold">Book KeepSafe</h2>
@@ -229,8 +229,10 @@
                     <label for="hall" class="sr-only">Hall / Hostel</label>
                     <input id="hall" name="hall" type="text" placeholder="Hall / Hostel" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 md:px-6 py-3 md:py-4 text-base" required>
 
-                    <label for="pickup" class="sr-only">Pickup Date and Time</label>
-                    <input id="pickup" name="pickup" type="datetime-local" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 md:px-6 py-3 md:py-4 text-base" required>
+                    <div>
+                        <label for="pickup" class="block text-sm text-zinc-400 mb-2">Pickup date and time</label>
+                        <input id="pickup" name="pickup" type="datetime-local" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 md:px-6 py-3 md:py-4 text-base" required>
+                    </div>
 
                     <!-- honeypot to reduce spam -->
                     <input type="text" name="website" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;">
